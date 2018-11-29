@@ -1,0 +1,109 @@
+[Stack]
+FillEnabled=0
+OverflowWarningsEnabled=1
+WarningThreshold=90
+SpWarningsEnabled=1
+WarnLogOnly=1
+UseTrigger=1
+TriggerName=main
+LimitSize=0
+ByteLimit=50
+[Interrupts]
+Enabled=1
+[MemConfig]
+Base=1
+Manual=0
+Ddf=1
+TypeViol=0
+Stop=1
+[Simulator]
+Freq=10000000
+MultiCoreRunAll=1
+[Exceptions]
+StopOnUncaught=_ 0
+StopOnThrow=_ 0
+[SWOTraceHWSettings]
+OverrideDefaultClocks=0
+CpuClock=72000000
+ClockAutoDetect=0
+ClockWanted=2000000
+JtagSpeed=2000000
+Prescaler=36
+TimeStampPrescIndex=0
+TimeStampPrescData=0
+PcSampCYCTAP=1
+PcSampPOSTCNT=15
+PcSampIndex=0
+DataLogMode=0
+ITMportsEnable=0
+ITMportsTermIO=0
+ITMportsLogFile=0
+ITMlogFile=$PROJ_DIR$\ITM.log
+[DebugChecksum]
+Checksum=2063155416
+[CallStack]
+ShowArgs=0
+[Disassembly]
+MixedMode=1
+[array_types]
+Fmt0=uint8_t[1]	4	0
+Fmt1=uint8_t[4]	4	0
+[watch_formats]
+Fmt0={W}0:*(this->_rxBuffer + 14)	4	0
+Fmt1={W}0:message[0]	4	0
+Fmt2={W}0:message[12]	4	0
+Fmt3={W}0:message[14]	4	0
+Fmt4={W}0:message[7]	4	0
+Fmt5={W}0:message[8]	4	0
+Fmt6={W}0:this->_rxBuffer[0]	4	0
+Fmt7={W}0:this->_rxBuffer[14]	4	0
+Fmt8={W}0:this->_rxBuffer[15]	4	0
+Fmt9={W}0:this->_rxBuffer[7]	4	0
+Fmt10={W}0:this->_rxBuffer[8]	4	0
+Fmt11={W}0:this->_rxBuffer[offset]	4	0
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=3
+Graph=0
+Symbiont=0
+Exclusions=
+[SWOTraceWindow]
+PcSampling=0
+InterruptLogs=0
+ForcedTimeStamps=0
+EventCPI=0
+EventEXC=0
+EventFOLD=0
+EventLSU=0
+EventSLEEP=0
+[DataLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+[InterruptLog]
+LogEnabled=0
+SumEnabled=0
+GraphEnabled=0
+ShowTimeLog=1
+ShowTimeSum=1
+SumSortOrder=0
+[Log file]
+LoggingEnabled=_ 0
+LogFile=_ ""
+Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Count=0
+[Aliases]
+A0=_ "C:\Users\Lets_\Desktop\RR\Driver\Ethernet\socket.c" ""
+A1=_ "C:\Users\Lets_\Desktop\RR\USER\FreeRTOSV6.1.0\queue.c" ""
+Count=2
+SuppressDialog=0
