@@ -35,24 +35,25 @@ PUBLIC void setEthernetServerParams(struct Ethernet * this,
 
 PUBLIC void setEthernetClientParams(struct Ethernet * this, 
 		uint8_t clientIP[], uint16_t clientPort) {
-    memcpy(this->_clientIP, clientIP, ETHERNET_IP_LEN * sizeof(uint8_t));
-    this->_clientPort = clientPort;
-}
-PUBLIC void setEthernetNetworkParams(struct Ethernet * this, 
-		uint8_t subnetMask[], uint8_t gatewayIP[]) {
-    memcpy(this->_subnetMask, subnetMask, ETHERNET_IP_LEN * sizeof(uint8_t));
-    memcpy(this->_gatewayIP, gatewayIP, ETHERNET_IP_LEN * sizeof(uint8_t));
+	memcpy(this->_clientIP, clientIP, ETHERNET_IP_LEN * sizeof(uint8_t));
+	this->_clientPort = clientPort;
 }
 
-PUBLIC void setEthernetRXBuffer(struct Ethernet * this, 
-        uint8_t * rxBuffer, uint8_t rxBufferSize) {
+PUBLIC void setEthernetNetworkParams(struct Ethernet * this, 
+		uint8_t subnetMask[], uint8_t gatewayIP[]) {
+	memcpy(this->_subnetMask, subnetMask, ETHERNET_IP_LEN * sizeof(uint8_t));
+	memcpy(this->_gatewayIP, gatewayIP, ETHERNET_IP_LEN * sizeof(uint8_t));
+}
+
+PUBLIC void setEthernetRxBuffer(struct Ethernet * this, 
+		uint8_t * rxBuffer, uint8_t rxBufferSize) {
 	this->_rxBuffer = rxBuffer;
 	this->_rxBufferSize = rxBufferSize;
 	this->_numOfRxData = 0;
 }
 
-PUBLIC void setEthernetTXBuffer(struct Ethernet * this, 
-        uint8_t * txBuffer, uint8_t txBufferSize) {
+PUBLIC void setEthernetTxBuffer(struct Ethernet * this, 
+		uint8_t * txBuffer, uint8_t txBufferSize) {
 	this->_txBuffer = txBuffer;
 	this->_txBufferSize = txBufferSize;
 	this->_numOfTxData = 0;

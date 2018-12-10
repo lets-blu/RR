@@ -8,8 +8,8 @@
 
 #include "keywords.h"
 
-#define ETHERNET_IP_LEN		((uint8_t)4)
-#define ETHERNET_MAC_LEN	((uint8_t)6)
+#define ETHERNET_IP_LEN			((uint8_t)4)
+#define ETHERNET_MAC_LEN		((uint8_t)6)
 #define ETHERNET_CLIENT_MAC	((uint8_t []){0x00, 0x08, 0xdc, 0x00, 0xab, 0xcd})
 
 #ifdef __cplusplus
@@ -47,9 +47,9 @@ PUBLIC void setEthernetClientParams(struct Ethernet * this,
 		uint8_t clientIP[], uint16_t clientPort);
 PUBLIC void setEthernetNetworkParams(struct Ethernet * this, 
 		uint8_t subnetMask[], uint8_t gatewayIP[]);
-PUBLIC void setEthernetRXBuffer(struct Ethernet * this, 
+PUBLIC void setEthernetRxBuffer(struct Ethernet * this, 
 		uint8_t * rxBuffer, uint8_t rxBufferSize);
-PUBLIC void setEthernetTXBuffer(struct Ethernet * this, 
+PUBLIC void setEthernetTxBuffer(struct Ethernet * this, 
 		uint8_t * txBuffer, uint8_t txBufferSize);
 
 PUBLIC VIRTUAL bool defaultEthernetInit(struct Ethernet * this);

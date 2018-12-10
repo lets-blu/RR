@@ -4,12 +4,14 @@
 #include "stdbool.h"
 #include "stdlib.h"
 #include "stm32f10x.h"
+#include "stm32f10x_rcc.h"
 #include "stm32f10x_spi.h"
 #include "string.h"
+#include "wizchip_conf.h"
 
 #include "ethernet.h"
+#include "gpiopin.h"
 #include "keywords.h"
-#include "spiport.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -18,7 +20,7 @@ extern "C" {
 typedef struct W5500 {
 	struct Ethernet base; // super class
 
-	SPIPort _port;
+	SPI_TypeDef * _spi;
 
 	// these function pointers are used to initialize w5500 chip
 	void (*cris_en)(void);
@@ -33,7 +35,7 @@ typedef struct W5500 {
 
 
 // (de)constructor(s)
-PUBLIC W5500 newW5500(SPI_TypeDef * spi);
+PUBLIC W5500 newW5500(SPI_TypeDef * SPIx);
 
 // public method(s)
 PUBLIC void syncW5500(W5500 * this);

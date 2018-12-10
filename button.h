@@ -2,19 +2,17 @@
 #define __BUTTON_H__
 
 #include "stdbool.h"
-#include "stdlib.h"
 #include "stm32f10x.h"
 #include "stm32f10x_exti.h"
-#include "stm32f10x_gpio.h"
 #include "stm32f10x_rcc.h"
 
 #include "gpiopin.h"
 #include "keywords.h"
 
 #ifdef INCLUDE_vTaskDelay
-#define __BUTTON_DEBOUNCE() vTaskDelay(25 / portTICK_RATE_MS)
+#define BUTTON_DEBOUNCE() vTaskDelay(25 / portTICK_RATE_MS)
 #else
-#define __BUTTON_DEBOUNCE() 
+#define BUTTON_DEBOUNCE() 
 #endif // INCLUDE_vTaskDelay
 
 #ifdef __cplusplus
@@ -37,6 +35,8 @@ PUBLIC bool isButtonClicked(Button * this);
 PUBLIC void setButtonInterrupt(Button * this, 
         uint8_t preemptionPriority, uint8_t subPriority, 
         FunctionalState newState);
+
+PUBLIC VIRTUAL void defaultOnButtonClick(Button * this, void * args);
 
 #ifdef __cplusplus
 }

@@ -95,7 +95,7 @@ void initButtonLED(void)
 }
 
 /// <summary>
-//		Test button and led, 
+///		Test button and led, 
 /// 	Press button on PB0, led on PC13 while be lighted up for a while.
 /// 	Must call initButtonLED() before calling.
 /// </summary>
@@ -130,7 +130,7 @@ void initShiftRegister(void)
 		[REGGRP_SER_PIN] = newGPIOPin(GPIOA, GPIO_Pin_7), 
 		[REGGRP_SCK_PIN] = newGPIOPin(GPIOA, GPIO_Pin_5), 
 		[REGGRP_RCK_PIN] = newGPIOPin(GPIOA, GPIO_Pin_6), 
-		  [REGGRP_E_PIN] = newGPIOPin(GPIOA, GPIO_Pin_4)
+		[REGGRP_E_PIN]   = newGPIOPin(GPIOA, GPIO_Pin_4)
 	});
 	
 	// shift register must be belonged to a register group
@@ -173,8 +173,8 @@ void initEthernet(void)
 		(uint8_t []){192, 168, 1, 107}, 60000);
 	setEthernetNetworkParams(&w5500.base, 
 		(uint8_t []){255, 255, 255, 0}, (uint8_t []){192, 168, 1, 1});
-	setEthernetRXBuffer(&w5500.base, rxBuffer, 255);
-	setEthernetTXBuffer(&w5500.base, txBuffer, 255);
+	setEthernetRxBuffer(&w5500.base, rxBuffer, 255);
+	setEthernetTxBuffer(&w5500.base, txBuffer, 255);
 	
 	w5500.cris_en = SPI_CrisEnter;
 	w5500.cris_ex = SPI_CrisExit;
@@ -218,6 +218,7 @@ void initWatchdog(void)
 	
 	// used to indicate reboot
 	led = newLED(newGPIOPin(GPIOC, GPIO_Pin_13), LOW);
+	
 	lightUpLED(&led);
 	delay(0x3fffff);
 	blackOutLED(&led);

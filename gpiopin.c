@@ -49,3 +49,28 @@ PUBLIC void writeGPIOPin(GPIOPin * this, GPIOPinState state) {
         GPIO_SetBits(this->_port, this->_pin);
     }
 }
+
+PUBLIC void getGPIOPinPortSource(GPIOPin * this, uint8_t * portSource) {
+    if (this->_port == GPIOA) {
+        *portSource = GPIO_PortSourceGPIOA;
+    } else if (this->_port == GPIOB) {
+        *portSource = GPIO_PortSourceGPIOB;
+    } else if (this->_port == GPIOC) {
+        *portSource = GPIO_PortSourceGPIOC;
+    } else if (this->_port == GPIOD) {
+        *portSource = GPIO_PortSourceGPIOD;
+    } else if (this->_port == GPIOE) {
+        *portSource = GPIO_PortSourceGPIOE;
+    } else if (this->_port == GPIOF) {
+        *portSource = GPIO_PortSourceGPIOF;
+    } else {
+        if (this->_port == GPIOG) {
+            *portSource = GPIO_PortSourceGPIOG;
+        }
+    }
+}
+
+PUBLIC void getGPIOPinPinSource(GPIOPin * this, uint8_t * pinSource) {
+    *pinSource = 0;
+    for (uint16_t pin = this->_pin; pin; *pinSource++, pin >>= 1);
+}

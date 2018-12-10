@@ -6,6 +6,7 @@
 #define __LSB(data) (data & 0x01)
 
 // private method(s)
+PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * this, uint8_t bit);
 PRIVATE void prepareRegisterGroupSer(RegisterGroup * this, uint8_t data);
 PRIVATE void generateRegisterGroupSck(RegisterGroup * this);
 PRIVATE void generateRegisterGroupRck(RegisterGroup * this);
@@ -37,9 +38,8 @@ PUBLIC void addRegisterToGroup(RegisterGroup * this, ShiftRegister * shiftRegist
 
 PUBLIC void setRegisterGroupBit(RegisterGroup * this, uint8_t bit) {
     assert_param(bit < this->_numOfRegisters * 8);
-    ShiftRegister * p = this->_head;
 
-    for (uint8_t i = this->_numOfRegisters - 1; i > bit / 8 && p != NULL; i--, p = p->next);
+    ShiftRegister * p = getRegisterFromGroup(this, bit);
     if (p != NULL) {
         setShiftRegisterBit(p, bit % 8);
     }
@@ -47,9 +47,8 @@ PUBLIC void setRegisterGroupBit(RegisterGroup * this, uint8_t bit) {
 
 PUBLIC void resetRegisterGroupBit(RegisterGroup * this, uint8_t bit) {
     assert_param(bit < this->_numOfRegisters * 8);
-    ShiftRegister * p = this->_head;
-
-    for (uint8_t i = this->_numOfRegisters - 1; i > bit / 8 && p != NULL; i--, p = p->next);
+    
+    ShiftRegister * p = getRegisterFromGroup(this, bit);
     if (p != NULL) {
         resetShiftRegisterBit(p, bit % 8);
     }
@@ -71,6 +70,13 @@ PUBLIC void outputRegisterGroup(RegisterGroup * this) {
     }
 
     generateRegisterGroupRck(this);
+}
+
+PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * this, uint8_t bit) {
+    ShiftRegister * p = this->_head;
+    for (uint8_t i = this->_numOfRegisters - 1; i > bit / 8 && p != NULL; i--, p = p->next);
+
+    return p;
 }
 
 PRIVATE void prepareRegisterGroupSer(RegisterGroup * this, uint8_t data) {

@@ -27,6 +27,8 @@ PUBLIC void configGPIOPin(GPIOPin * this,
         GPIOSpeed_TypeDef GPIO_Speed, GPIOMode_TypeDef GPIO_Mode);
 PUBLIC GPIOPinState readGPIOPin(GPIOPin * this);
 PUBLIC void writeGPIOPin(GPIOPin * this, GPIOPinState state);
+PUBLIC void getGPIOPinPortSource(GPIOPin * this, uint8_t * portSource);
+PUBLIC void getGPIOPinPinSource(GPIOPin * this, uint8_t * pinSource);
 
 #ifdef __cplusplus
 }
