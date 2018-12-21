@@ -1,26 +1,51 @@
 #include "watchdog.h"
 
-PUBLIC Watchdog newWatchdog(uint16_t timeout) {
-	// Tout = (4 * (2 ^ prescaler) * reload) / 40
+#define __DEFAULT_PRESCALER 4
+
+// type defination
+struct Watchdog {
+	uint8_t		_prescaler;
+	uint16_t	_reload;
+};
+
+// static member(s)
+PRIVATE STATIC Watchdog watchdog;
+
+// (de)constructor(s)
+PRIVATE Watchdog newWatchdog(void) {
 	Watchdog watchdog = {
-		._prescaler			= 4, 
-		._reload				= 625 * (timeout / 1000), 
-		
-		.init						= defaultWatchdogInit, 
-		.reloadCounter	= defaultReloadWatchdogCounter
+		._prescaler	= 0, 
+		._reload		= 0
 	};
 	
 	return watchdog;
 }
 
-PUBLIC VIRTUAL void defaultWatchdogInit(Watchdog * this) {
+// public method(s)
+PUBLIC void initWatchdog(Watchdog * pThis) {
 	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
-	IWDG_SetPrescaler(this->_prescaler);
-	IWDG_SetReload(this->_reload);
+	IWDG_SetPrescaler(pThis->_prescaler);
+	IWDG_SetReload(pThis->_reload);
 	IWDG_ReloadCounter();
 	IWDG_Enable();
 }
 
-PUBLIC VIRTUAL void defaultReloadWatchdogCounter(Watchdog * this) {
+PUBLIC void reloadWatchdogCounter(Watchdog * pThis) {
 	IWDG_ReloadCounter();
+}
+
+PUBLIC void setWatchdogTimeout(Watchdog * pThis, uint16_t timeout) {
+	pThis->_prescaler = __DEFAULT_PRESCALER;
+	pThis->_reload = 625 * (timeout / 1000);
+}
+
+PUBLIC STATIC Watchdog * getWatchdogInstance(void) {
+	static Watchdog * pWatchdog = NULL;
+	
+	if (pWatchdog == NULL) {
+		watchdog = newWatchdog();
+		pWatchdog = &watchdog;
+	}
+	
+	return pWatchdog;
 }
