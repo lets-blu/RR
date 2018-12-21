@@ -36,24 +36,24 @@ W5500 w5500;
 uint8_t rxBuffer[255];
 uint8_t txBuffer[255];
 
-Watchdog watchdog;
+Watchdog * watchdog;
 
 
 /// <summary>
 /// 	Function declaration(s)
 /// </summary>
-void initButtonLED(void);
+void configButtonLED(void);
 void testButtonLED(void);
 void onButtonClick(Button * this, void * arg);
 
-void initShiftRegister(void);
+void configShiftRegister(void);
 void testShiftRegister(void);
 
-void initEthernet(void);
+void configEthernet(void);
 void testEthernet(void);
 void onW5500Receive(W5500 * this);
 
-void initWatchdog(void);
+void configWatchdog(void);
 void testWatchdog(void);
 
 void delay(uint32_t delay);
@@ -65,17 +65,17 @@ void delay(uint32_t delay);
 int main(void)
 {
 	// Cancel the comment which you want to test.
-//	initButtonLED();
-//	initShiftRegister();
-//	initEthernet();
-	initWatchdog();
+//	configButtonLED();
+//	configShiftRegister();
+//	configEthernet();
+	configWatchdog();
 	
 	for (;;)
 	{
 //		testButtonLED();
 //		testShiftRegister();
 //		testEthernet();
-		testWatchdog();
+//		testWatchdog();
 	}
 }
 
@@ -83,7 +83,7 @@ int main(void)
 /// 	Initialize button and led, 
 /// 	Must be called before calling testButtonLED().
 /// </summary>
-void initButtonLED(void)
+void configButtonLED(void)
 {
 	interrupt = false;
 	
@@ -105,6 +105,8 @@ void testButtonLED(void)
 	{
 		button.onClick(&button, &led);
 		delay(0x3fffff);
+		
+		interrupt = false;
 	}
 	
 	blackOutLED(&led);
@@ -123,7 +125,7 @@ void onButtonClick(Button * this, void * arg)
 /// 	Initialize shift register, 
 /// 	Must be called before calling testShiftRegister().
 /// </summary>
-void initShiftRegister(void)
+void configShiftRegister(void)
 {
 	shiftRegister = newShiftRegister();
 	registerGroup = newRegisterGroup((GPIOPin []){
@@ -163,7 +165,7 @@ void testShiftRegister(void)
 /// 	Initialize ethernet with W5500 chip, 
 /// 	Must called before testEthernet().
 /// </summary>
-void initEthernet(void)
+void configEthernet(void)
 {
 	w5500 = newW5500(SPI2);
 	
@@ -211,17 +213,19 @@ void onW5500Receive(W5500 * this)
 /// 	Initialize watchdog timer, 
 /// 	Must called before testWatchdog().
 /// </summary>
-void initWatchdog(void)
+void configWatchdog(void)
 {
-	watchdog = newWatchdog(1000);
-	watchdog.init(&watchdog);
-	
-	// used to indicate reboot
 	led = newLED(newGPIOPin(GPIOC, GPIO_Pin_13), LOW);
 	
+	// indicate booting
 	lightUpLED(&led);
-	delay(0x3fffff);
+	delay(0xfffff);
 	blackOutLED(&led);
+	
+	watchdog = getWatchdogInstance();
+	
+	setWatchdogTimeout(watchdog, 1000);
+	initWatchdog(watchdog);
 }
 
 /// <summary>
@@ -231,7 +235,7 @@ void initWatchdog(void)
 /// </summary>
 void testWatchdog(void)
 {
-	
+	RELOAD_WATCHDOG();
 }
 
 /// <summary>
