@@ -19,24 +19,22 @@
 extern "C" {
 #endif // __cplusplus
 
-typedef struct Button {
-    GPIOPin _pin;
-    GPIOPinState _statClick;
-    FunctionalState _intEnable;
-    
-    void (*onClick)(struct Button * this, void * args);
-} Button;
+    typedef struct Button {
+        GPIOPin _pin;
+        GPIOPinState _statClick;
+        FunctionalState _intEnable;
 
-// (de)constructor(s)
-PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState);
+        void(*onClick)(struct Button * pThis, void * args);
+    } Button;
 
-// public method(s)
-PUBLIC bool isButtonClicked(Button * this);
-PUBLIC void setButtonInterrupt(Button * this, 
-        uint8_t preemptionPriority, uint8_t subPriority, 
-        FunctionalState newState);
+    // (de)constructor(s)
+    PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState);
 
-PUBLIC VIRTUAL void defaultOnButtonClick(Button * this, void * args);
+    // public method(s)
+    PUBLIC bool isButtonClicked(Button * pThis);
+    PUBLIC void setButtonInterrupt(Button * pThis,
+        uint8_t preemptionPriority, uint8_t subPriority, FunctionalState newState);
+    PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis, void * args);
 
 #ifdef __cplusplus
 }

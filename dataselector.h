@@ -28,9 +28,11 @@ extern "C" {
         uint8_t _totalOfSubjects, _numOfSubjects;
     } DataSelector;
 
+    // (de)constructor(s)
     PUBLIC DataSelector newDataSelector(uint8_t totalOfSubjects);
     PUBLIC void deleteDataSelector(DataSelector * pThis);
 
+    // public method(s)
     PUBLIC void setDataSelectorPins(DataSelector * pThis,
         GPIOPin scanPin, GPIOPin scanAddrPins);
     PUBLIC void scanDataSelector(DataSelector * pThis, uint8_t address);

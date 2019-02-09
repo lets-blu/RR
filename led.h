@@ -8,17 +8,17 @@
 extern "C" {
 #endif // __cplusplus
 
-typedef struct LED {
-    GPIOPin _pin;
-    GPIOPinState _statLight;
-} LED;
+    typedef struct LED {
+        GPIOPin _pin;
+        GPIOPinState _statLight;
+    } LED;
 
-// (de)constructor(s)
-PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState);
+    // (de)constructor(s)
+    PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState);
 
-// public method(s)
-PUBLIC void lightUpLED(LED * this);
-PUBLIC void blackOutLED(LED * this);
+    // public method(s)
+    PUBLIC void lightUpLED(LED * pThis);
+    PUBLIC void blackOutLED(LED * pThis);
 
 #ifdef __cplusplus
 }

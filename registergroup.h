@@ -19,22 +19,22 @@
 extern "C" {
 #endif // __cplusplus
 
-typedef struct RegisterGroup {
-    ShiftRegister * _head;
-    uint8_t _numOfRegisters;
-	
-    GPIOPin _serPin, _sckPin, _rckPin, _ePin;
-} RegisterGroup;
+    typedef struct RegisterGroup {
+        ShiftRegister * _head;
+        uint8_t _numOfRegisters;
 
-// (de)constructor(s)
-PUBLIC RegisterGroup newRegisterGroup(GPIOPin pins[]);
+        GPIOPin _serPin, _sckPin, _rckPin, _ePin;
+    } RegisterGroup;
 
-// public method(s)
-PUBLIC void addRegisterToGroup(RegisterGroup * this, ShiftRegister * shiftRegister);
-PUBLIC void setRegisterGroupBit(RegisterGroup * this, uint8_t bit);
-PUBLIC void resetRegisterGroupBit(RegisterGroup * this, uint8_t bit);
-PUBLIC void setRegisterGroupEnable(RegisterGroup * this, FunctionalState newState);
-PUBLIC void outputRegisterGroup(RegisterGroup * this);
+    // (de)constructor(s)
+    PUBLIC RegisterGroup newRegisterGroup(GPIOPin pins[]);
+
+    // public method(s)
+    PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * shiftRegister);
+    PUBLIC void setRegisterGroupBit(RegisterGroup * pThis, uint8_t bit);
+    PUBLIC void resetRegisterGroupBit(RegisterGroup * pThis, uint8_t bit);
+    PUBLIC void setRegisterGroupEnable(RegisterGroup * pThis, FunctionalState newState);
+    PUBLIC void outputRegisterGroup(RegisterGroup * pThis);
 
 #ifdef __cplusplus
 }

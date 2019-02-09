@@ -12,17 +12,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
-	
-	struct Watchdog;
-	typedef struct Watchdog Watchdog;
-	
-	// public method(s)
-	PUBLIC void initWatchdog(Watchdog * pThis);
-	PUBLIC void reloadWatchdogCounter(Watchdog * pThis);
-	PUBLIC void setWatchdogTimeout(Watchdog * pThis, uint16_t timeout);
-	
-	PUBLIC STATIC Watchdog * getWatchdogInstance(void);
-	
+
+    struct Watchdog;
+    typedef struct Watchdog Watchdog;
+
+    // public method(s)
+    PUBLIC void initWatchdog(Watchdog * pThis);
+    PUBLIC void reloadWatchdogCounter(Watchdog * pThis);
+    PUBLIC void setWatchdogTimeout(Watchdog * pThis, uint16_t timeout);
+    PUBLIC STATIC Watchdog * getWatchdogInstance(void);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

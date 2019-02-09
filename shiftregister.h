@@ -11,17 +11,17 @@
 extern "C" {
 #endif // __cplusplus
 
-typedef struct ShiftRegister {
-    uint8_t _data;
-    struct ShiftRegister * next;
-} ShiftRegister;
+    typedef struct ShiftRegister {
+        uint8_t _data;
+        struct ShiftRegister * next;
+    } ShiftRegister;
 
-// (de)constructor(s)
-PUBLIC ShiftRegister newShiftRegister(void);
+    // (de)constructor(s)
+    PUBLIC ShiftRegister newShiftRegister(void);
 
-// public method(s)
-PUBLIC void setShiftRegisterBit(ShiftRegister * this, uint8_t bit);
-PUBLIC void resetShiftRegisterBit(ShiftRegister * this, uint8_t bit);
+    // public method(s)
+    PUBLIC void setShiftRegisterBit(ShiftRegister * pThis, uint8_t bit);
+    PUBLIC void resetShiftRegisterBit(ShiftRegister * pThis, uint8_t bit);
 
 #ifdef __cplusplus
 }

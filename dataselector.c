@@ -8,18 +8,18 @@ PRIVATE uint8_t getDataSelectorScanAddrOffset(DataSelector * pThis);
 
 PUBLIC DataSelector newDataSelector(uint8_t totalOfSubjects) {
     DataSelector selector = {
-        .observer.registerSubject 
+        .observer.registerSubject
             = (register_subject_fp)registerSubjectToDataSelector,
         .observer.removeSubject
             = (remove_subject_fp)removeSubjectFromDataSelector,
         .observer.notifyAllSubjects
             = (notify_subjects_fp)notifyAllDataSelectorSubjects,
 
-        ._xMessagesQueue    = NULL,
+        ._xMessagesQueue = NULL,
 
-        ._subjects          = NULL,
-        ._totalOfSubjects   = 0,
-        ._numOfSubjects     = 0
+        ._subjects = NULL,
+        ._totalOfSubjects = 0,
+        ._numOfSubjects = 0
     };
 
     selector._xMessagesQueue = xQueueCreate(__QUEUE_LENGTH, sizeof(SelectorMessage));
