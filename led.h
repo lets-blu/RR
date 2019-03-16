@@ -1,24 +1,29 @@
 #ifndef __LED_H__
 #define __LED_H__
 
-#include "gpiopin.h"
-#include "keywords.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif // __cplusplus
 
-    typedef struct LED {
-        GPIOPin _pin;
-        GPIOPinState _statLight;
-    } LED;
+#include "FreeRTOS.h"
+#include "task.h"
 
-    // (de)constructor(s)
-    PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState);
+#include "gpiopin.h"
+#include "keywords.h"
 
-    // public method(s)
-    PUBLIC void lightUpLED(LED * pThis);
-    PUBLIC void blackOutLED(LED * pThis);
+typedef struct LED {
+    GPIOPin _pin;
+    GPIOPinState _statLight;
+} LED;
+
+// (de)constructor(s)
+PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState);
+
+// public method(s)
+PUBLIC void onLED(LED * pThis);
+PUBLIC void offLED(LED * pThis);
+
+PUBLIC STATIC void vTestLEDTask(void * pLED);
 
 #ifdef __cplusplus
 }

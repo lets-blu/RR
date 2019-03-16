@@ -1,92 +1,105 @@
 #include "button.h"
 
-// private method(s)
-PRIVATE void getButtonEXTILine(Button * pThis, uint32_t * extiLine);
-PRIVATE void getButtonIRQChannel(Button * pThis, uint8_t * irqChannel);
+#define __DEFAULT_PRIORITY ((uint8_t)0)
 
-PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState) {
+// private method(s)
+PRIVATE uint32_t getButtonEXTILine(Button * pThis);
+PRIVATE uint8_t getButtonIRQChannel(Button * pThis);
+
+PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState)
+{
     Button button = {
-        ._pin = pin,
+        ._pin       = pin,
         ._statClick = clickState,
-        ._intEnable = DISABLE,
-        .onClick = defaultOnButtonClick
+
+        ._semaphore = NULL, 
+
+        .onClick    = defaultOnButtonClick
     };
 
-    configGPIOPin(&button._pin, GPIO_Speed_2MHz, GPIO_Mode_IPU);
+    setupGPIOPin(&button._pin, INPUT_PULLUP);
 
     return button;
 }
 
-PUBLIC bool isButtonClicked(Button * pThis) {
+PUBLIC bool isButtonClicked(Button * pThis)
+{
     BUTTON_DEBOUNCE();
     return readGPIOPin(&pThis->_pin) == pThis->_statClick;
 }
 
-PUBLIC void setButtonInterrupt(Button * pThis,
-    uint8_t preemptionPriority, uint8_t subPriority, FunctionalState newState) {
+PUBLIC bool isButtonInterruptEnable(Button * pThis)
+{
+    return pThis->_semaphore != NULL;
+}
+
+PUBLIC void setButtonInterrupt(Button * pThis, FunctionalState newState)
+{
     // AFIO is used by other place, never disable it.
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 
-    uint8_t portSource, pinSource;
-    getGPIOPinPortSource(&pThis->_pin, &portSource);
-    getGPIOPinPinSource(&pThis->_pin, &pinSource);
+    uint8_t portSource = getGPIOPinPortSource(&pThis->_pin);
+    uint8_t pinSource = getGPIOPinPinSource(&pThis->_pin);
     GPIO_EXTILineConfig(portSource, pinSource);
 
-    uint32_t extiLine;
-    getButtonEXTILine(pThis, &extiLine);
     EXTITrigger_TypeDef trigger = pThis->_statClick ?
         EXTI_Trigger_Rising : EXTI_Trigger_Falling;
     EXTI_InitTypeDef EXTI_InitStructure = {
-        .EXTI_Line = extiLine,
-        .EXTI_Mode = EXTI_Mode_Interrupt,
-        .EXTI_Trigger = trigger,
-        .EXTI_LineCmd = newState
+        .EXTI_Line      = getButtonEXTILine(pThis),
+        .EXTI_Mode      = EXTI_Mode_Interrupt,
+        .EXTI_Trigger   = trigger,
+        .EXTI_LineCmd   = newState
     };
 
     EXTI_Init(&EXTI_InitStructure);
 
-    uint8_t irqChannel;
-    getButtonIRQChannel(pThis, &irqChannel);
     NVIC_InitTypeDef NVIC_InitStructure = {
-        .NVIC_IRQChannel = irqChannel,
-        .NVIC_IRQChannelPreemptionPriority = preemptionPriority,
-        .NVIC_IRQChannelSubPriority = subPriority,
-        .NVIC_IRQChannelCmd = newState
+        .NVIC_IRQChannel                    = getButtonIRQChannel(pThis),
+        .NVIC_IRQChannelPreemptionPriority  = __DEFAULT_PRIORITY,
+        .NVIC_IRQChannelSubPriority         = __DEFAULT_PRIORITY,
+        .NVIC_IRQChannelCmd                 = newState
     };
 
     NVIC_Init(&NVIC_InitStructure);
 
-    pThis->_intEnable = newState;
+    if (newState == ENABLE) {
+        vSemaphoreCreateBinary(pThis->_semaphore);
+    }
 }
 
-PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis, void * args) {
-
+PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
+{
+    // do nothing
 }
 
-PRIVATE void getButtonEXTILine(Button * pThis, uint32_t * extiLine) {
-    *extiLine = pThis->_pin._pin;
+PRIVATE uint32_t getButtonEXTILine(Button * pThis)
+{
+    return (uint32_t)pThis->_pin._pin;
 }
 
-PRIVATE void getButtonIRQChannel(Button * pThis, uint8_t * irqChannel) {
+PRIVATE uint8_t getButtonIRQChannel(Button * pThis)
+{
+    uint8_t irqChannel = 0;
+
     switch (pThis->_pin._pin) {
     case GPIO_Pin_0:
-        *irqChannel = EXTI0_IRQn;
+        irqChannel = EXTI0_IRQn;
         break;
 
     case GPIO_Pin_1:
-        *irqChannel = EXTI1_IRQn;
+        irqChannel = EXTI1_IRQn;
         break;
 
     case GPIO_Pin_2:
-        *irqChannel = EXTI2_IRQn;
+        irqChannel = EXTI2_IRQn;
         break;
 
     case GPIO_Pin_3:
-        *irqChannel = EXTI3_IRQn;
+        irqChannel = EXTI3_IRQn;
         break;
 
     case GPIO_Pin_4:
-        *irqChannel = EXTI4_IRQn;
+        irqChannel = EXTI4_IRQn;
         break;
 
     case GPIO_Pin_5:
@@ -94,7 +107,7 @@ PRIVATE void getButtonIRQChannel(Button * pThis, uint8_t * irqChannel) {
     case GPIO_Pin_7:
     case GPIO_Pin_8:
     case GPIO_Pin_9:
-        *irqChannel = EXTI9_5_IRQn;
+        irqChannel = EXTI9_5_IRQn;
         break;
 
     case GPIO_Pin_10:
@@ -103,7 +116,26 @@ PRIVATE void getButtonIRQChannel(Button * pThis, uint8_t * irqChannel) {
     case GPIO_Pin_13:
     case GPIO_Pin_14:
     case GPIO_Pin_15:
-        *irqChannel = EXTI15_10_IRQn;
+        irqChannel = EXTI15_10_IRQn;
         break;
+    }
+
+    return irqChannel;
+}
+
+PUBLIC STATIC void vButtonInterruptHandler(void * pButton)
+{
+    Button * button = (Button *)pButton;
+
+    if (!isButtonInterruptEnable(button)) {
+        vTaskDelete(NULL);
+    }
+
+    for (;;) {
+        xSemaphoreTake(button->_semaphore, portMAX_DELAY);
+
+        if (isButtonClicked(button)) {
+            button->onClick(button);
+        }
     }
 }

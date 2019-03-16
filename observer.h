@@ -5,23 +5,22 @@
 extern "C" {
 #endif // __cplusplus
 
-    struct ISubject;
     struct IObserver;
 
-    typedef void(*update_fp)(struct ISubject *, struct IObserver *);
-    typedef void(*register_subject_fp)(struct IObserver *, struct ISubject *);
-    typedef void(*remove_subject_fp)(struct IObserver *, struct ISubject *);
-    typedef void(*notify_subjects_fp)(struct IObserver *);
-
     struct ISubject {
-        update_fp update;
+        void(*registerObserver)(struct ISubject *, struct IObserver *);
+        void(*removeObserver)(struct ISubject *, struct IObserver *);
+        void(*notifyAllObservers)(struct ISubject *);
     };
 
     struct IObserver {
-        register_subject_fp registerSubject;
-        remove_subject_fp removeSubject;
-        notify_subjects_fp notifyAllSubjects;
+        void(*update)(struct IObserver *, struct ISubject *);
     };
+
+    typedef void(*register_observer_fp)(struct ISubject *, struct IObserver *);
+    typedef void(*remove_observer_fp)(struct ISubject *, struct IObserver *);
+    typedef void(*notify_observers_fp)(struct ISubject *);
+    typedef void(*update_fp)(struct IObserver *, struct ISubject *);
 
 #ifdef __cplusplus
 }
