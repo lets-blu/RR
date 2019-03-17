@@ -207,7 +207,7 @@ setEthernetServerParams(&w5500.base,
 }, 60000);
 
 // 设置子网掩码及网关；假设子网掩码为255.255.255.0，网关IP地址为192.168.1.1
-setEthernetNetworkParams(&w5500, 
+setEthernetNetworkParams(&w5500.base, 
 	(uint8_t []) {
 	255, 255, 255, 0
 }, 
