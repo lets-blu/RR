@@ -196,16 +196,24 @@ W5500 w5500 = newW5500(SPI2);
 ```C
 // 设置HTTP客户端参数；假设本机IP地址为192.168.1.199，使用50000端口
 setEthernetClientParams(&w5500.base,
-	(uint8_t[]) {192, 168, 1, 199}, 50000);
+	(uint8_t[]) {
+	192, 168, 1, 199
+}, 50000);
 
 // 设置HTTP服务器端参数；假设服务器IP地址为192.168.1.107, 使用60000端口
 setEthernetServerParams(&w5500.base, 
-	(uint8_t []) {192, 168, 1, 107}, 60000);
+	(uint8_t []) {
+	192, 168, 1, 107
+}, 60000);
 
 // 设置子网掩码及网关；假设子网掩码为255.255.255.0，网关IP地址为192.168.1.1
 setEthernetNetworkParams(&w5500, 
-	(uint8_t []) {255, 255, 255, 0}, 
-	(uint8_t []) {192, 168, 1, 1});
+	(uint8_t []) {
+	255, 255, 255, 0
+}, 
+	(uint8_t []) {
+	192, 168, 1, 1
+});
 ```
 
 同时还需设置用于发送和接收数据的缓冲区，假设缓冲区定义为
@@ -222,12 +230,12 @@ uint8_t rxBuffer[BUFFER_SIZE] = {0};	// 接收缓冲区
 W5500父结构体初始化完成后，还需设置用于W5500的回调函数，回调函数的实现请参照Ethernet目录下的porting.h和porting.c文件；如下代码块将用于W5500的回调函数设置为已实现的函数。
 
 ```C
-w5500.cris_en = SPI2_Cris_Enter;
-w5500.cris_ex = SPI2_Cris_Exit;
-w5500.cs_sel = SPI2_CS_Select;
-w5500.cs_desel = SPI2_CS_Deselect;
-w5500.spi_rb = SPI2_ReadByte;
-w5500.spi_wb = SPI2_WriteByte;
+w5500.cris_en   = SPI2_Cris_Enter;
+w5500.cris_ex   = SPI2_Cris_Exit;
+w5500.cs_sel    = SPI2_CS_Select;
+w5500.cs_desel  = SPI2_CS_Deselect;
+w5500.spi_rb    = SPI2_ReadByte;
+w5500.spi_wb    = SPI2_WriteByte;
 ```
 
 一切准备就绪后，即可初始化W5500芯片；
