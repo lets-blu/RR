@@ -3,32 +3,32 @@
 PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState)
 {
     LED led = {
-        ._pin       = pin,
-        ._statLight = lightState
-    };
+        ._pin = pin,
+        ._statLight = lightState};
 
     setupGPIOPin(&led._pin, OUTPUT);
 
     return led;
 }
 
-PUBLIC void onLED(LED * pThis)
+PUBLIC void turnOnLED(LED *pThis)
 {
     writeGPIOPin(&pThis->_pin, pThis->_statLight);
 }
 
-PUBLIC void offLED(LED * pThis)
+PUBLIC void turnOffLED(LED *pThis)
 {
     writeGPIOPin(&pThis->_pin, (GPIOPinState)!pThis->_statLight);
 }
 
-PUBLIC STATIC void vTestLEDTask(void * pLED)
+PUBLIC STATIC void vTestLEDTask(void *pLED)
 {
-    for (;;) {
-        onLED(pLED);
+    for (;;)
+    {
+        turnOnLED(pLED);
         vTaskDelay(1000);
 
-        offLED(pLED);
+        turnOffLED(pLED);
         vTaskDelay(1000);
     }
 }

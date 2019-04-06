@@ -3,7 +3,8 @@
 #define __DEFAULT_PRESCALER ((uint8_t)4)
 
 // type defination
-struct Watchdog {
+struct Watchdog
+{
     uint8_t _prescaler;
     uint16_t _reload;
 };
@@ -16,14 +17,13 @@ PRIVATE Watchdog newWatchdog(void)
 {
     Watchdog watchdog = {
         ._prescaler = __DEFAULT_PRESCALER,
-        ._reload    = 0
-    };
+        ._reload = 0};
 
     return watchdog;
 }
 
 // public method(s)
-PUBLIC void initWatchdog(Watchdog * pThis, uint16_t timeout)
+PUBLIC void initWatchdog(Watchdog *pThis, uint16_t timeout)
 {
     pThis->_reload = 10 * timeout / pow(2, pThis->_prescaler);
 
@@ -34,16 +34,17 @@ PUBLIC void initWatchdog(Watchdog * pThis, uint16_t timeout)
     IWDG_Enable();
 }
 
-PUBLIC void reloadWatchdogCounter(Watchdog * pThis)
+PUBLIC void reloadWatchdogCounter(Watchdog *pThis)
 {
     IWDG_ReloadCounter();
 }
 
-PUBLIC STATIC Watchdog * getWatchdogInstance(void)
+PUBLIC STATIC Watchdog *getWatchdogInstance(void)
 {
-    static Watchdog * pWatchdog = NULL;
+    static Watchdog *pWatchdog = NULL;
 
-    if (pWatchdog == NULL) {
+    if (pWatchdog == NULL)
+    {
         watchdog = newWatchdog();
         pWatchdog = &watchdog;
     }

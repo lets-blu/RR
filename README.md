@@ -13,14 +13,14 @@ RR使用面向对象思想，并采用设计模式提高代码的可读性、降
 LED led1 = newLED(newGPIOPin(GPIOC, GPIO_Pin_13), LOW);
 ```
 
-使用`onLED`或`offLED`方法可以点亮或熄灭发光二极管。
+使用`turnOnLED`或`turnOffLED`方法可以点亮或熄灭发光二极管。
 
 ```C
 // 点亮发光二极管led1
-onLED(&led1);
+turnOnLED(&led1);
 
 // 熄灭发光二极管led1
-offLED(&led1);
+turnOffLED(&led1);
 ```
 
 vTestLEDTask任务可以使作为参数传入的发光二极管闪烁，请使用FreeRTOS的任务创建API创建该任务。

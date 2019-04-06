@@ -3,37 +3,36 @@
 #define __DEFAULT_PRIORITY ((uint8_t)0)
 
 // private method(s)
-PRIVATE uint32_t getButtonEXTILine(Button * pThis);
-PRIVATE uint8_t getButtonIRQChannel(Button * pThis);
+PRIVATE uint32_t getButtonEXTILine(Button *pThis);
+PRIVATE uint8_t getButtonIRQChannel(Button *pThis);
 
 PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState)
 {
     Button button = {
-        ._pin       = pin,
+        ._pin = pin,
         ._statClick = clickState,
 
-        ._semaphore = NULL, 
+        ._semaphore = NULL,
 
-        .onClick    = defaultOnButtonClick
-    };
+        .onClick = defaultOnButtonClick};
 
     setupGPIOPin(&button._pin, INPUT_PULLUP);
 
     return button;
 }
 
-PUBLIC bool isButtonClicked(Button * pThis)
+PUBLIC bool isButtonClicked(Button *pThis)
 {
     BUTTON_DEBOUNCE();
     return readGPIOPin(&pThis->_pin) == pThis->_statClick;
 }
 
-PUBLIC bool isButtonInterruptEnable(Button * pThis)
+PUBLIC bool isButtonInterruptEnable(Button *pThis)
 {
     return pThis->_semaphore != NULL;
 }
 
-PUBLIC void setButtonInterrupt(Button * pThis, FunctionalState newState)
+PUBLIC void setButtonInterrupt(Button *pThis, FunctionalState newState)
 {
     // AFIO is used by other place, never disable it.
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
@@ -42,46 +41,45 @@ PUBLIC void setButtonInterrupt(Button * pThis, FunctionalState newState)
     uint8_t pinSource = getGPIOPinPinSource(&pThis->_pin);
     GPIO_EXTILineConfig(portSource, pinSource);
 
-    EXTITrigger_TypeDef trigger = pThis->_statClick ?
-        EXTI_Trigger_Rising : EXTI_Trigger_Falling;
+    EXTITrigger_TypeDef trigger = pThis->_statClick ? EXTI_Trigger_Rising : EXTI_Trigger_Falling;
     EXTI_InitTypeDef EXTI_InitStructure = {
-        .EXTI_Line      = getButtonEXTILine(pThis),
-        .EXTI_Mode      = EXTI_Mode_Interrupt,
-        .EXTI_Trigger   = trigger,
-        .EXTI_LineCmd   = newState
-    };
+        .EXTI_Line = getButtonEXTILine(pThis),
+        .EXTI_Mode = EXTI_Mode_Interrupt,
+        .EXTI_Trigger = trigger,
+        .EXTI_LineCmd = newState};
 
     EXTI_Init(&EXTI_InitStructure);
 
     NVIC_InitTypeDef NVIC_InitStructure = {
-        .NVIC_IRQChannel                    = getButtonIRQChannel(pThis),
-        .NVIC_IRQChannelPreemptionPriority  = __DEFAULT_PRIORITY,
-        .NVIC_IRQChannelSubPriority         = __DEFAULT_PRIORITY,
-        .NVIC_IRQChannelCmd                 = newState
-    };
+        .NVIC_IRQChannel = getButtonIRQChannel(pThis),
+        .NVIC_IRQChannelPreemptionPriority = __DEFAULT_PRIORITY,
+        .NVIC_IRQChannelSubPriority = __DEFAULT_PRIORITY,
+        .NVIC_IRQChannelCmd = newState};
 
     NVIC_Init(&NVIC_InitStructure);
 
-    if (newState == ENABLE) {
+    if (newState == ENABLE)
+    {
         vSemaphoreCreateBinary(pThis->_semaphore);
     }
 }
 
-PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
+PUBLIC VIRTUAL void defaultOnButtonClick(Button *pThis)
 {
     // do nothing
 }
 
-PRIVATE uint32_t getButtonEXTILine(Button * pThis)
+PRIVATE uint32_t getButtonEXTILine(Button *pThis)
 {
     return (uint32_t)pThis->_pin._pin;
 }
 
-PRIVATE uint8_t getButtonIRQChannel(Button * pThis)
+PRIVATE uint8_t getButtonIRQChannel(Button *pThis)
 {
     uint8_t irqChannel = 0;
 
-    switch (pThis->_pin._pin) {
+    switch (pThis->_pin._pin)
+    {
     case GPIO_Pin_0:
         irqChannel = EXTI0_IRQn;
         break;
@@ -123,18 +121,21 @@ PRIVATE uint8_t getButtonIRQChannel(Button * pThis)
     return irqChannel;
 }
 
-PUBLIC STATIC void vButtonInterruptHandler(void * pButton)
+PUBLIC STATIC void vButtonInterruptHandler(void *pButton)
 {
-    Button * button = (Button *)pButton;
+    Button *button = (Button *)pButton;
 
-    if (!isButtonInterruptEnable(button)) {
+    if (!isButtonInterruptEnable(button))
+    {
         vTaskDelete(NULL);
     }
 
-    for (;;) {
+    for (;;)
+    {
         xSemaphoreTake(button->_semaphore, portMAX_DELAY);
 
-        if (isButtonClicked(button)) {
+        if (isButtonClicked(button))
+        {
             button->onClick(button);
         }
     }
