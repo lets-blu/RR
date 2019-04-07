@@ -90,7 +90,7 @@ PUBLIC VIRTUAL bool initW5500(W5500 *pThis)
 #ifndef DEBUG
     wiz_NetTimeout netTimeOut = {.retry_cnt = 3, .time_100us = 1000};
     wizchip_settimeout(&netTimeOut);
-#endif
+#endif // DEBUG
 
     return true;
 }

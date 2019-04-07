@@ -24,7 +24,10 @@ PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState)
 PUBLIC bool isButtonClicked(Button *pThis)
 {
     BUTTON_DEBOUNCE();
-    return readGPIOPin(&pThis->_pin) == pThis->_statClick;
+    bool clicked = readGPIOPin(&pThis->_pin) == pThis->_statClick;
+    BUTTON_DEBOUNCE();
+
+    return clicked;
 }
 
 PUBLIC bool isButtonInterruptEnable(Button *pThis)

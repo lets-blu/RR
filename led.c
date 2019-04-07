@@ -23,12 +23,14 @@ PUBLIC void turnOffLED(LED *pThis)
 
 PUBLIC STATIC void vTestLEDTask(void *pLED)
 {
+    LED *led = (LED *)pLED;
+
     for (;;)
     {
-        turnOnLED(pLED);
+        turnOnLED(led);
         vTaskDelay(1000);
 
-        turnOffLED(pLED);
+        turnOffLED(led);
         vTaskDelay(1000);
     }
 }
