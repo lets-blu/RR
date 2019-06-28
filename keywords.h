@@ -1,13 +1,18 @@
-#ifndef __KEYWORD_H__
-#define __KEYWORD_H__
+#ifndef __KEYWORDS_H__
+#define __KEYWORDS_H__
 
-#define PUBLIC
+#ifdef __cplusplus
+extern "C"
+{
+#endif // __cplusplus
+
+#define PUBLIC  
 #define PRIVATE static
-#define STATIC
-#define VIRTUAL
+#define STATIC  
+#define VIRTUAL 
 
-#define FOREACH(__type, __item, __array) \
-	__type __item = __array[0];          \
-	for (int __i = 0; __i < sizeof(__array) / sizeof(__type); __item = __array[++__i])
+#ifdef __cplusplus
+}
+#endif // __cplusplus
 
-#endif // __KEYWORD_H__
+#endif // __KEYWORDS_H__
