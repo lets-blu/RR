@@ -8,7 +8,7 @@ extern "C"
 
 #include "stdint.h"
 
-#include "stm32f1xx.h"
+#include "stm32f1xx_hal.h"
 #include "stm32f1xx_hal_gpio.h"
 #include "stm32f1xx_hal_rcc.h"
 
@@ -18,9 +18,9 @@ extern "C"
 
 #define INPUT               GPIO_MODE_INPUT
 #define OUTPUT              GPIO_MODE_OUTPUT_PP
-#define INPUT_PULLUP        (GPIO_MODE_INPUT | PULLUP)
+#define INPUT_PULLUP        (INPUT | PULLUP)
 
-#define INTERRUPT_CHANGE    GPIO_MODE_EVT_RISING_FALLING
+#define INTERRUPT_CHANGE    GPIO_MODE_IT_RISING_FALLING
 #define INTERRUPT_RISING    GPIO_MODE_IT_RISING
 #define INTERRUPT_FALLING   GPIO_MODE_IT_FALLING
 
@@ -36,10 +36,10 @@ typedef struct
 typedef uint32_t GPIOPinMode;
 typedef GPIO_PinState GPIOPinState;
 
-// (de)constructor(s)
+// constructor
 PUBLIC GPIOPin newGPIOPin(GPIO_TypeDef * GPIOx, uint16_t GPIO_PIN_x);
 
-// public method(s)
+// public methods
 PUBLIC void setupGPIOPin(GPIOPin * pThis, GPIOPinMode mode);
 
 PUBLIC GPIOPinState readGPIOPin(GPIOPin * pThis);

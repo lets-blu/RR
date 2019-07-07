@@ -8,8 +8,8 @@ extern "C"
 
 #define PUBLIC  
 #define PRIVATE static
-#define STATIC  
-#define VIRTUAL 
+#define STATIC 
+#define VIRTUAL
 
 #ifdef __cplusplus
 }

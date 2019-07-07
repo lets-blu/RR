@@ -1,141 +1,172 @@
 #include "button.h"
 
-#define __DEFAULT_PRIORITY ((uint8_t)0)
+#define __BUTTON_PREEMPT_PRIORITY   ((uint32_t)5)
+#define __BUTTON_SUB_PRIORITY       ((uint32_t)0)
+
+#define __BUTTON_DEBOUNCE()         osDelay(50)
 
 // private method(s)
-PRIVATE uint32_t getButtonEXTILine(Button *pThis);
-PRIVATE uint8_t getButtonIRQChannel(Button *pThis);
+PRIVATE IRQn_Type getButtonIRQn(Button * pThis);
+PRIVATE void enableButtonInterrupt(Button * pThis);
+PRIVATE void disableButtonInterrupt(Button * pThis);
+
+PRIVATE STATIC void ButtonInterruptHandler(void const * argument);
 
 PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState)
 {
-    Button button = {
-        ._pin = pin,
-        ._statClick = clickState,
+    Button button = 
+    {
+        ._pin                   = pin, 
+        ._clickState            = clickState, 
 
-        ._semaphore = NULL,
+        ._interruptHandler      = NULL, 
+        ._interruptSemaphore    = NULL, 
 
-        .onClick = defaultOnButtonClick};
+        .onClick                = defaultOnButtonClick
+    };
 
-    setupGPIOPin(&button._pin, INPUT_PULLUP);
+    // initialize binary semaphore for interrupt handler
+    osSemaphoreDef(semaphore);
+    button._interruptSemaphore = osSemaphoreCreate(osSemaphore(semaphore), 1);
+
+    // initialize button's pin
+    setupGPIOPin(&pin, (clickState == LOW) ? INPUT_PULLUP : INPUT);
 
     return button;
 }
 
-PUBLIC bool isButtonClicked(Button *pThis)
+PUBLIC bool isButtonClicked(Button * pThis)
 {
-    BUTTON_DEBOUNCE();
-    bool clicked = readGPIOPin(&pThis->_pin) == pThis->_statClick;
-    BUTTON_DEBOUNCE();
+    __BUTTON_DEBOUNCE();
+    GPIOPinState currentState = readGPIOPin(&pThis->_pin);
 
-    return clicked;
+    __BUTTON_DEBOUNCE();
+
+    return (currentState == pThis->_clickState);
 }
 
-PUBLIC bool isButtonInterruptEnable(Button *pThis)
+PUBLIC bool isButtonInterruptEnabled(Button * pThis)
 {
-    return pThis->_semaphore != NULL;
+    return ((pThis->_interruptHandler != NULL)
+        && (osThreadGetState(pThis->_interruptHandler) != osThreadDeleted));
 }
 
-PUBLIC void setButtonInterrupt(Button *pThis, FunctionalState newState)
+PUBLIC void setButtonInterrupt(Button * pThis, FunctionalState state)
 {
-    // AFIO is used by other place, never disable it.
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
-
-    uint8_t portSource = getGPIOPinPortSource(&pThis->_pin);
-    uint8_t pinSource = getGPIOPinPinSource(&pThis->_pin);
-    GPIO_EXTILineConfig(portSource, pinSource);
-
-    EXTITrigger_TypeDef trigger = pThis->_statClick ? EXTI_Trigger_Rising : EXTI_Trigger_Falling;
-    EXTI_InitTypeDef EXTI_InitStructure = {
-        .EXTI_Line = getButtonEXTILine(pThis),
-        .EXTI_Mode = EXTI_Mode_Interrupt,
-        .EXTI_Trigger = trigger,
-        .EXTI_LineCmd = newState};
-
-    EXTI_Init(&EXTI_InitStructure);
-
-    NVIC_InitTypeDef NVIC_InitStructure = {
-        .NVIC_IRQChannel = getButtonIRQChannel(pThis),
-        .NVIC_IRQChannelPreemptionPriority = __DEFAULT_PRIORITY,
-        .NVIC_IRQChannelSubPriority = __DEFAULT_PRIORITY,
-        .NVIC_IRQChannelCmd = newState};
-
-    NVIC_Init(&NVIC_InitStructure);
-
-    if (newState == ENABLE)
+    if (state != DISABLE)
     {
-        vSemaphoreCreateBinary(pThis->_semaphore);
+        enableButtonInterrupt(pThis);
+    }
+    else
+    {
+        disableButtonInterrupt(pThis);
     }
 }
 
-PUBLIC VIRTUAL void defaultOnButtonClick(Button *pThis)
+PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
 {
-    // do nothing
+    // do nothing here
 }
 
-PRIVATE uint32_t getButtonEXTILine(Button *pThis)
+PRIVATE IRQn_Type getButtonIRQn(Button * pThis)
 {
-    return (uint32_t)pThis->_pin._pin;
-}
+    IRQn_Type irq = (IRQn_Type)0;
+    const uint16_t pin = pThis->_pin._pin;
 
-PRIVATE uint8_t getButtonIRQChannel(Button *pThis)
-{
-    uint8_t irqChannel = 0;
-
-    switch (pThis->_pin._pin)
+    if (pin == GPIO_PIN_0)
     {
-    case GPIO_Pin_0:
-        irqChannel = EXTI0_IRQn;
-        break;
-
-    case GPIO_Pin_1:
-        irqChannel = EXTI1_IRQn;
-        break;
-
-    case GPIO_Pin_2:
-        irqChannel = EXTI2_IRQn;
-        break;
-
-    case GPIO_Pin_3:
-        irqChannel = EXTI3_IRQn;
-        break;
-
-    case GPIO_Pin_4:
-        irqChannel = EXTI4_IRQn;
-        break;
-
-    case GPIO_Pin_5:
-    case GPIO_Pin_6:
-    case GPIO_Pin_7:
-    case GPIO_Pin_8:
-    case GPIO_Pin_9:
-        irqChannel = EXTI9_5_IRQn;
-        break;
-
-    case GPIO_Pin_10:
-    case GPIO_Pin_11:
-    case GPIO_Pin_12:
-    case GPIO_Pin_13:
-    case GPIO_Pin_14:
-    case GPIO_Pin_15:
-        irqChannel = EXTI15_10_IRQn;
-        break;
+        irq = EXTI0_IRQn;
+    }
+    else if (pin == GPIO_PIN_1)
+    {
+        irq = EXTI1_IRQn;
+    }
+    else if (pin == GPIO_PIN_2)
+    {
+        irq = EXTI2_IRQn;
+    }
+    else if (pin == GPIO_PIN_3)
+    {
+        irq = EXTI3_IRQn;
+    }
+    else if (pin == GPIO_PIN_4)
+    {
+        irq = EXTI4_IRQn;
+    }
+    else if (GPIO_PIN_5 <= pin && pin <= GPIO_PIN_9)
+    {
+        irq = EXTI9_5_IRQn;
+    }
+    else
+    {
+        if (GPIO_PIN_10 <= pin && pin <= GPIO_PIN_15)
+        {
+            irq = EXTI15_10_IRQn;
+        }
     }
 
-    return irqChannel;
+    return irq;
 }
 
-PUBLIC STATIC void vButtonInterruptHandler(void *pButton)
+PRIVATE void enableButtonInterrupt(Button * pThis)
 {
-    Button *button = (Button *)pButton;
-
-    if (!isButtonInterruptEnable(button))
+    if (isButtonInterruptEnabled(pThis))
     {
-        vTaskDelete(NULL);
+        return;
     }
+
+    GPIOPinMode mode = INTERRUPT_CHANGE;
+    const IRQn_Type irq = getButtonIRQn(pThis);
+
+    if (pThis->_clickState == LOW)
+    {
+        mode = INTERRUPT_FALLING | PULLUP;
+    }
+    else
+    {
+        mode = INTERRUPT_RISING;
+    }
+    
+    setupGPIOPin(&pThis->_pin, mode);
+
+    HAL_NVIC_SetPriority(irq, __BUTTON_PREEMPT_PRIORITY, __BUTTON_SUB_PRIORITY);
+    HAL_NVIC_EnableIRQ(irq);
+
+    // clear semaphore
+    osSemaphoreWait(pThis->_interruptSemaphore, 0);
+
+    // start interrupt handler
+    osThreadDef(handler, ButtonInterruptHandler, osPriorityRealtime, 0, 128);
+    pThis->_interruptHandler = osThreadCreate(osThread(handler), pThis);
+}
+
+PRIVATE void disableButtonInterrupt(Button * pThis)
+{
+    if (!isButtonInterruptEnabled(pThis))
+    {
+        return;
+    }
+
+    GPIOPinMode mode = INPUT;
+
+    if (pThis->_clickState == LOW)
+    {
+        mode = INPUT_PULLUP;
+    }
+
+    setupGPIOPin(&pThis->_pin, mode);
+
+    HAL_NVIC_DisableIRQ(getButtonIRQn(pThis));
+    osThreadTerminate(pThis->_interruptHandler);
+}
+
+PRIVATE STATIC void ButtonInterruptHandler(void const * argument)
+{
+    Button * button = (Button *)argument;
 
     for (;;)
     {
-        xSemaphoreTake(button->_semaphore, portMAX_DELAY);
+        osSemaphoreWait(button->_interruptSemaphore, osWaitForever);
 
         if (isButtonClicked(button))
         {

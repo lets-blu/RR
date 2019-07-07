@@ -4,11 +4,11 @@ PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState)
 {
     LED led = 
     {
-        ._pin       = pin, 
-        ._statLight = lightState
+        ._pin           = pin, 
+        ._lightState    = lightState
     };
 
-    setupGPIOPin(&led._pin, OUTPUT);
+    setupGPIOPin(&pin, OUTPUT);
     turnOffLED(&led);
 
     return led;
@@ -16,10 +16,10 @@ PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState)
 
 PUBLIC void turnOnLED(LED * pThis)
 {
-    writeGPIOPin(&pThis->_pin, pThis->_statLight);
+    writeGPIOPin(&pThis->_pin, pThis->_lightState);
 }
 
 PUBLIC void turnOffLED(LED * pThis)
 {
-    writeGPIOPin(&pThis->_pin, (GPIOPinState)!pThis->_statLight);
+    writeGPIOPin(&pThis->_pin, (GPIOPinState)!pThis->_lightState);
 }

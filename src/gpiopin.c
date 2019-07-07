@@ -35,12 +35,12 @@ PUBLIC void setupGPIOPin(GPIOPin * pThis, GPIOPinMode mode)
         }
     }
 
-    // init GPIO pin
-    GPIO_InitTypeDef init = 
+    // initialize GPIO pin
+    GPIO_InitTypeDef init =
     {
-        .Pin    = pThis->_pin, 
-        .Mode   = mode & ~PULLUP, 
-        .Pull   = (mode & PULLUP) ? GPIO_PULLUP : GPIO_NOPULL, 
+        .Pin    = pThis->_pin,
+        .Mode   = mode & ~PULLUP,
+        .Pull   = (mode & PULLUP) ? GPIO_PULLUP : GPIO_NOPULL,
         .Speed  = GPIO_SPEED_FREQ_LOW
     };
 

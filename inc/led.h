@@ -12,13 +12,13 @@ extern "C"
 typedef struct 
 {
     GPIOPin _pin;
-    GPIOPinState _statLight;
+    GPIOPinState _lightState;
 } LED;
 
-// (de)constructor(s)
+// constructor
 PUBLIC LED newLED(GPIOPin pin, GPIOPinState lightState);
 
-// public method(s)
+// public method
 PUBLIC void turnOnLED(LED * pThis);
 PUBLIC void turnOffLED(LED * pThis);
 
