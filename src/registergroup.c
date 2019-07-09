@@ -1,141 +1,115 @@
 #include "registergroup.h"
 
-#define __SLL(data) (data <<= 1)
-#define __MSB(data) (data & 0x80)
+#define __REGGRP_SLL(data)  ((data) <<= 1)
+#define __REGGRP_MSB(data)  ((data) & 0x80)
 
 // private method(s)
-PRIVATE ShiftRegister *getRegisterFromGroup(RegisterGroup *pThis, uint8_t bit);
-PRIVATE void prepareRegisterGroupSer(RegisterGroup *pThis, uint8_t data);
-PRIVATE void generateRegisterGroupSrclk(RegisterGroup *pThis);
-PRIVATE void generateRegisterGroupRclk(RegisterGroup *pThis);
+PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit);
+
+PRIVATE void prepareRegisterGroupSer(RegisterGroup * pThis, uint8_t data);
+PRIVATE void generateRegisterGroupSck(RegisterGroup * pThis);
+PRIVATE void generateRegisterGroupRck(RegisterGroup * pThis);
 
 PUBLIC RegisterGroup newRegisterGroup(GPIOPin pins[])
 {
-    RegisterGroup group = {
-        ._head = NULL,
-        ._numOfRegisters = 0,
+    RegisterGroup group = 
+    {
+        ._registers         = NULL, 
+        ._registersCount    = 0, 
 
-        ._ePin = pins[REGGRP_E_PIN],
-        ._serPin = pins[REGGRP_SER_PIN],
-        ._srclkPin = pins[REGGRP_SRCLK_PIN],
-        ._rclkPin = pins[REGGRP_RCLK_PIN]};
+        ._oePin             = pins[REGGRP_OE_PIN], 
+        ._serPin            = pins[REGGRP_SER_PIN], 
+        ._sckPin            = pins[REGGRP_SCK_PIN], 
+        ._rckPin            = pins[REGGRP_RCK_PIN]
+    };
 
-    setupGPIOPin(&group._ePin, OUTPUT);
-    setupGPIOPin(&group._serPin, OUTPUT);
-    setupGPIOPin(&group._srclkPin, OUTPUT);
-    setupGPIOPin(&group._rclkPin, OUTPUT);
+    setupGPIOPin(&pins[REGGRP_OE_PIN], OUTPUT);
+    setupGPIOPin(&pins[REGGRP_SER_PIN], OUTPUT);
+    setupGPIOPin(&pins[REGGRP_SCK_PIN], OUTPUT);
+    setupGPIOPin(&pins[REGGRP_RCK_PIN], OUTPUT);
 
     return group;
 }
 
-PUBLIC void addRegisterToGroup(RegisterGroup *pThis,
-                               ShiftRegister *shiftRegister)
+PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * reg)
 {
-    shiftRegister->next = pThis->_head;
-    pThis->_head = shiftRegister;
+    reg->next = pThis->_registers;
+    pThis->_registers = reg;
 
-    ++pThis->_numOfRegisters;
+    pThis->_registersCount++;
 }
 
-PUBLIC void setRegisterGroupBit(RegisterGroup *pThis, uint8_t bit)
+PUBLIC void setRegisterGroupBit(RegisterGroup * pThis, uint8_t bit)
 {
-    assert_param(bit < pThis->_numOfRegisters * 8);
-    ShiftRegister *p = getRegisterFromGroup(pThis, bit);
+    assert_param(bit < pThis->_registersCount * 8);
+    ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
 
-    if (p != NULL)
+    if (reg != NULL)
     {
-        setShiftRegisterBit(p, bit % 8);
+        setShiftRegisterBit(reg, bit % 8);
     }
 }
 
-PUBLIC void resetRegisterGroupBit(RegisterGroup *pThis, uint8_t bit)
+PUBLIC void resetRegisterGroupBit(RegisterGroup * pThis, uint8_t bit)
 {
-    assert_param(bit < pThis->_numOfRegisters * 8);
-    ShiftRegister *p = getRegisterFromGroup(pThis, bit);
+    assert_param(bit < pThis->_registersCount * 8);
+    ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
 
-    if (p != NULL)
+    if (reg != NULL)
     {
-        resetShiftRegisterBit(p, bit % 8);
+        resetShiftRegisterBit(reg, bit % 8);
     }
 }
 
-PUBLIC void setRegisterGroupOutput(RegisterGroup *pThis,
-                                   FunctionalState newState)
+PUBLIC void setRegisterGroupOutput(RegisterGroup * pThis, FunctionalState state)
 {
-    writeGPIOPin(&pThis->_ePin, newState ? LOW : HIGH);
+    writeGPIOPin(&pThis->_oePin, (state != DISABLE) ? LOW : HIGH);
 }
 
-PUBLIC void outputRegisterGroup(RegisterGroup *pThis)
+PUBLIC void outputRegisterGroup(RegisterGroup * pThis)
 {
-    for (ShiftRegister *p = pThis->_head; p != NULL; p = p->next)
+    for (ShiftRegister * reg = pThis->_registers; reg != NULL; reg = reg->next)
     {
-        uint8_t data = p->_data;
+        uint8_t data = reg->_data;
 
         for (uint8_t i = 0; i < 8; i++)
         {
             prepareRegisterGroupSer(pThis, data);
-            generateRegisterGroupSrclk(pThis);
+            generateRegisterGroupSck(pThis);
 
-            __SLL(data);
+            __REGGRP_SLL(data);
         }
     }
 
-    generateRegisterGroupRclk(pThis);
+    generateRegisterGroupRck(pThis);
 }
 
-PRIVATE ShiftRegister *getRegisterFromGroup(RegisterGroup *pThis, uint8_t bit)
+PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit)
 {
-    ShiftRegister *p = pThis->_head;
-    uint8_t i = pThis->_numOfRegisters - 1;
+    ShiftRegister * reg = pThis->_registers;
+    const uint8_t iStart = pThis->_registersCount - 1;
 
-    for (; i > bit / 8 && p != NULL; i--, p = p->next)
+    for (uint8_t i = iStart; i > bit / 8 && reg != NULL; i--, reg = reg->next)
     {
-        ; // do nothing
+        // do nothing here
     }
 
-    return p;
+    return reg;
 }
 
-PRIVATE void prepareRegisterGroupSer(RegisterGroup *pThis, uint8_t data)
+PRIVATE void prepareRegisterGroupSer(RegisterGroup * pThis, uint8_t data)
 {
-    writeGPIOPin(&pThis->_serPin, __MSB(data) ? HIGH : LOW);
+    writeGPIOPin(&pThis->_serPin, (__REGGRP_MSB(data) == 0x00) ? LOW : HIGH);
 }
 
-PRIVATE void generateRegisterGroupSrclk(RegisterGroup *pThis)
+PRIVATE void generateRegisterGroupSck(RegisterGroup * pThis)
 {
-    writeGPIOPin(&pThis->_srclkPin, LOW);
-    writeGPIOPin(&pThis->_srclkPin, HIGH);
+    writeGPIOPin(&pThis->_sckPin, LOW);
+    writeGPIOPin(&pThis->_sckPin, HIGH);
 }
 
-PRIVATE void generateRegisterGroupRclk(RegisterGroup *pThis)
+PRIVATE void generateRegisterGroupRck(RegisterGroup * pThis)
 {
-    writeGPIOPin(&pThis->_rclkPin, LOW);
-    writeGPIOPin(&pThis->_rclkPin, HIGH);
-}
-
-PUBLIC STATIC void vTestRegisterGroupTask(void *pRegisterGroup)
-{
-    RegisterGroup *group = (RegisterGroup *)pRegisterGroup;
-
-    if (group->_numOfRegisters == 0)
-    {
-        vTaskDelete(NULL);
-    }
-
-    for (;;)
-    {
-        for (uint8_t i = 0; i < 8; ++i)
-        {
-
-            // clear all bits
-            for (uint8_t j = 0; j < 8; ++j)
-            {
-                resetRegisterGroupBit(group, j);
-            }
-
-            setRegisterGroupBit(group, i);
-            outputRegisterGroup(group);
-            vTaskDelay(1000);
-        }
-    }
+    writeGPIOPin(&pThis->_rckPin, LOW);
+    writeGPIOPin(&pThis->_rckPin, HIGH);
 }

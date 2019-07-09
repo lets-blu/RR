@@ -6,24 +6,25 @@ extern "C"
 {
 #endif // __cplusplus
 
-#include "assert.h"
+#include "stdint.h"
 #include "stdlib.h"
-#include "stm32f10x.h"
+
+#include "stm32f1xx_hal.h"
 
 #include "keywords.h"
 
-    typedef struct ShiftRegister
-    {
-        uint8_t _data;
-        struct ShiftRegister *next;
-    } ShiftRegister;
+typedef struct ShiftRegister
+{
+    uint8_t _data;
+    struct ShiftRegister * next;
+} ShiftRegister;
 
-    // (de)constructor(s)
-    PUBLIC ShiftRegister newShiftRegister(void);
+// constructor
+PUBLIC ShiftRegister newShiftRegister(void);
 
-    // public method(s)
-    PUBLIC void setShiftRegisterBit(ShiftRegister *pThis, uint8_t bit);
-    PUBLIC void resetShiftRegisterBit(ShiftRegister *pThis, uint8_t bit);
+// public method(s)
+PUBLIC void setShiftRegisterBit(ShiftRegister * pThis, uint8_t bit);
+PUBLIC void resetShiftRegisterBit(ShiftRegister * pThis, uint8_t bit);
 
 #ifdef __cplusplus
 }
