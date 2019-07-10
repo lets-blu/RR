@@ -65,32 +65,6 @@ PUBLIC void setSelectorGroupScan(SelectorGroup *pThis, FunctionalState state)
     }
 }
 
-PUBLIC VIRTUAL void registerObserverToSelectorGroup(SelectorGroup * pThis, 
-    struct IObserver * observer)
-{
-    ChainedObserver * co = (ChainedObserver *)observer;
-
-    co->next = pThis->_observers;
-    pThis->_observers = co;
-}
-
-PUBLIC VIRTUAL void removeObserverFromSelectorGroup(SelectorGroup * pThis, 
-    struct IObserver * observer)
-{
-    // not supported yet
-}
-
-PUBLIC VIRTUAL void notifySelectorGroupObservers(SelectorGroup * pThis)
-{
-    struct ISubject * subject = (struct ISubject *)pThis;
-
-    for (ChainedObserver * co = pThis->_observers; co != NULL; co = co->next)
-    {    
-        struct IObserver * observer = (struct IObserver *)co;
-        observer->update(observer, subject);
-    }
-}
-
 PRIVATE void scanSelectorGroup(SelectorGroup * pThis)
 {
     GPIO_TypeDef * addressPort = pThis->_addressPins._port;
@@ -152,6 +126,32 @@ PRIVATE bool isSelectorGroupScanEnabled(SelectorGroup * pThis)
 {
     return ((pThis->_scanThread != NULL)
         && (osThreadGetState(pThis->_scanThread) != osThreadDeleted));
+}
+
+PUBLIC VIRTUAL void registerObserverToSelectorGroup(SelectorGroup * pThis, 
+    struct IObserver * observer)
+{
+    ChainedObserver * co = (ChainedObserver *)observer;
+
+    co->next = pThis->_observers;
+    pThis->_observers = co;
+}
+
+PUBLIC VIRTUAL void removeObserverFromSelectorGroup(SelectorGroup * pThis, 
+    struct IObserver * observer)
+{
+    // not supported yet
+}
+
+PUBLIC VIRTUAL void notifySelectorGroupObservers(SelectorGroup * pThis)
+{
+    struct ISubject * subject = (struct ISubject *)pThis;
+
+    for (ChainedObserver * co = pThis->_observers; co != NULL; co = co->next)
+    {    
+        struct IObserver * observer = (struct IObserver *)co;
+        observer->update(observer, subject);
+    }
 }
 
 PRIVATE STATIC void ScanSelectorGroupTask(void const * argument)
