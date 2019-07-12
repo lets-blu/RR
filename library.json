@@ -8,7 +8,8 @@
             "-I include", 
             "-I cmos/inc", 
             "-I generic/inc", 
-            "-I interface/inc"
+            "-I interface/inc", 
+            "-I watchdog/inc"
         ]
     }
 }
