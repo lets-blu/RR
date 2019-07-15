@@ -40,7 +40,7 @@ PUBLIC void setupGPIOPin(GPIOPin * pThis, GPIOPinMode mode)
     {
         .Pin    = pThis->_pin,
         .Mode   = mode & ~PULLUP,
-        .Pull   = (mode & PULLUP) ? GPIO_PULLUP : GPIO_NOPULL,
+        .Pull   = ((mode & PULLUP) == PULLUP) ? GPIO_PULLUP : GPIO_NOPULL,
         .Speed  = GPIO_SPEED_FREQ_LOW
     };
 
@@ -55,6 +55,16 @@ PUBLIC GPIOPinState readGPIOPin(GPIOPin * pThis)
 PUBLIC void writeGPIOPin(GPIOPin * pThis, GPIOPinState state)
 {
     HAL_GPIO_WritePin(pThis->_port, pThis->_pin, state);
+}
+
+PUBLIC GPIO_TypeDef * getGPIOPinPort(GPIOPin * pThis)
+{
+    return pThis->_port;
+}
+
+PUBLIC uint16_t getGPIOPinPin(GPIOPin * pThis)
+{
+    return pThis->_pin;
 }
 
 PUBLIC uint8_t getGPIOPinPinOffset(GPIOPin * pThis)

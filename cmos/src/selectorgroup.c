@@ -9,7 +9,7 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis);
 PRIVATE void disableSelectorGroupScan(SelectorGroup * pThis);
 PRIVATE bool isSelectorGroupScanEnabled(SelectorGroup * pThis);
 
-PRIVATE STATIC void ScanSelectorGroupTask(void const * argument);
+PRIVATE STATIC void iScanSelectorGroupTask(void const * argument);
 
 PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins)
 {
@@ -25,14 +25,14 @@ PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins)
                 = (notify_observers_fp)notifySelectorGroupObservers
         }, 
 
-        ._observers     = NULL, 
         ._selectors     = NULL, 
 
         ._scanPin       = scanPin, 
         ._addressPins   = addressPins, 
 
         ._scanThread    = NULL, 
-        ._messages      = NULL
+        ._messages      = NULL, 
+        ._observers     = NULL
     };
 
     osMessageQDef(messages, __SELGRP_MESSAGES_COUNT, SelectorMessage);
@@ -67,20 +67,20 @@ PUBLIC void setSelectorGroupScan(SelectorGroup *pThis, FunctionalState state)
 
 PRIVATE void scanSelectorGroup(SelectorGroup * pThis)
 {
-    GPIO_TypeDef * addressPort = pThis->_addressPins._port;
-    const uint16_t addressMask = pThis->_addressPins._pin;
-    const uint8_t addressOffset = getGPIOPinPinOffset(&pThis->_addressPins);
+    GPIO_TypeDef * addressPort = getGPIOPinPort(&pThis->_addressPins);
+    uint16_t addressMask = getGPIOPinPin(&pThis->_addressPins);
+    uint8_t addressOffset = getGPIOPinPinOffset(&pThis->_addressPins);
 
-    for (DataSelector * ds = pThis->_selectors; ds != NULL; ds = ds->next)
+    for (DataSelector * s = pThis->_selectors; s != NULL; s = s->next)
     {
-        for (uint8_t addr = ds->_startAddress; addr < ds->_endAddress; addr++)
+        for (uint8_t addr = s->_startAddress; addr < s->_endAddress; addr++)
         {
             addressPort->ODR &= ~addressMask;
             addressPort->ODR |= (addr << addressOffset);
 
             osDelay(__SELGRP_READ_INTERVAL);
 
-            // pack scan result as a message, and send it to messages queue
+            // pack scan result as addr message, and send it to messages queue
             SelectorMessage message = 
             {
                 .address    = addr, 
@@ -107,7 +107,7 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis)
         return;
     }
 
-    osThreadDef(scanTask, ScanSelectorGroupTask, osPriorityNormal, 0, 128);
+    osThreadDef(scanTask, iScanSelectorGroupTask, osPriorityNormal, 0, 128);
     osThreadCreate(osThread(scanTask), pThis);
 }
 
@@ -131,10 +131,10 @@ PRIVATE bool isSelectorGroupScanEnabled(SelectorGroup * pThis)
 PUBLIC VIRTUAL void registerObserverToSelectorGroup(SelectorGroup * pThis, 
     struct IObserver * observer)
 {
-    ChainedObserver * co = (ChainedObserver *)observer;
+    ChainedObserver * o = (ChainedObserver *)observer;
 
-    co->next = pThis->_observers;
-    pThis->_observers = co;
+    o->next = pThis->_observers;
+    pThis->_observers = o;
 }
 
 PUBLIC VIRTUAL void removeObserverFromSelectorGroup(SelectorGroup * pThis, 
@@ -147,14 +147,14 @@ PUBLIC VIRTUAL void notifySelectorGroupObservers(SelectorGroup * pThis)
 {
     struct ISubject * subject = (struct ISubject *)pThis;
 
-    for (ChainedObserver * co = pThis->_observers; co != NULL; co = co->next)
+    for (ChainedObserver * o = pThis->_observers; o != NULL; o = o->next)
     {    
-        struct IObserver * observer = (struct IObserver *)co;
+        struct IObserver * observer = (struct IObserver *)o;
         observer->update(observer, subject);
     }
 }
 
-PRIVATE STATIC void ScanSelectorGroupTask(void const * argument)
+PRIVATE STATIC void iScanSelectorGroupTask(void const * argument)
 {
     SelectorGroup * group = (SelectorGroup *)argument;
 

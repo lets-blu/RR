@@ -2,13 +2,13 @@
 
 PUBLIC ShiftRegister newShiftRegister(void)
 {
-    ShiftRegister reg = 
+    ShiftRegister shiftRegister = 
     {
         ._data  = 0x00, 
         .next   = NULL
     };
 
-    return reg;
+    return shiftRegister;
 }
 
 PUBLIC void setShiftRegisterBit(ShiftRegister * pThis, uint8_t bit)

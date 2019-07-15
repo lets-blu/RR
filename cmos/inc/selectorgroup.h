@@ -23,7 +23,6 @@ extern "C"
 typedef struct
 {
     struct ISubject subject;
-    ChainedObserver * _observers;
 
     DataSelector * _selectors;
 
@@ -32,6 +31,7 @@ typedef struct
 
     osThreadId _scanThread;
     osMessageQId _messages;
+    ChainedObserver * _observers;
 } SelectorGroup;
 
 // constructor

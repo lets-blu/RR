@@ -31,10 +31,10 @@ PUBLIC RegisterGroup newRegisterGroup(GPIOPin pins[])
     return group;
 }
 
-PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * reg)
+PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * shiftRegister)
 {
-    reg->next = pThis->_registers;
-    pThis->_registers = reg;
+    shiftRegister->next = pThis->_registers;
+    pThis->_registers = shiftRegister;
 
     pThis->_registersCount++;
 }
@@ -42,22 +42,22 @@ PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * reg)
 PUBLIC void setRegisterGroupBit(RegisterGroup * pThis, uint8_t bit)
 {
     assert_param(bit < pThis->_registersCount * 8);
-    ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
+    ShiftRegister * shiftRegister = getRegisterFromGroup(pThis, bit);
 
-    if (reg != NULL)
+    if (shiftRegister != NULL)
     {
-        setShiftRegisterBit(reg, bit % 8);
+        setShiftRegisterBit(shiftRegister, bit % 8);
     }
 }
 
 PUBLIC void resetRegisterGroupBit(RegisterGroup * pThis, uint8_t bit)
 {
     assert_param(bit < pThis->_registersCount * 8);
-    ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
+    ShiftRegister * shiftRegister = getRegisterFromGroup(pThis, bit);
 
-    if (reg != NULL)
+    if (shiftRegister != NULL)
     {
-        resetShiftRegisterBit(reg, bit % 8);
+        resetShiftRegisterBit(shiftRegister, bit % 8);
     }
 }
 
@@ -87,7 +87,7 @@ PUBLIC void outputRegisterGroup(RegisterGroup * pThis)
 PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit)
 {
     ShiftRegister * reg = pThis->_registers;
-    const uint8_t iStart = pThis->_registersCount - 1;
+    uint8_t iStart = pThis->_registersCount - 1;
 
     for (uint8_t i = iStart; i > bit / 8 && reg != NULL; i--, reg = reg->next)
     {

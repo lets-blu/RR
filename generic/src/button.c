@@ -10,7 +10,7 @@ PRIVATE void enableButtonInterrupt(Button * pThis);
 PRIVATE void disableButtonInterrupt(Button * pThis);
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis);
 
-PRIVATE STATIC void vButtonInterruptHandler(void const * argument);
+PRIVATE STATIC void iButtonInterruptHandler(void const * argument);
 
 PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState)
 {
@@ -78,7 +78,7 @@ PRIVATE void enableButtonInterrupt(Button * pThis)
 
     // get IRQ number and interrupt mode
     GPIOPinMode mode = INTERRUPT_CHANGE;
-    const IRQn_Type irq = getButtonIRQn(pThis);
+    IRQn_Type irq = getButtonIRQn(pThis);
 
     if (pThis->_clickState == LOW)
     {
@@ -97,7 +97,7 @@ PRIVATE void enableButtonInterrupt(Button * pThis)
 
     osSemaphoreWait(pThis->_interruptSemaphore, 0);
 
-    osThreadDef(handler, vButtonInterruptHandler, osPriorityRealtime, 0, 128);
+    osThreadDef(handler, iButtonInterruptHandler, osPriorityRealtime, 0, 128);
     pThis->_interruptHandler = osThreadCreate(osThread(handler), pThis);
 }
 
@@ -127,7 +127,7 @@ PRIVATE void disableButtonInterrupt(Button * pThis)
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis)
 {
     IRQn_Type irq = (IRQn_Type)0;
-    const uint16_t pin = pThis->_pin._pin;
+    uint16_t pin = getGPIOPinPin(&pThis->_pin);
 
     if (pin == GPIO_PIN_0)
     {
@@ -164,7 +164,7 @@ PRIVATE IRQn_Type getButtonIRQn(Button * pThis)
     return irq;
 }
 
-PRIVATE STATIC void vButtonInterruptHandler(void const * argument)
+PRIVATE STATIC void iButtonInterruptHandler(void const * argument)
 {
     Button * button = (Button *)argument;
 

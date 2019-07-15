@@ -45,6 +45,8 @@ PUBLIC void setupGPIOPin(GPIOPin * pThis, GPIOPinMode mode);
 PUBLIC GPIOPinState readGPIOPin(GPIOPin * pThis);
 PUBLIC void writeGPIOPin(GPIOPin * pThis, GPIOPinState state);
 
+PUBLIC GPIO_TypeDef * getGPIOPinPort(GPIOPin * pThis);
+PUBLIC uint16_t getGPIOPinPin(GPIOPin * pThis);
 PUBLIC uint8_t getGPIOPinPinOffset(GPIOPin * pThis);
 
 #ifdef __cplusplus

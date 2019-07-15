@@ -34,7 +34,7 @@ typedef struct
 PUBLIC RegisterGroup newRegisterGroup(GPIOPin pins[REGGRP_PINS_COUNT]);
 
 // public method(s)
-PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * reg);
+PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * shiftRegister);
 
 PUBLIC void setRegisterGroupBit(RegisterGroup * pThis, uint8_t bit);
 PUBLIC void resetRegisterGroupBit(RegisterGroup * pThis, uint8_t bit);
