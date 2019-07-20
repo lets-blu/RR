@@ -31,6 +31,7 @@ typedef struct
 
     osThreadId _scanThread;
     osMessageQId _messages;
+    
     ChainedObserver * _observers;
 } SelectorGroup;
 
@@ -40,6 +41,8 @@ PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins);
 // public method(s)
 PUBLIC void addSelectorToGroup(SelectorGroup * pThis, DataSelector * selector);
 PUBLIC void setSelectorGroupScan(SelectorGroup * pThis, FunctionalState state);
+
+PUBLIC SelectorMessage getSelectorGroupMessage(SelectorGroup * pThis);
 
 PUBLIC VIRTUAL void registerObserverToSelectorGroup(SelectorGroup * pThis, 
     struct IObserver * observer);

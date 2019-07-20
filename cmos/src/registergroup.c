@@ -10,23 +10,23 @@ PRIVATE void prepareRegisterGroupSer(RegisterGroup * pThis, uint8_t data);
 PRIVATE void generateRegisterGroupSck(RegisterGroup * pThis);
 PRIVATE void generateRegisterGroupRck(RegisterGroup * pThis);
 
-PUBLIC RegisterGroup newRegisterGroup(GPIOPin pins[])
+PUBLIC RegisterGroup newRegisterGroup(RegisterGroupPins pins)
 {
     RegisterGroup group = 
     {
         ._registers         = NULL, 
         ._registersCount    = 0, 
 
-        ._oePin             = pins[REGGRP_OE_PIN], 
-        ._serPin            = pins[REGGRP_SER_PIN], 
-        ._sckPin            = pins[REGGRP_SCK_PIN], 
-        ._rckPin            = pins[REGGRP_RCK_PIN]
+        ._oePin             = pins.oePin, 
+        ._serPin            = pins.serPin, 
+        ._sckPin            = pins.sckPin, 
+        ._rckPin            = pins.rckPin
     };
 
-    setupGPIOPin(&pins[REGGRP_OE_PIN], OUTPUT);
-    setupGPIOPin(&pins[REGGRP_SER_PIN], OUTPUT);
-    setupGPIOPin(&pins[REGGRP_SCK_PIN], OUTPUT);
-    setupGPIOPin(&pins[REGGRP_RCK_PIN], OUTPUT);
+    setupGPIOPin(&pins.oePin, OUTPUT);
+    setupGPIOPin(&pins.serPin, OUTPUT);
+    setupGPIOPin(&pins.sckPin, OUTPUT);
+    setupGPIOPin(&pins.rckPin, OUTPUT);
 
     return group;
 }
@@ -72,7 +72,7 @@ PUBLIC void outputRegisterGroup(RegisterGroup * pThis)
     {
         uint8_t data = reg->_data;
 
-        for (uint8_t i = 0; i < 8; i++)
+        for (uint8_t bit = 0; bit < 8; bit++)
         {
             prepareRegisterGroupSer(pThis, data);
             generateRegisterGroupSck(pThis);
@@ -87,9 +87,9 @@ PUBLIC void outputRegisterGroup(RegisterGroup * pThis)
 PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit)
 {
     ShiftRegister * reg = pThis->_registers;
-    uint8_t iStart = pThis->_registersCount - 1;
+    uint8_t count = pThis->_registersCount - 1;
 
-    for (uint8_t i = iStart; i > bit / 8 && reg != NULL; i--, reg = reg->next)
+    for (uint8_t i = count; i > bit / 8 && reg != NULL; i--, reg = reg->next)
     {
         // do nothing here
     }

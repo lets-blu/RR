@@ -6,7 +6,7 @@ PUBLIC ChainedObserver newChainedObserver(void)
     {
         .observer   = 
         {
-            .update = (update_observer_fp)updateChainedObserver
+            .update = (update_observer_fp)defaultUpdateChainedObserver
         }, 
 
         .next       = NULL
@@ -15,7 +15,7 @@ PUBLIC ChainedObserver newChainedObserver(void)
     return observer;
 }
 
-PUBLIC VIRTUAL void updateChainedObserver(ChainedObserver * pThis, 
+PUBLIC VIRTUAL void defaultUpdateChainedObserver(ChainedObserver * pThis, 
     struct ISubject subject)
 {
     // do nothing here

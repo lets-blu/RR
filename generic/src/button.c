@@ -63,6 +63,16 @@ PUBLIC void setButtonInterrupt(Button * pThis, FunctionalState state)
     }
 }
 
+PUBLIC uint16_t getButtonPinPin(Button * pThis)
+{
+    return getGPIOPinPin(&pThis->_pin);
+}
+
+PUBLIC void releaseButtonSemaphore(Button * pThis)
+{
+    osSemaphoreRelease(pThis->_interruptSemaphore);
+}
+
 PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
 {
     // do nothing here

@@ -4,7 +4,7 @@
 #ifdef __cplusplus
 extern "C"
 {
-#endif /// __cplusplus
+#endif // __cplusplus
 
 #include "stdint.h"
 #include "stdlib.h"
@@ -15,12 +15,6 @@ extern "C"
 #include "keywords.h"
 #include "shiftregister.h"
 
-#define REGGRP_PINS_COUNT   ((uint8_t)4)
-#define REGGRP_OE_PIN       ((uint8_t)0)
-#define REGGRP_SER_PIN      ((uint8_t)1)
-#define REGGRP_SCK_PIN      ((uint8_t)2)
-#define REGGRP_RCK_PIN      ((uint8_t)3)
-
 typedef struct 
 {
     ShiftRegister * _registers;
@@ -30,8 +24,14 @@ typedef struct
     GPIOPin _serPin, _sckPin, _rckPin;
 } RegisterGroup;
 
+typedef struct
+{
+    GPIOPin oePin;
+    GPIOPin serPin, sckPin, rckPin;
+} RegisterGroupPins;
+
 // constructor
-PUBLIC RegisterGroup newRegisterGroup(GPIOPin pins[REGGRP_PINS_COUNT]);
+PUBLIC RegisterGroup newRegisterGroup(RegisterGroupPins pins);
 
 // public method(s)
 PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * shiftRegister);

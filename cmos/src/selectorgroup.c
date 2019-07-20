@@ -31,7 +31,8 @@ PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins)
         ._addressPins   = addressPins, 
 
         ._scanThread    = NULL, 
-        ._messages      = NULL, 
+        ._messages      = NULL,
+
         ._observers     = NULL
     };
 
@@ -65,15 +66,30 @@ PUBLIC void setSelectorGroupScan(SelectorGroup *pThis, FunctionalState state)
     }
 }
 
+PUBLIC SelectorMessage getSelectorGroupMessage(SelectorGroup * pThis)
+{
+    SelectorMessage message = 
+    {
+        .address    = 0x00, 
+        .state      = HIGH
+    };
+
+    xQueuePeek(pThis->_messages, &message, 0);
+
+    return message;
+}
+
 PRIVATE void scanSelectorGroup(SelectorGroup * pThis)
 {
+    SelectorMessage message;
+
     GPIO_TypeDef * addressPort = getGPIOPinPort(&pThis->_addressPins);
     uint16_t addressMask = getGPIOPinPin(&pThis->_addressPins);
     uint8_t addressOffset = getGPIOPinPinOffset(&pThis->_addressPins);
 
-    for (DataSelector * s = pThis->_selectors; s != NULL; s = s->next)
+    for (DataSelector * sel = pThis->_selectors; sel != NULL; sel = sel->next)
     {
-        for (uint8_t addr = s->_startAddress; addr < s->_endAddress; addr++)
+        for (uint8_t addr = sel->_startAddress; addr < sel->_endAddress; addr++)
         {
             addressPort->ODR &= ~addressMask;
             addressPort->ODR |= (addr << addressOffset);
@@ -81,11 +97,8 @@ PRIVATE void scanSelectorGroup(SelectorGroup * pThis)
             osDelay(__SELGRP_READ_INTERVAL);
 
             // pack scan result as addr message, and send it to messages queue
-            SelectorMessage message = 
-            {
-                .address    = addr, 
-                .state      = readGPIOPin(&pThis->_scanPin)
-            };
+            message.address = addr;
+            message.state = readGPIOPin(&pThis->_scanPin);
 
             // considering CMSIS API can not support message type, 
             // use FreeRTOS origin API here
@@ -96,6 +109,7 @@ PRIVATE void scanSelectorGroup(SelectorGroup * pThis)
     while (uxQueueMessagesWaiting(pThis->_messages) > 0)
     {
         notifySelectorGroupObservers(pThis);
+        xQueueReceive(pThis->_messages, &message, 0);
     }
 }
 
@@ -131,16 +145,35 @@ PRIVATE bool isSelectorGroupScanEnabled(SelectorGroup * pThis)
 PUBLIC VIRTUAL void registerObserverToSelectorGroup(SelectorGroup * pThis, 
     struct IObserver * observer)
 {
-    ChainedObserver * o = (ChainedObserver *)observer;
+    ChainedObserver * chained = (ChainedObserver *)observer;
 
-    o->next = pThis->_observers;
-    pThis->_observers = o;
+    chained->next = pThis->_observers;
+    pThis->_observers = chained;
 }
 
 PUBLIC VIRTUAL void removeObserverFromSelectorGroup(SelectorGroup * pThis, 
     struct IObserver * observer)
 {
-    // not supported yet
+    ChainedObserver * chained = (ChainedObserver *)observer;
+
+    // if observer located in head
+    if (pThis->_observers == chained)
+    {
+        pThis->_observers = chained->next;
+    }
+
+    // if observer not located in head
+    ChainedObserver * p = NULL;
+
+    for (p = pThis->_observers; p != NULL && p->next != chained; p = p->next)
+    {
+        // do nothing here
+    }
+
+    if (p != NULL)
+    {
+        p->next = chained->next;
+    }
 }
 
 PUBLIC VIRTUAL void notifySelectorGroupObservers(SelectorGroup * pThis)

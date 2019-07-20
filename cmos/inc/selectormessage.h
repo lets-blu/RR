@@ -7,7 +7,6 @@ extern "C"
 #endif // __cplusplus
 
 #include "stdint.h"
-
 #include "gpiopin.h"
 
 typedef struct

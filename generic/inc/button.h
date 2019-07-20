@@ -36,6 +36,9 @@ PUBLIC bool isButtonClicked(Button * pThis);
 PUBLIC bool isButtonInterruptEnabled(Button * pThis);
 PUBLIC void setButtonInterrupt(Button * pThis, FunctionalState state);
 
+PUBLIC uint16_t getButtonPinPin(Button * pThis);
+PUBLIC void releaseButtonSemaphore(Button * pThis);
+
 PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis);
 
 #ifdef __cplusplus
