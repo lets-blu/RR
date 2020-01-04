@@ -1,5 +1,8 @@
 #include "gpiopin.h"
 
+// Private method(s)
+PRIVATE uint8_t getGPIOPinPinOffset(GPIOPin * pThis);
+
 PUBLIC GPIOPin newGPIOPin(GPIO_TypeDef * GPIOx, uint16_t GPIO_PIN_x)
 {
     assert(IS_GPIO_ALL_INSTANCE(GPIOx));
@@ -55,6 +58,15 @@ PUBLIC void writeGPIOPin(GPIOPin * pThis, GPIOPinState state)
     HAL_GPIO_WritePin(pThis->_port, pThis->_pin, state);
 }
 
+PUBLIC void writeGPIOPinValue(GPIOPin * pThis, uint16_t value)
+{
+    // clear last output
+    pThis->_port->ODR &= ~(pThis->_pin);
+
+    value <<= getGPIOPinPinOffset(pThis);
+    pThis->_port->ODR |= (value & pThis->_pin);
+}
+
 PUBLIC GPIO_TypeDef * getGPIOPinPort(GPIOPin * pThis)
 {
     return pThis->_port;
@@ -65,7 +77,7 @@ PUBLIC uint16_t getGPIOPinPin(GPIOPin * pThis)
     return pThis->_pin;
 }
 
-PUBLIC uint8_t getGPIOPinPinOffset(GPIOPin * pThis)
+PRIVATE uint8_t getGPIOPinPinOffset(GPIOPin * pThis)
 {
     uint8_t offset = 0;
 
