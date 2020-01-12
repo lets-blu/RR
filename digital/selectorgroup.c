@@ -75,29 +75,27 @@ PUBLIC void setSelectorGroupScanEnabled(SelectorGroup * pThis, bool enabled)
 
 PRIVATE void scanSelectorGroup(SelectorGroup * pThis)
 {
+    SelectorMessage message = {
+        .address    = 0x00,
+        .state      = HIGH
+    };
+
     for (DataSelector * sel = pThis->_selectors; sel != NULL; sel = sel->next)
     {
         for (uint8_t addr = sel->_startAddress; addr <= sel->_endAddress; addr++)
         {
             writeGPIOPinValue(&pThis->_addressPins, addr);
+            
             osDelay(SELGRP_READ_INTERVAL);
             
-            SelectorMessage message = {
-                .address    = addr, 
-                .state      = readGPIOPin(&pThis->_scanPin)
-            };
-
+            message.address = addr;
+            message.state = readGPIOPin(&pThis->_scanPin);
             enMessageQueue(&pThis->_messagesQueue, &message);
         }
     }
 
     while (getMessageQueueLength(&pThis->_messagesQueue) > 0)
     {
-        SelectorMessage message = {
-            .address    = 0,
-            .state      = HIGH
-        };
-        
         notifySelectorGroupObservers(pThis);
         deMessageQueue(&pThis->_messagesQueue, &message);
     }
@@ -114,9 +112,9 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis)
     if (pThis->_messagesQueue == NULL)
     {
         pThis->_messagesQueue = newMessageQueue(sizeof(SelectorMessage), SELGRP_MESSAGES_COUNT);
-#ifdef DEBUG
+    #ifdef DEBUG
         vQueueAddToRegistry(pThis->_messagesQueue, "selector group messages queue");
-#endif // DEBUG
+    #endif // DEBUG
     }
 
     osThreadDef(scanThread, vScanSelectorGroupThread, osPriorityNormal, 0, 128);

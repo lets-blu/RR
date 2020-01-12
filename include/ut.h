@@ -7,8 +7,10 @@ extern "C" {
 
 #ifdef UNIT_TEST
 #define LOOP
+#define MOCKABLE(method)    mockable##method
 #else
-#define LOOP for(;;)
+#define LOOP                for(;;)
+#define MOCKABLE(method)    method
 #endif // UNIT_TEST
 
 #ifdef __cplusplus

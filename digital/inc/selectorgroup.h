@@ -9,14 +9,15 @@ extern "C" {
 #include "stddef.h"
 #include "stdint.h"
 
-#include "chainedobserver.h"
-#include "dataselector.h"
+#include "ut.h"
 #include "gpiopin.h"
 #include "keywords.h"
+
+#include "chainedobserver.h"
+#include "dataselector.h"
 #include "messagequeue.h"
 #include "observer.h"
 #include "selectormessage.h"
-#include "ut.h"
 
 #ifdef UNIT_TEST
 #include "ut_cmsis_os.h"

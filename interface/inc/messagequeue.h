@@ -10,10 +10,15 @@ extern "C" {
 
 #include "keywords.h"
 
+#ifdef UNIT_TEST
+#include "stdlib.h"
+#include "string.h"
+#else
 #include "FreeRTOS.h"
 #include "queue.h"
+#endif // UNIT_TEST
 
-typedef QueueHandle_t MessageQueue;
+typedef void * MessageQueue;
 
 // Constructor
 PUBLIC MessageQueue newMessageQueue(uint8_t itemSize, uint8_t itemCount);

@@ -21,8 +21,8 @@ typedef struct {
 typedef struct {
     RegisterGroupPins _pins;
 
-    ShiftRegister * _registers;
     uint8_t _registersCount;
+    ShiftRegister * _registers;
 } RegisterGroup;
 
 // Constructor

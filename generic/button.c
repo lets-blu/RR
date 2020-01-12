@@ -3,8 +3,7 @@
 #define BUTTON_SUB_PRIORITY         0
 #define BUTTON_PREEMPT_PRIORITY     5
 
-#define BUTTON_DEBOUNCE() \
-    osDelay(50)
+#define BUTTON_DEBOUNCE()           osDelay(50)
 
 // Private method(s)
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis);
@@ -103,6 +102,8 @@ PRIVATE IRQn_Type getButtonIRQn(Button * pThis)
 
 PRIVATE void enableButtonInterrupt(Button * pThis)
 {
+    GPIOPinMode mode = INTERRUPT_RISING;
+
     // if button interrupt enabled, there is no need to enable again
     if (isButtonInterruptEnabled(pThis))
     {
@@ -117,8 +118,6 @@ PRIVATE void enableButtonInterrupt(Button * pThis)
     }
 
     // get interrupt mode
-    GPIOPinMode mode = INTERRUPT_RISING;
-    
     if (pThis->_clickState == LOW)
     {
         mode = INTERRUPT_FALLING | PULLUP;
@@ -138,6 +137,8 @@ PRIVATE void enableButtonInterrupt(Button * pThis)
 
 PRIVATE void disableButtonInterrupt(Button * pThis)
 {
+    GPIOPinMode mode = INPUT;
+
     // if button interrupt disabled, there is no need to disable again
     if (!isButtonInterruptEnabled(pThis))
     {
@@ -145,8 +146,6 @@ PRIVATE void disableButtonInterrupt(Button * pThis)
     }
 
     // get button input mode
-    GPIOPinMode mode = INPUT;
-    
     if (pThis->_clickState == LOW)
     {
         mode = INPUT_PULLUP;
@@ -165,10 +164,12 @@ PUBLIC STATIC void vButtonInterruptHandler(void const * argument)
 
     LOOP
     {
-        if ((osSemaphoreWait(button->_interruptSemaphore, osWaitForever) != -1)
-            && isButtonClicked(button))
+        if ((osSemaphoreWait(button->_interruptSemaphore, osWaitForever) != -1))
         {
-            button->onClick(button);
+            if (isButtonClicked(button))
+            {
+                button->onClick(button);
+            }
         }
     }
 }

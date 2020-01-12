@@ -8,6 +8,7 @@ extern "C" {
 #include "assert.h"
 #include "stdint.h"
 
+#include "ut.h"
 #include "keywords.h"
 
 #ifdef UNIT_TEST

@@ -48,17 +48,17 @@ PUBLIC void setupGPIOPin(GPIOPin * pThis, GPIOPinMode mode)
     HAL_GPIO_Init(pThis->_port, &init);
 }
 
-PUBLIC GPIOPinState readGPIOPin(GPIOPin * pThis)
+PUBLIC GPIOPinState MOCKABLE(readGPIOPin)(GPIOPin * pThis)
 {
     return HAL_GPIO_ReadPin(pThis->_port, pThis->_pin);
 }
 
-PUBLIC void writeGPIOPin(GPIOPin * pThis, GPIOPinState state)
+PUBLIC void MOCKABLE(writeGPIOPin)(GPIOPin * pThis, GPIOPinState state)
 {
     HAL_GPIO_WritePin(pThis->_port, pThis->_pin, state);
 }
 
-PUBLIC void writeGPIOPinValue(GPIOPin * pThis, uint16_t value)
+PUBLIC void MOCKABLE(writeGPIOPinValue)(GPIOPin * pThis, uint16_t value)
 {
     // clear last output
     pThis->_port->ODR &= ~(pThis->_pin);

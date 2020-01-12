@@ -1,12 +1,9 @@
 #include "registergroup.h"
 
-#define REGGRP_SLL(data) \
-    ((data) <<= 1)
+#define REGGRP_SLL(data)    ((data) <<= 1)
+#define REGGRP_MSB(data)    ((data) & 0x80)
 
-#define REGGRP_MSB(data) \
-    ((data) & 0x80)
-
-// private method(s)
+// Private method(s)
 PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit);
 
 PRIVATE void prepareRegisterGroupSer(RegisterGroup * pThis, uint8_t data);
@@ -18,8 +15,8 @@ PUBLIC RegisterGroup newRegisterGroup(RegisterGroupPins pins)
     RegisterGroup group = {
         ._pins              = pins,
 
-        ._registers         = NULL,
-        ._registersCount    = 0
+        ._registersCount    = 0,
+        ._registers         = NULL
     };
 
     setupGPIOPin(&pins.oePin, OUTPUT);
