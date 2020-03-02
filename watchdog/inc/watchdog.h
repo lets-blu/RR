@@ -5,7 +5,6 @@
 extern "C" {
 #endif // __cplusplus
 
-#include "assert.h"
 #include "math.h"
 #include "stdint.h"
 
@@ -24,10 +23,10 @@ typedef struct {
 } Watchdog;
 
 // Constructor
-PUBLIC Watchdog newWatchdog(uint16_t timeout);
+PUBLIC Watchdog newWatchdog(void);
 
 // Public method(s)
-PUBLIC void enableWatchdog(Watchdog * pThis);
+PUBLIC void enableWatchdog(Watchdog * pThis, uint16_t timeout);
 PUBLIC void reloadWatchdog(Watchdog * pThis);
 
 #ifdef __cplusplus
