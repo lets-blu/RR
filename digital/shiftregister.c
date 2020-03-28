@@ -4,7 +4,7 @@ PUBLIC ShiftRegister newShiftRegister(void)
 {
     ShiftRegister reg = {
         ._data  = 0x00, 
-        .next   = NULL
+        ._next  = NULL
     };
 
     return reg;

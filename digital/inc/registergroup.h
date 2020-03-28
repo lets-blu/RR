@@ -20,7 +20,6 @@ typedef struct {
 
 typedef struct {
     RegisterGroupPins _pins;
-
     uint8_t _registersCount;
     ShiftRegister * _registers;
 } RegisterGroup;

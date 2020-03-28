@@ -12,7 +12,7 @@ extern "C" {
 
 typedef struct ShiftRegister {
     uint8_t _data;
-    struct ShiftRegister * next;
+    struct ShiftRegister * _next;
 } ShiftRegister;
 
 // Constructor
