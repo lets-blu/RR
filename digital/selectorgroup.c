@@ -5,7 +5,6 @@
 
 // Private method(s)
 PRIVATE void scanSelectorGroup(SelectorGroup * pThis);
-
 PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis);
 PRIVATE void disableSelectorGroupScan(SelectorGroup * pThis);
 
@@ -51,14 +50,13 @@ PUBLIC SelectorMessage getSelectorGroupMessage(SelectorGroup * pThis)
     };
 
     peekMessageQueue(&pThis->_messagesQueue, &message);
-
     return message;
 }
 
 PUBLIC bool isSelectorGroupScanEnabled(SelectorGroup * pThis)
 {
-    return ((pThis->_scanThread != NULL)
-        && (osThreadGetState(pThis->_scanThread) != osThreadDeleted));
+    return ((pThis->_scanThread != NULL) && 
+        (osThreadGetState(pThis->_scanThread) != osThreadDeleted));
 }
 
 PUBLIC void setSelectorGroupScanEnabled(SelectorGroup * pThis, bool enabled)
@@ -111,9 +109,10 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis)
     
     if (pThis->_messagesQueue == NULL)
     {
-        pThis->_messagesQueue = newMessageQueue(sizeof(SelectorMessage), SELGRP_MESSAGES_COUNT);
+        pThis->_messagesQueue 
+            = newMessageQueue(sizeof(SelectorMessage), SELGRP_MESSAGES_COUNT);
     #ifdef DEBUG
-        vQueueAddToRegistry(pThis->_messagesQueue, "selector group messages queue");
+        vQueueAddToRegistry(pThis->_messagesQueue, "SELGRP Queue");
     #endif // DEBUG
     }
 
@@ -142,6 +141,7 @@ PUBLIC VIRTUAL void registerObserverToSelectorGroup(SelectorGroup * pThis,
 PUBLIC VIRTUAL void removeObserverFromSelectorGroup(SelectorGroup * pThis, 
     struct IObserver * observer)
 {
+    ChainedObserver * o = NULL;
     ChainedObserver * chained = (ChainedObserver *)observer;
 
     // if observer located in head
@@ -152,8 +152,6 @@ PUBLIC VIRTUAL void removeObserverFromSelectorGroup(SelectorGroup * pThis,
     }
 
     // if observer not located in head
-    ChainedObserver * o = NULL;
-
     for (o = pThis->_observers; o != NULL && o->next != chained; o = o->next)
     {
         // do nothing here

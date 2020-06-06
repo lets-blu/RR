@@ -15,13 +15,15 @@ extern "C" {
 
 typedef struct {
     GPIOPin oePin;
-    GPIOPin serPin, sckPin, rckPin;
+    GPIOPin serPin;
+    GPIOPin sckPin;
+    GPIOPin rckPin;
 } RegisterGroupPins;
 
 typedef struct {
     RegisterGroupPins _pins;
-    uint8_t _registersCount;
     ShiftRegister * _registers;
+    uint8_t _registersCount;
 } RegisterGroup;
 
 // Constructor

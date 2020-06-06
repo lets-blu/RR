@@ -14,7 +14,6 @@ extern "C" {
 typedef struct DataSelector {
     uint8_t _startAddress;
     uint8_t _endAddress;
-
     struct DataSelector * next;
 } DataSelector;
 

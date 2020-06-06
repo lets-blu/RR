@@ -4,24 +4,25 @@
 #define REGGRP_MSB(data)    ((data) & 0x80)
 
 // Private method(s)
-PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit);
-
 PRIVATE void prepareRegisterGroupSer(RegisterGroup * pThis, uint8_t data);
 PRIVATE void generateRegisterGroupSck(RegisterGroup * pThis);
 PRIVATE void generateRegisterGroupRck(RegisterGroup * pThis);
+
+PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit);
 
 PUBLIC RegisterGroup newRegisterGroup(RegisterGroupPins pins)
 {
     RegisterGroup group = {
         ._pins              = pins,
-        ._registersCount    = 0,
-        ._registers         = NULL
+        ._registers         = NULL,
+        ._registersCount    = 0
     };
 
     setupGPIOPin(&pins.oePin, OUTPUT);
     setupGPIOPin(&pins.serPin, OUTPUT);
     setupGPIOPin(&pins.sckPin, OUTPUT);
     setupGPIOPin(&pins.rckPin, OUTPUT);
+    setRegisterGroupOutputEnabled(&group, false);
 
     return group;
 }
@@ -35,27 +36,21 @@ PUBLIC void addRegisterToGroup(RegisterGroup * pThis, ShiftRegister * reg)
 
 PUBLIC void setRegisterGroupBit(RegisterGroup * pThis, uint8_t bit)
 {
-    if (bit < pThis->_registersCount * 8)
+    ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
+
+    if (reg != NULL)
     {
-        ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
-        
-        if (reg != NULL)
-        {
-            setShiftRegisterBit(reg, bit % 8);
-        }
+        setShiftRegisterBit(reg, bit % 8);
     }
 }
 
 PUBLIC void resetRegisterGroupBit(RegisterGroup * pThis, uint8_t bit)
 {
-    if (bit < pThis->_registersCount * 8)
+    ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
+
+    if (reg != NULL)
     {
-        ShiftRegister * reg = getRegisterFromGroup(pThis, bit);
-        
-        if (reg != NULL)
-        {
-            resetShiftRegisterBit(reg, bit % 8);
-        }
+        resetShiftRegisterBit(reg, bit % 8);
     }
 }
 
@@ -81,19 +76,6 @@ PUBLIC void outputRegisterGroup(RegisterGroup * pThis)
     generateRegisterGroupRck(pThis);
 }
 
-PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit)
-{
-    ShiftRegister * reg = pThis->_registers;
-    uint8_t count = pThis->_registersCount - 1;
-
-    for (uint8_t i = count; i > bit / 8 && reg != NULL; i--, reg = reg->_next)
-    {
-        // do nothing here
-    }
-
-    return reg;
-}
-
 PRIVATE void prepareRegisterGroupSer(RegisterGroup * pThis, uint8_t data)
 {
     writeGPIOPin(&pThis->_pins.serPin, (REGGRP_MSB(data) == 0x00) ? LOW : HIGH);
@@ -109,4 +91,17 @@ PRIVATE void generateRegisterGroupRck(RegisterGroup * pThis)
 {
     writeGPIOPin(&pThis->_pins.rckPin, LOW);
     writeGPIOPin(&pThis->_pins.rckPin, HIGH);
+}
+
+PRIVATE ShiftRegister * getRegisterFromGroup(RegisterGroup * pThis, uint8_t bit)
+{
+    ShiftRegister * reg = pThis->_registers;
+    const uint8_t count = pThis->_registersCount - 1;
+
+    for (uint8_t i = count; i > bit / 8 && reg != NULL; i--, reg = reg->_next)
+    {
+        // do nothing here
+    }
+
+    return reg;
 }

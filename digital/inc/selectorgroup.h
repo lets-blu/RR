@@ -16,7 +16,6 @@ extern "C" {
 #include "chainedobserver.h"
 #include "dataselector.h"
 #include "messagequeue.h"
-#include "observer.h"
 #include "selectormessage.h"
 
 #ifdef UNIT_TEST
@@ -30,7 +29,7 @@ extern "C" {
 #endif // UNIT_TEST
 
 typedef struct {
-    struct ISubject subject; // implementation, must be the first
+    struct ISubject subject;
 
     GPIOPin _scanPin;
     GPIOPin _addressPins;
@@ -51,13 +50,14 @@ PUBLIC SelectorMessage getSelectorGroupMessage(SelectorGroup * pThis);
 
 PUBLIC bool isSelectorGroupScanEnabled(SelectorGroup * pThis);
 PUBLIC void setSelectorGroupScanEnabled(SelectorGroup * pThis, bool enabled);
-PUBLIC STATIC void vScanSelectorGroupThread(void const * argument);
 
 PUBLIC VIRTUAL void registerObserverToSelectorGroup(SelectorGroup * pThis, 
     struct IObserver * observer);
 PUBLIC VIRTUAL void removeObserverFromSelectorGroup(SelectorGroup * pThis, 
     struct IObserver * observer);
 PUBLIC VIRTUAL void notifySelectorGroupObservers(SelectorGroup * pThis);
+
+PUBLIC STATIC void vScanSelectorGroupThread(void const * argument);
 
 #ifdef __cplusplus
 }
