@@ -30,7 +30,7 @@ PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins)
         ._observers     = NULL
     };
     
-    setupGPIOPin(&scanPin, INPUT);
+    setupGPIOPin(&scanPin, INPUT_PULLUP);
     setupGPIOPin(&addressPins, OUTPUT);
 
     return group;
