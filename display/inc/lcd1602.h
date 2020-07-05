@@ -23,11 +23,11 @@ typedef struct {
 } LCDCursor;
 
 typedef struct {
-    LCDCursor _cursor;
-    char _buffer[2][16];
-    
     uint16_t _address;
     I2C_HandleTypeDef _handle;
+
+    LCDCursor _cursor;
+    char _buffer[2][16];
 } LCD1602;
 
 // Constructor
@@ -37,10 +37,11 @@ PUBLIC LCD1602 newLCD1602(I2C_TypeDef * I2Cx, uint16_t address);
 PUBLIC void initializeLCD1602(LCD1602 * pThis);
 
 PUBLIC void clearLCD1602(LCD1602 * pThis);
-PUBLIC void setLCD1602Cursor(LCD1602 * pThis, LCDCursor cursor);
-
-PUBLIC void printLCD1602(LCD1602 * pThis, const char * str, uint8_t length);
 PUBLIC void clearLCD1602WithLength(LCD1602 * pThis, uint8_t length);
+
+PUBLIC void setLCD1602Cursor(LCD1602 * pThis, LCDCursor cursor);
+PUBLIC void printLCD1602(LCD1602 * pThis, const char * str, uint8_t length);
+
 PUBLIC void refreshLCD1602(LCD1602 * pThis);
 
 #ifdef __cplusplus

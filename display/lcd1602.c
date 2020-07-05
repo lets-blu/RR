@@ -5,19 +5,16 @@
 #define LCD1602_DISPLAY_ON          0x04
 #define LCD1602_FUNCTION_2LINES     0x08
 
-#define LCD1602_DELAY(millisec)                 \
-    osDelay(millisec)
-
 #define LCD1602_CURRENT_CURSOR(lcd)             \
     (&((lcd)->_buffer[(lcd)->_cursor.row][(lcd)->_cursor.column]))
 
 #define CLEAR_LCD1602(lcd)                      \
     write1ByteToLCD1602((lcd), 0x01, false);    \
-    LCD1602_DELAY(1)
+    osDelay(1)
 
 #define RETURN_LCD1602_HOME(lcd)                \
     write1ByteToLCD1602((lcd), 0x02, false);    \
-    LCD1602_DELAY(1)
+    osDelay(1)
 
 #define SET_LCD1602_ENTRY(lcd, entry)           \
     write1ByteToLCD1602((lcd), (0x04|(entry)), false)
@@ -51,11 +48,11 @@ PUBLIC LCD1602 newLCD1602(I2C_TypeDef * I2Cx, uint16_t address)
     assert(IS_I2C_ALL_INSTANCE(I2Cx));
     
     LCD1602 lcd = {
+        ._address   = address,
+        ._handle    = initializeLCD1602I2C(I2Cx),
+
         ._cursor    = {0},
         ._buffer    = {{0}},
-        
-        ._address   = address,
-        ._handle    = initializeLCD1602I2C(I2Cx)
     };
 
     clearLCD1602(&lcd);
@@ -71,14 +68,22 @@ PUBLIC void initializeLCD1602(LCD1602 * pThis)
     SET_LCD1602_DISPLAY(pThis, LCD1602_DISPLAY_ON);
     
     CLEAR_LCD1602(pThis);
-    SET_LCD1602_ENTRY(pThis, LCD1602_ENTRY_LEFT);
 
+    SET_LCD1602_ENTRY(pThis, LCD1602_ENTRY_LEFT);
     RETURN_LCD1602_HOME(pThis);
 }
 
 PUBLIC void clearLCD1602(LCD1602 * pThis)
 {
     memset(pThis->_buffer, ' ', sizeof(pThis->_buffer));
+}
+
+PUBLIC void clearLCD1602WithLength(LCD1602 * pThis, uint8_t length)
+{
+    if (length > 0 && pThis->_cursor.column + length <= 16)
+    {
+        memset(LCD1602_CURRENT_CURSOR(pThis), ' ', length);
+    }
 }
 
 PUBLIC void setLCD1602Cursor(LCD1602 * pThis, LCDCursor cursor)
@@ -97,14 +102,6 @@ PUBLIC void printLCD1602(LCD1602 * pThis, const char * str, uint8_t length)
     }
 }
 
-PUBLIC void clearLCD1602WithLength(LCD1602 * pThis, uint8_t length)
-{
-    if (length > 0 && pThis->_cursor.column + length <= 16)
-    {
-        memset(LCD1602_CURRENT_CURSOR(pThis), ' ', length);
-    }
-}
-
 PUBLIC void refreshLCD1602(LCD1602 * pThis)
 {
     for (uint8_t i = 0; i < 2; i++)
@@ -119,7 +116,7 @@ PRIVATE void enableLCD16024BitMode(LCD1602 * pThis)
     for (uint8_t i = 0; i < 3; i++)
     {
         write4BitsToLCD1602(pThis, 0x03 << 4);
-        LCD1602_DELAY(1);
+        osDelay(1);
     }
     
     write4BitsToLCD1602(pThis, 0x02 << 4);
@@ -146,10 +143,10 @@ PRIVATE void writeLCD1602I2CData(LCD1602 * pThis, uint8_t data)
 PRIVATE void pluseLCD1602Enable(LCD1602 * pThis, uint8_t data)
 {
     writeLCD1602I2CData(pThis, data | 0x04);
-    LCD1602_DELAY(1);
+    osDelay(1);
     
     writeLCD1602I2CData(pThis, data & ~0x04);
-    LCD1602_DELAY(1);
+    osDelay(1);
 }
 
 PRIVATE STATIC I2C_HandleTypeDef initializeLCD1602I2C(I2C_TypeDef * I2Cx)
