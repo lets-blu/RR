@@ -7,30 +7,30 @@ extern "C" {
 
 #include "stddef.h"
 #include "stdint.h"
+#include "string.h"
 
-#include "cmsis_os.h"
-
-#include "keywords.h"
 #include "lcd1602.h"
+#include "keywords.h"
+#include "chainedobserver.h"
 
 typedef struct {
-    LCD1602 * _lcd;
-    LCDCursor _cursor;
+    ChainedObserver base;
+
     uint8_t _length;
-    
-    int8_t _scrollIndex;
-    const char * _scrollString;
+    LCDCursor _cursor;
+
+    uint8_t _offset;
+    const char * _string;
 } DisplayArea;
 
-// Constructor
-PUBLIC DisplayArea newDisplayArea(LCD1602 * lcd);
+// (De)constructor(s)
+PUBLIC DisplayArea newDisplayArea(LCDCursor cursor, uint8_t length);
 
 // Public method(s)
-PUBLIC void setDisplayAreaCursor(DisplayArea * pThis, LCDCursor cursor);
-PUBLIC void setDisplayAreaLength(DisplayArea * pThis, uint8_t length);
-
+PUBLIC void setDisplayCursor(DisplayArea * pThis, LCDCursor cursor);
 PUBLIC void setDisplayAreaString(DisplayArea * pThis, const char * str);
-PUBLIC void scrollDisplayArea(DisplayArea * pThis);
+
+PUBLIC VIRTUAL void updateDisplayArea(DisplayArea * pThis, struct ISubject * subject);
 
 #ifdef __cplusplus
 }

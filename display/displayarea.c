@@ -1,67 +1,46 @@
 #include "displayarea.h"
 
-#define DISPLAY_AREA_MIN(a, b) ((a) < (b) ? (a) : (b))
+#define DISPLAY_AREA_MIN(a, b) (((a) < (b)) ? (a) : (b))
 
-// Private method(s)
-PRIVATE void refreshDisplayAreaLCD(DisplayArea * pThis, const char * str, uint8_t length);
-
-PUBLIC DisplayArea newDisplayArea(LCD1602 * lcd)
+PUBLIC DisplayArea newDisplayArea(LCDCursor cursor, uint8_t length)
 {
     DisplayArea area = {
-        ._lcd               = lcd,
-        ._cursor            = {0},
-        ._length            = 0,
-        
-        ._scrollIndex       = 0,
-        ._scrollString      = NULL
+        .base       = newChainedObserver(),
+
+        ._cursor    = cursor,
+        ._length    = length,
+
+        ._offset    = 0,
+        ._string    = NULL
     };
+
+    area.base.observer.update = (update_observer_fp)updateDisplayArea;
 
     return area;
 }
 
-PUBLIC void setDisplayAreaCursor(DisplayArea * pThis, LCDCursor cursor)
-{
-    pThis->_cursor = cursor;
-}
-
-PUBLIC void setDisplayAreaLength(DisplayArea * pThis, uint8_t length)
-{
-    pThis->_length = length;
-}
-
 PUBLIC void setDisplayAreaString(DisplayArea * pThis, const char * str)
 {
-    pThis->_scrollIndex = -1;
-    pThis->_scrollString = str;
-    refreshDisplayAreaLCD(pThis, str, DISPLAY_AREA_MIN(strlen(str), pThis->_length));
+    pThis->_offset = 0;
+    pThis->_string = str;
 }
 
-PUBLIC void scrollDisplayArea(DisplayArea * pThis)
+PUBLIC VIRTUAL void updateDisplayArea(DisplayArea * pThis, struct ISubject * subject)
 {
-    if (pThis->_scrollString == NULL)
+    LCD1602 * lcd = (LCD1602 *)subject;
+
+    if (pThis->_string != NULL)
     {
-        return;
+        uint8_t length = strlen(pThis->_string) - pThis->_offset;
+
+        setLCD1602Cursor(lcd, pThis->_cursor);
+        
+        clearLCD1602WithLength(lcd, pThis->_length);
+        printLCD1602(lcd, pThis->_string + pThis->_offset, DISPLAY_AREA_MIN(pThis->_length, length));
+
+        if (pThis->_length < strlen(pThis->_string))
+        {
+            pThis->_offset = (pThis->_offset + 1) % strlen(pThis->_string);
+        }
     }
-
-    if (pThis->_scrollIndex < strlen(pThis->_scrollString))
-    {
-        pThis->_scrollIndex++;
-    }
-    else
-    {
-        pThis->_scrollIndex = 0;
-    }
-
-    const char * str = pThis->_scrollString + pThis->_scrollIndex;
-    const uint8_t length = strlen(pThis->_scrollString) - pThis->_scrollIndex;
-    refreshDisplayAreaLCD(pThis, str, DISPLAY_AREA_MIN(length, pThis->_length));
-}
-
-PRIVATE void refreshDisplayAreaLCD(DisplayArea * pThis, const char * str, uint8_t length)
-{
-    setLCD1602Cursor(pThis->_lcd, pThis->_cursor);
-    clearLCD1602WithLength(pThis->_lcd, pThis->_length);
-
-    printLCD1602(pThis->_lcd, str, length);
-    refreshLCD1602(pThis->_lcd);
 }

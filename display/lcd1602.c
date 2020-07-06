@@ -41,6 +41,9 @@ PRIVATE void write1ByteToLCD1602(LCD1602 * pThis, uint8_t data, bool isChar);
 PRIVATE void writeLCD1602I2CData(LCD1602 * pThis, uint8_t data);
 PRIVATE void pluseLCD1602Enable(LCD1602 * pThis, uint8_t data);
 
+PRIVATE void enableLCD1602Refresh(LCD1602 * pThis);
+PRIVATE void disableLCD1602Refresh(LCD1602 * pThis);
+
 PRIVATE STATIC I2C_HandleTypeDef initializeLCD1602I2C(I2C_TypeDef * I2Cx);
 
 PUBLIC LCD1602 newLCD1602(I2C_TypeDef * I2Cx, uint16_t address)
@@ -48,6 +51,14 @@ PUBLIC LCD1602 newLCD1602(I2C_TypeDef * I2Cx, uint16_t address)
     assert(IS_I2C_ALL_INSTANCE(I2Cx));
     
     LCD1602 lcd = {
+        .subject    = {
+            .registerObserver   = (register_observer_fp)registerLCD1602Observer,
+            .removeObserver     = (remove_observer_fp)deregisterLCD1602Observer,
+            .notifyObservers    = (notify_observers_fp)notifyLCD1602Observers
+        },
+
+        ._observers = NULL,
+
         ._address   = address,
         ._handle    = initializeLCD1602I2C(I2Cx),
 
@@ -111,6 +122,24 @@ PUBLIC void refreshLCD1602(LCD1602 * pThis)
     }
 }
 
+PUBLIC bool isLCD1602RefreshEnabled(LCD1602 * pThis)
+{
+    return ((pThis->_refreshThread != NULL) &&
+        (osThreadGetState(pThis->_refreshThread) != osThreadDeleted));
+}
+
+PUBLIC void setLCD1602RefreshEnabled(LCD1602 * pThis, bool enabled)
+{
+    if (enabled)
+    {
+        enableLCD1602Refresh(pThis);
+    }
+    else
+    {
+        disableLCD1602Refresh(pThis);
+    }
+}
+
 PRIVATE void enableLCD16024BitMode(LCD1602 * pThis)
 {
     for (uint8_t i = 0; i < 3; i++)
@@ -147,6 +176,62 @@ PRIVATE void pluseLCD1602Enable(LCD1602 * pThis, uint8_t data)
     
     writeLCD1602I2CData(pThis, data & ~0x04);
     osDelay(1);
+}
+
+PRIVATE void enableLCD1602Refresh(LCD1602 * pThis)
+{
+    if (!isLCD1602RefreshEnabled(pThis))
+    {
+        osThreadDef(thread, vRefreshLCD1602Thread, osPriorityNormal, 0, 128);
+        pThis->_refreshThread = osThreadCreate(osThread(thread), pThis);
+    }
+}
+
+PRIVATE void disableLCD1602Refresh(LCD1602 * pThis)
+{
+    if (isLCD1602RefreshEnabled(pThis))
+    {
+        osThreadTerminate(pThis->_refreshThread);
+    }
+}
+
+PUBLIC VIRTUAL void registerLCD1602Observer(LCD1602 * pThis, 
+    struct IObserver * observer)
+{
+    ChainedObserver * chained = (ChainedObserver *)observer;
+
+    chained->next = pThis->_observers;
+    pThis->_observers = chained;
+}
+
+PUBLIC VIRTUAL void deregisterLCD1602Observer(LCD1602 * pThis, 
+    struct IObserver * observer)
+{
+    // UNSUPPORTED
+}
+
+PUBLIC VIRTUAL void notifyLCD1602Observers(LCD1602 * pThis)
+{
+    struct ISubject * subject = (struct ISubject *)pThis;
+
+    for (ChainedObserver * o = pThis->_observers; o != NULL; o = o->next)
+    {
+        struct IObserver * observer = (struct IObserver *)o;
+        observer->update(observer, subject);
+    }
+}
+
+PUBLIC STATIC void vRefreshLCD1602Thread(void const * argument)
+{
+    LCD1602 * lcd = (LCD1602 *)argument;
+
+    for (;;)
+    {
+        notifyLCD1602Observers(lcd);
+
+        refreshLCD1602(lcd);
+        osDelay(350);
+    }
 }
 
 PRIVATE STATIC I2C_HandleTypeDef initializeLCD1602I2C(I2C_TypeDef * I2Cx)
