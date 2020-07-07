@@ -58,7 +58,7 @@ PUBLIC VIRTUAL void deregisterLCD1602Observer(LCD1602 * pThis,
     struct IObserver * observer);
 PUBLIC VIRTUAL void notifyLCD1602Observers(LCD1602 * pThis);
 
-PUBLIC STATIC void vRefreshLCD1602Thread(void const * argument);
+PUBLIC STATIC void vLCD1602RefreshThread(void const * argument);
 
 #ifdef __cplusplus
 }

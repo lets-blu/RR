@@ -31,12 +31,13 @@ PUBLIC VIRTUAL void updateDisplayArea(DisplayArea * pThis, struct ISubject * sub
 
     if (pThis->_string != NULL)
     {
+        const char * str = pThis->_string + pThis->_offset;
         uint8_t length = strlen(pThis->_string) - pThis->_offset;
 
         setLCD1602Cursor(lcd, pThis->_cursor);
         
         clearLCD1602WithLength(lcd, pThis->_length);
-        printLCD1602(lcd, pThis->_string + pThis->_offset, DISPLAY_AREA_MIN(pThis->_length, length));
+        printLCD1602(lcd, str, DISPLAY_AREA_MIN(pThis->_length, length));
 
         if (pThis->_length < strlen(pThis->_string))
         {

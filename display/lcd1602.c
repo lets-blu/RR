@@ -67,6 +67,7 @@ PUBLIC LCD1602 newLCD1602(I2C_TypeDef * I2Cx, uint16_t address)
     };
 
     clearLCD1602(&lcd);
+
     return lcd;
 }
 
@@ -182,7 +183,7 @@ PRIVATE void enableLCD1602Refresh(LCD1602 * pThis)
 {
     if (!isLCD1602RefreshEnabled(pThis))
     {
-        osThreadDef(thread, vRefreshLCD1602Thread, osPriorityNormal, 0, 128);
+        osThreadDef(thread, vLCD1602RefreshThread, osPriorityNormal, 0, 128);
         pThis->_refreshThread = osThreadCreate(osThread(thread), pThis);
     }
 }
@@ -221,14 +222,13 @@ PUBLIC VIRTUAL void notifyLCD1602Observers(LCD1602 * pThis)
     }
 }
 
-PUBLIC STATIC void vRefreshLCD1602Thread(void const * argument)
+PUBLIC STATIC void vLCD1602RefreshThread(void const * argument)
 {
     LCD1602 * lcd = (LCD1602 *)argument;
 
     for (;;)
     {
         notifyLCD1602Observers(lcd);
-
         refreshLCD1602(lcd);
         osDelay(350);
     }
@@ -253,5 +253,6 @@ PRIVATE STATIC I2C_HandleTypeDef initializeLCD1602I2C(I2C_TypeDef * I2Cx)
     };
     
     HAL_I2C_Init(&handle);
+
     return handle;
 }

@@ -27,9 +27,7 @@ typedef struct {
 PUBLIC DisplayArea newDisplayArea(LCDCursor cursor, uint8_t length);
 
 // Public method(s)
-PUBLIC void setDisplayCursor(DisplayArea * pThis, LCDCursor cursor);
 PUBLIC void setDisplayAreaString(DisplayArea * pThis, const char * str);
-
 PUBLIC VIRTUAL void updateDisplayArea(DisplayArea * pThis, struct ISubject * subject);
 
 #ifdef __cplusplus
