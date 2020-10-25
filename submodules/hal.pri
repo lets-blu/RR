@@ -6,4 +6,7 @@ INCLUDEPATH *= \
     $$HAL_DIR/inc
 
 SOURCES += \
-    $$HAL_DIR/src/hal_gpio.c
+    $$HAL_DIR/src/cmsis_os.c \
+    $$HAL_DIR/src/hal_gpio.c \
+    &&HAL_DIR/src/hal_cortex.c
+

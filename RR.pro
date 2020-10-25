@@ -26,7 +26,9 @@ QMAKE_LFLAGS += \
 SOURCES += \
     src/gpiopin.c \
     src/generic/led.c \
+    src/generic/button.c \
     test_cases/main.cpp \
     test_cases/test_gpiopin.cpp \
-    test_cases/test_led.cpp
+    test_cases/test_led.cpp \
+    test_cases/test_button.cpp
 
