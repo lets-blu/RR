@@ -20,6 +20,10 @@ QMAKE_CXXFLAGS += \
     -fprofile-arcs \
     -ftest-coverage
 
+QMAKE_LFLAGS += \
+    -fprofile-arcs \
+    -ftest-coverage
+
 SOURCES += \
     src/gpiopin.c \
     test_cases/main.cpp \
