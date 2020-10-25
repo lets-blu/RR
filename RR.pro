@@ -8,7 +8,8 @@ CONFIG -= qt
 CONFIG += thread
 
 INCLUDEPATH *= \
-    inc
+    inc \
+    inc/generic
 
 QMAKE_CFLAGS += \
     -DUNIT_TEST \
@@ -16,9 +17,7 @@ QMAKE_CFLAGS += \
     -ftest-coverage
 
 QMAKE_CXXFLAGS += \
-    -DUNIT_TEST \
-    -fprofile-arcs \
-    -ftest-coverage
+    -DUNIT_TEST
 
 QMAKE_LFLAGS += \
     -fprofile-arcs \
@@ -26,5 +25,8 @@ QMAKE_LFLAGS += \
 
 SOURCES += \
     src/gpiopin.c \
+    src/generic/led.c \
     test_cases/main.cpp \
-    test_cases/test_gpiopin.cpp
+    test_cases/test_gpiopin.cpp \
+    test_cases/test_led.cpp
+

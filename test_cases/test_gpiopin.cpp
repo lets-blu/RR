@@ -7,6 +7,7 @@ protected:
     GPIOPin pin;
     const uint16_t PIN = GPIO_PIN_13;
     GPIO_TypeDef * const PORT = GPIOC;
+    const uint32_t INVALID_MODE = 0xFFFFFFFFU;
 
     void SetUp()
     {
@@ -23,7 +24,7 @@ TEST_F(GPIOPinTest, setupGPIOPin)
 {
     HAL_GPIO_InitCallCount = 0;
 
-    setupGPIOPin(&pin, 0xFFFFFFFF);
+    setupGPIOPin(&pin, INVALID_MODE);
     EXPECT_EQ(0, HAL_GPIO_InitCallCount);
 
     setupGPIOPin(&pin, OUTPUT);
