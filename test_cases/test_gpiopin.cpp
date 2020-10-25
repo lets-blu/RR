@@ -23,6 +23,9 @@ TEST_F(GPIOPinTest, setupGPIOPin)
 {
     HAL_GPIO_InitCallCount = 0;
 
+    setupGPIOPin(&pin, 0xFFFFFFFF);
+    EXPECT_EQ(0, HAL_GPIO_InitCallCount);
+
     setupGPIOPin(&pin, OUTPUT);
     EXPECT_EQ(1, HAL_GPIO_InitCallCount);
 }
