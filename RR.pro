@@ -11,10 +11,14 @@ INCLUDEPATH *= \
     inc
 
 QMAKE_CFLAGS += \
-    -DUNIT_TEST
+    -DUNIT_TEST \
+    -fprofile-arcs \
+    -ftest-coverage
 
 QMAKE_CXXFLAGS += \
-    -DUNIT_TEST
+    -DUNIT_TEST \
+    -fprofile-arcs \
+    -ftest-coverage
 
 SOURCES += \
     src/gpiopin.c \
