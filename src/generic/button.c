@@ -1,7 +1,7 @@
 #include "button.h"
 
-#define BUTTON_SUB_PRIORITY         0
 #define BUTTON_PREEMPT_PRIORITY     5
+#define BUTTON_SUB_PRIORITY         0
 
 #define BUTTON_DEBOUNCE()           osDelay(50)
 
@@ -14,11 +14,11 @@ PRIVATE void disableButtonInterrupt(Button * pThis);
 PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState)
 {
     Button button = {
-        ._pin                   = pin, 
-        ._clickState            = clickState, 
+        ._pin                   = pin,
+        ._clickState            = clickState,
 
-        ._interruptHandler      = NULL, 
-        ._interruptSemaphore    = NULL, 
+        ._interruptHandler      = NULL,
+        ._interruptSemaphore    = NULL,
 
         .onClick                = defaultOnButtonClick
     };
@@ -61,10 +61,9 @@ PUBLIC void setButtonInterruptEnabled(Button * pThis, bool enabled)
     }
 }
 
-PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
+PUBLIC VIRTUAL void MOCKABLE(defaultOnButtonClick)(Button * pThis)
 {
     // do nothing here
-    (void)pThis;
 }
 
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis)
@@ -110,7 +109,7 @@ PRIVATE void enableButtonInterrupt(Button * pThis)
     {
         return;
     }
-    
+
     // initialize binary semaphore for interrupt handler
     if (pThis->_interruptSemaphore == NULL)
     {
@@ -155,7 +154,6 @@ PRIVATE void disableButtonInterrupt(Button * pThis)
     // disable button interrupt
     setupGPIOPin(&pThis->_pin, mode);
     HAL_NVIC_DisableIRQ(getButtonIRQn(pThis));
-    
     osThreadTerminate(pThis->_interruptHandler);
 }
 

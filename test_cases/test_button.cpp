@@ -1,12 +1,10 @@
 #include "button.h"
 #include "gtest/gtest.h"
 
-void onButtonClick(Button* button);
-
 class ButtonTest : public ::testing::Test
 {
 public:
-    static int onButtonClickCallCount;
+    static int defaultOnButtonClickCallCount;
 
 protected:
     Button button;
@@ -16,7 +14,6 @@ protected:
     void SetUp()
     {
         button = newButton(newGPIOPin(PORT, PIN), LOW);
-        button.onClick = onButtonClick;
     }
 
     void TearDown()
@@ -25,7 +22,7 @@ protected:
     }
 };
 
-int ButtonTest::onButtonClickCallCount = 0;
+int ButtonTest::defaultOnButtonClickCallCount = 0;
 
 TEST_F(ButtonTest, isButtonClicked)
 {
@@ -39,12 +36,13 @@ TEST_F(ButtonTest, isButtonClicked)
 TEST_F(ButtonTest, onButtonInterruptOccurred)
 {
     PORT->IDR &= ~PIN;
-    ButtonTest::onButtonClickCallCount = 0;
+    ButtonTest::defaultOnButtonClickCallCount = 0;
+
     setButtonInterruptEnabled(&button, true);
 
     onButtonInterruptOccurred(&button);
     vButtonInterruptHandler(&button);
-    EXPECT_EQ(1, ButtonTest::onButtonClickCallCount);
+    EXPECT_EQ(1, ButtonTest::defaultOnButtonClickCallCount);
 }
 
 TEST_F(ButtonTest, isButtonInterruptEnabled)
@@ -61,8 +59,8 @@ TEST_F(ButtonTest, setButtonInterruptEnabled)
     EXPECT_TRUE(isButtonInterruptEnabled(&button));
 }
 
-void onButtonClick(Button * button)
+PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
 {
-    (void)button;
-    ButtonTest::onButtonClickCallCount++;
+    (void)pThis;
+    ButtonTest::defaultOnButtonClickCallCount++;
 }
