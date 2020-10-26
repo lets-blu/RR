@@ -23,6 +23,7 @@ protected:
 };
 
 int ButtonTest::defaultOnButtonClickCallCount = 0;
+extern "C" void MOCKABLE(defaultOnButtonClick)(Button * pThis);
 
 TEST_F(ButtonTest, isButtonClicked)
 {
@@ -63,6 +64,6 @@ TEST_F(ButtonTest, setButtonInterruptEnabled)
 
 PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
 {
-    (void)pThis;
+    MOCKABLE(defaultOnButtonClick)(pThis);
     ButtonTest::defaultOnButtonClickCallCount++;
 }

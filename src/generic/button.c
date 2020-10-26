@@ -1,7 +1,7 @@
 #include "button.h"
 
-#define BUTTON_PREEMPT_PRIORITY     5
-#define BUTTON_SUB_PRIORITY         0
+#define BUTTON_PREEMPT_PRIORITY     5U
+#define BUTTON_SUB_PRIORITY         0U
 
 #define BUTTON_DEBOUNCE()           osDelay(50)
 
@@ -63,7 +63,7 @@ PUBLIC void setButtonInterruptEnabled(Button * pThis, bool enabled)
 
 PUBLIC VIRTUAL void MOCKABLE(defaultOnButtonClick)(Button * pThis)
 {
-    // do nothing here
+    (void)pThis; // do nothing here
 }
 
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis)
