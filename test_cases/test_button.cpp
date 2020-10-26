@@ -53,10 +53,12 @@ TEST_F(ButtonTest, isButtonInterruptEnabled)
 TEST_F(ButtonTest, setButtonInterruptEnabled)
 {
     setButtonInterruptEnabled(&button, false);
-    EXPECT_FALSE(isButtonInterruptEnabled(&button));
-
     setButtonInterruptEnabled(&button, true);
     EXPECT_TRUE(isButtonInterruptEnabled(&button));
+
+    setButtonInterruptEnabled(&button, true);
+    setButtonInterruptEnabled(&button, false);
+    EXPECT_FALSE(isButtonInterruptEnabled(&button));
 }
 
 PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
