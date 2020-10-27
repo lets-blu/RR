@@ -8,7 +8,7 @@ public:
 
 protected:
     Button button;
-    const uint16_t PIN = GPIO_PIN_8;
+    const uint16_t PIN = GPIO_PIN_10; // GPIO_PIN_8
     GPIO_TypeDef * const PORT = GPIOA;
 
     void SetUp()
