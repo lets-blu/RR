@@ -7,9 +7,10 @@ before_install:
 script:
   - mkdir out && cd out
   - qmake ../RR.pro && make
+  - valgrind --leak-check=yes --log-file=valgrind.log ./RR
 
 after_success:
-  - valgrind --leak-check=yes ./RR
+  - cat valgrind.log
   - bash <(curl -s https://codecov.io/bash)
 
 notifications:
