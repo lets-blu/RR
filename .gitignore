@@ -71,8 +71,8 @@ Thumbs.db
 *.dll
 *.exe
 
-# Custom
+# Custom files
 .vs/
+out/
 debug/
 release/
-

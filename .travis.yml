@@ -18,4 +18,3 @@ notifications:
       - lets_blu@outlook.com
   on_success: always
   on_failure: always
-

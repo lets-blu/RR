@@ -1,6 +1,6 @@
-[submodule "test_framework"]
-	path = test_framework
-	url = https://github.com/google/googletest
 [submodule "hal"]
 	path = hal
 	url = https://github.com/lets-blu/RR-HAL
+[submodule "test_framework"]
+	path = test_framework
+	url = https://github.com/google/googletest

@@ -53,12 +53,19 @@ TEST_F(ButtonTest, isButtonInterruptEnabled)
 
 TEST_F(ButtonTest, setButtonInterruptEnabled)
 {
+    HAL_NVIC_SetPriorityCallCount = 0;
+    HAL_NVIC_EnableIRQCallCount = 0;
+    HAL_NVIC_DisableIRQCallCount = 0;
+
     setButtonInterruptEnabled(&button, false);
     setButtonInterruptEnabled(&button, true);
+    EXPECT_EQ(1, HAL_NVIC_SetPriorityCallCount);
+    EXPECT_EQ(1, HAL_NVIC_EnableIRQCallCount);
     EXPECT_TRUE(isButtonInterruptEnabled(&button));
 
     setButtonInterruptEnabled(&button, true);
     setButtonInterruptEnabled(&button, false);
+    EXPECT_EQ(1, HAL_NVIC_DisableIRQCallCount);
     EXPECT_FALSE(isButtonInterruptEnabled(&button));
 }
 
