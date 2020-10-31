@@ -2,14 +2,14 @@ language: cpp
 
 before_install:
   - sudo apt update
-  - sudo apt install -f qt5-default
+  - sudo apt install -f qt5-default valgrind
 
 script:
   - mkdir out && cd out
   - qmake ../RR.pro && make
 
 after_success:
-  - ./RR
+  - valgrind --leak-check=yes ./RR
   - bash <(curl -s https://codecov.io/bash)
 
 notifications:
