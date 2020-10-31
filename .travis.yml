@@ -7,7 +7,7 @@ before_install:
 script:
   - mkdir out && cd out
   - qmake ../RR.pro && make
-  - valgrind --leak-check=full --show-leak-kinds=all --log-file=valgrind.log ./RR
+  - valgrind --leak-check=yes --log-file=valgrind.log ./RR
 
 after_success:
   - cat valgrind.log

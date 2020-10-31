@@ -9,7 +9,8 @@ CONFIG += thread
 
 INCLUDEPATH *= \
     inc \
-    inc/generic
+    inc/generic \
+    inc/digital
 
 QMAKE_CFLAGS += \
     -DUNIT_TEST \
@@ -27,7 +28,9 @@ SOURCES += \
     src/gpiopin.c \
     src/generic/led.c \
     src/generic/button.c \
+    src/digital/shiftregister.c \
     test_cases/main.cpp \
     test_cases/test_gpiopin.cpp \
     test_cases/test_led.cpp \
-    test_cases/test_button.cpp
+    test_cases/test_button.cpp \
+    test_cases/test_shiftregister.cpp
