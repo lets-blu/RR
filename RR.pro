@@ -29,8 +29,10 @@ SOURCES += \
     src/generic/led.c \
     src/generic/button.c \
     src/digital/shiftregister.c \
+    src/digital/registergroup.c \
     test_cases/main.cpp \
     test_cases/test_gpiopin.cpp \
     test_cases/test_led.cpp \
     test_cases/test_button.cpp \
-    test_cases/test_shiftregister.cpp
+    test_cases/test_shiftregister.cpp \
+    test_cases/test_registergroup.cpp
