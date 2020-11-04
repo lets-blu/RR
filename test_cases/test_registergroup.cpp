@@ -1,5 +1,11 @@
-#include "registergroup.h"
+#include "stdint.h"
 #include "gtest/gtest.h"
+
+#include "shiftregister.h"
+#include "registergroup.h"
+
+#define TEST_BIT2MASK(bit)  (1 << (bit))
+#define TEST_REGISTER(bit)  shiftRegister[(bit) / 8]
 
 class RegisterGroupTest : public ::testing::Test
 {
@@ -55,13 +61,13 @@ TEST_F(RegisterGroupTest, addRegisterGroupRegister)
 TEST_F(RegisterGroupTest, setRegisterGroupBit)
 {
     setRegisterGroupBit(&registerGroup, BIT);
-    EXPECT_EQ(1 << (BIT % 8), shiftRegister[BIT / 8]._data & (1 << (BIT % 8)));
+    EXPECT_EQ(TEST_BIT2MASK(BIT % 8), TEST_REGISTER(BIT)._data & TEST_BIT2MASK(BIT % 8));
 }
 
 TEST_F(RegisterGroupTest, resetRegisterGroupBit)
 {
     resetRegisterGroupBit(&registerGroup, BIT);
-    EXPECT_EQ(0, shiftRegister[BIT / 8]._data & (1 << (BIT % 8)));
+    EXPECT_EQ(0, TEST_REGISTER(BIT)._data & TEST_BIT2MASK(BIT % 8));
 }
 
 TEST_F(RegisterGroupTest, setRegisterGroupOutputEnabled)
