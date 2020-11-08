@@ -21,12 +21,14 @@ protected:
 
 TEST_F(LEDTest, turnOnLED)
 {
+    GPIO_RESET(PORT);
     turnOnLED(&led);
-    EXPECT_EQ(0, PORT->ODR & PIN);
+    EXPECT_EQ(0x00U, PORT->ODRArray[0] & PIN);
 }
 
 TEST_F(LEDTest, turnOffLED)
 {
+    GPIO_RESET(PORT);
     turnOffLED(&led);
-    EXPECT_EQ(PIN, PORT->ODR & PIN);
+    EXPECT_EQ(PIN, PORT->ODRArray[0] & PIN);
 }

@@ -61,9 +61,13 @@ PUBLIC void setButtonInterruptEnabled(Button * pThis, bool enabled)
     }
 }
 
-PUBLIC VIRTUAL void MOCKABLE(defaultOnButtonClick)(Button * pThis)
+PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
 {
-    (void)pThis; // do nothing here
+    (void)pThis;
+#ifdef UNIT_TEST
+    extern int defaultOnButtonClickCallCount;
+    defaultOnButtonClickCallCount++;
+#endif // UNIT_TEST
 }
 
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis)

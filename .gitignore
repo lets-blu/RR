@@ -73,6 +73,7 @@ Thumbs.db
 
 # Custom files
 .vs/
+.vscode/
 out/
 debug/
 release/
