@@ -1,7 +1,7 @@
 #include "shiftregister.h"
 #include "gtest/gtest.h"
 
-#define TEST_BIT2MASK(bit)  (1 << (bit))
+#define TEST_BIT2MASK(bit)  (0x01U << (bit))
 
 class ShiftRegisterTest : public ::testing::Test
 {

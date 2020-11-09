@@ -8,7 +8,7 @@
 #define TEST_SLL(data)      ((data) <<= 1)
 #define TEST_MSB(data)      ((data) & 0x80)
 
-#define TEST_BIT2MASK(bit)  (1 << (bit))
+#define TEST_BIT2MASK(bit)  (0x01U << (bit))
 
 class RegisterGroupTest : public ::testing::Test
 {
