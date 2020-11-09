@@ -36,10 +36,9 @@ TEST_F(ButtonTest, onButtonInterruptOccurred)
 {
     GPIO_RESET(PORT);
     PORT->IDRArray[0] &= ~PIN;
-
     defaultOnButtonClickCallCount = 0;
-    setButtonInterruptEnabled(&button, true);
 
+    setButtonInterruptEnabled(&button, true);
     onButtonInterruptOccurred(&button);
     vButtonInterruptHandler(&button);
     EXPECT_EQ(1, defaultOnButtonClickCallCount);

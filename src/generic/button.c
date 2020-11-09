@@ -5,6 +5,10 @@
 
 #define BUTTON_DEBOUNCE()           osDelay(50)
 
+#ifdef UNIT_TEST
+extern int defaultOnButtonClickCallCount;
+#endif // UNIT_TEST
+
 // Private method(s)
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis);
 
@@ -65,7 +69,6 @@ PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
 {
     (void)pThis;
 #ifdef UNIT_TEST
-    extern int defaultOnButtonClickCallCount;
     defaultOnButtonClickCallCount++;
 #endif // UNIT_TEST
 }

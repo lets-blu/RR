@@ -96,7 +96,7 @@ PRIVATE void generateRegisterGroupRck(RegisterGroup * pThis)
 PRIVATE ShiftRegister * getRegisterGroupRegister(RegisterGroup * pThis, uint8_t bit)
 {
     ShiftRegister * reg = pThis->_registers;
-    const uint8_t count = pThis->_registersCount - 1;
+    uint8_t count = pThis->_registersCount - 1;
 
     for (uint8_t i = count; i > bit / 8 && reg != NULL; i--, reg = reg->_next)
     {
