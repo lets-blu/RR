@@ -13,7 +13,7 @@ script:
 after_success:
   - cat valgrind.log
   - bash <(curl -s https://codecov.io/bash)
-  - lcov -c -o coverage.info -d .
+  - lcov -c -o coverage.info -d . -b ..
   - coveralls-lcov --repo-token ${COVERALLS_TOKEN} coverage.info
 
 notifications:
