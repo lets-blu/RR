@@ -23,7 +23,7 @@ int defaultOnButtonClickCallCount;
 
 TEST_F(ButtonTest, isButtonClicked)
 {
-    GPIO_RESET(PORT);
+    RESET_GPIO(PORT);
 
     PORT->IDRArray[0] |= PIN;
     EXPECT_FALSE(isButtonClicked(&button));
@@ -34,7 +34,7 @@ TEST_F(ButtonTest, isButtonClicked)
 
 TEST_F(ButtonTest, onButtonInterruptOccurred)
 {
-    GPIO_RESET(PORT);
+    RESET_GPIO(PORT);
     PORT->IDRArray[0] &= ~PIN;
     defaultOnButtonClickCallCount = 0;
 

@@ -33,7 +33,7 @@ TEST_F(GPIOPinTest, setupGPIOPin)
 
 TEST_F(GPIOPinTest, readGPIOPin)
 {
-    GPIO_RESET(PORT);
+    RESET_GPIO(PORT);
 
     PORT->IDRArray[0] &= ~PIN;
     EXPECT_EQ(LOW, readGPIOPin(&pin));
@@ -44,7 +44,7 @@ TEST_F(GPIOPinTest, readGPIOPin)
 
 TEST_F(GPIOPinTest, writeGPIOPin)
 {
-    GPIO_RESET(PORT);
+    RESET_GPIO(PORT);
 
     writeGPIOPin(&pin, LOW);
     EXPECT_EQ(0x00U, PORT->ODRArray[0] & PIN);
@@ -55,7 +55,7 @@ TEST_F(GPIOPinTest, writeGPIOPin)
 
 TEST_F(GPIOPinTest, writeGPIOPinValue)
 {
-    GPIO_RESET(PORT);
+    RESET_GPIO(PORT);
 
     writeGPIOPinValue(&pin, 0);
     EXPECT_EQ(0x00U, PORT->ODRArray[0] & PIN);
