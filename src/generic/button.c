@@ -5,10 +5,6 @@
 
 #define BUTTON_DEBOUNCE()           osDelay(50)
 
-#ifdef UNIT_TEST
-extern int defaultOnButtonClickCallCount;
-#endif // UNIT_TEST
-
 // Private method(s)
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis);
 
@@ -65,12 +61,9 @@ PUBLIC void setButtonInterruptEnabled(Button * pThis, bool enabled)
     }
 }
 
-PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
+PUBLIC VIRTUAL void MOCKABLE(defaultOnButtonClick)(Button * pThis)
 {
     (void)pThis;
-#ifdef UNIT_TEST
-    defaultOnButtonClickCallCount++;
-#endif // UNIT_TEST
 }
 
 PRIVATE IRQn_Type getButtonIRQn(Button * pThis)
@@ -179,3 +172,13 @@ PUBLIC STATIC void vButtonInterruptHandler(void const * argument)
         }
     }
 }
+
+#ifdef UNIT_TEST
+extern int defaultOnButtonClickCallCount;
+
+PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
+{
+    defaultOnButtonClickCallCount++;
+    MOCKABLE(defaultOnButtonClick)(pThis);
+}
+#endif // UNIT_TEST

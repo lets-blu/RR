@@ -10,7 +10,8 @@ CONFIG += thread
 INCLUDEPATH *= \
     inc \
     inc/generic \
-    inc/digital
+    inc/digital \
+    inc/interface
 
 QMAKE_CFLAGS += \
     -DUNIT_TEST \
@@ -28,6 +29,8 @@ SOURCES += \
     src/gpiopin.c \
     src/generic/led.c \
     src/generic/button.c \
+    src/interface/chainedobserver.c \
+    src/interface/messagequeue.c \
     src/digital/shiftregister.c \
     src/digital/registergroup.c \
     src/digital/dataselector.c \
