@@ -81,9 +81,9 @@ PRIVATE uint8_t getGPIOPinPinOffset(GPIOPin * pThis)
 {
     uint8_t offset = 0;
 
-    for (uint16_t i = 0x0001; (pThis->_pin & i) == 0x0000; i <<= 1, offset++)
+    for (uint16_t i = 0x0001U; (pThis->_pin & i) == 0x0000U; i <<= 1)
     {
-        // do nothing here
+        offset++;
     }
 
     return offset;

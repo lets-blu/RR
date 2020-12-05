@@ -1,13 +1,15 @@
-#include "gpiopin.h"
 #include "gtest/gtest.h"
+#include "gpiopin.h"
 
 class GPIOPinTest : public ::testing::Test
 {
 protected:
     GPIOPin pin;
+
     const uint16_t PIN = GPIO_PIN_13;
     GPIO_TypeDef * const PORT = GPIOC;
-    const uint32_t INVALID_MODE = 0xFFFFFFFFU;
+
+    const uint32_t INVALID_MODE = 0xFFFFFFFF;
 
     void SetUp()
     {
