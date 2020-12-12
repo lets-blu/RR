@@ -174,11 +174,11 @@ PUBLIC STATIC void vButtonInterruptHandler(void const * argument)
 }
 
 #ifdef UNIT_TEST
-extern int defaultOnButtonClickCallCount;
+int defaultOnButtonClickCallCount;
 
 PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
 {
-    defaultOnButtonClickCallCount++;
     MOCKABLE(defaultOnButtonClick)(pThis);
+    defaultOnButtonClickCallCount++;
 }
 #endif // UNIT_TEST

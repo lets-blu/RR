@@ -9,9 +9,9 @@ extern "C" {
 #include "stddef.h"
 #include "stdint.h"
 
-#include "ut.h"
 #include "gpiopin.h"
 #include "keywords.h"
+#include "testing.h"
 
 #ifdef UNIT_TEST
 #include "cmsis_os.h"

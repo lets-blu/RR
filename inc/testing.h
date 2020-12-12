@@ -1,5 +1,5 @@
-#ifndef __UT_H__
-#define __UT_H__
+#ifndef __TESTING_H__
+#define __TESTING_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -17,4 +17,4 @@ extern "C" {
 }
 #endif // __cplusplus
 
-#endif // __UT_H__
+#endif // __TESTING_H__

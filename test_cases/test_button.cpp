@@ -1,10 +1,11 @@
-#include "button.h"
 #include "gtest/gtest.h"
+#include "button.h"
 
 class ButtonTest : public ::testing::Test
 {
 protected:
     Button button;
+
     const uint16_t PIN = GPIO_PIN_10; // GPIO_PIN_8
     GPIO_TypeDef * const PORT = GPIOA;
 
@@ -19,22 +20,22 @@ protected:
     }
 };
 
-int defaultOnButtonClickCallCount;
+extern int defaultOnButtonClickCallCount;
 
 TEST_F(ButtonTest, isButtonClicked)
 {
-    RESET_GPIO(PORT);
+    RESET_GPIO_INSTANCE(PORT);
 
-    PORT->IDRArray[0] |= PIN;
-    EXPECT_FALSE(isButtonClicked(&button));
-
-    PORT->IDRArray[1] &= ~PIN;
+    PORT->IDRArray[0] &= ~PIN;
     EXPECT_TRUE(isButtonClicked(&button));
+
+    PORT->IDRArray[1] |= PIN;
+    EXPECT_FALSE(isButtonClicked(&button));
 }
 
 TEST_F(ButtonTest, onButtonInterruptOccurred)
 {
-    RESET_GPIO(PORT);
+    RESET_GPIO_INSTANCE(PORT);
     PORT->IDRArray[0] &= ~PIN;
     defaultOnButtonClickCallCount = 0;
 
@@ -65,4 +66,14 @@ TEST_F(ButtonTest, setButtonInterruptEnabled)
     setButtonInterruptEnabled(&button, false);
     EXPECT_EQ(1, HAL_NVIC_DisableIRQCallCount);
     EXPECT_FALSE(isButtonInterruptEnabled(&button));
+}
+
+TEST_F(ButtonTest, defaultOnButtonClick)
+{
+    // test on setButtonInterruptEnabled
+}
+
+TEST_F(ButtonTest, vButtonInterruptHandler)
+{
+    // test on setButtonInterruptEnabled
 }

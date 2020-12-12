@@ -105,7 +105,7 @@ TEST_F(RegisterGroupTest, resetRegisterGroupBit)
 
 TEST_F(RegisterGroupTest, setRegisterGroupOutputEnabled)
 {
-    RESET_GPIO(PORT);
+    RESET_GPIO_INSTANCE(PORT);
 
     setRegisterGroupOutputEnabled(&registerGroup, true);
     EXPECT_EQ(0x00U, PORT->ODRArray[0] & OE_PIN);
@@ -119,7 +119,7 @@ TEST_F(RegisterGroupTest, outputRegisterGroup)
     setRegisterGroupBit(&registerGroup, BIT);
     setRegisterGroupOutputEnabled(&registerGroup, true);
 
-    RESET_GPIO(PORT);
+    RESET_GPIO_INSTANCE(PORT);
     outputRegisterGroup(&registerGroup);
 
     for (int index = 0; index < REGISTERS_COUNT; index++)
