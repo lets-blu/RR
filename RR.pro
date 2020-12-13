@@ -40,4 +40,5 @@ SOURCES += \
     test_cases/test_button.cpp \
     test_cases/test_shiftregister.cpp \
     test_cases/test_registergroup.cpp \
-    test_cases/test_dataselector.cpp
+    test_cases/test_dataselector.cpp \
+    test_cases/test_chainedobserver.cpp

@@ -8,19 +8,18 @@ extern "C" {
 struct IObserver;
 
 struct ISubject {
-    void (*registerObserver)(struct ISubject * pThis, struct IObserver * observer);
-    void (*removeObserver)(struct ISubject * pThis, struct IObserver * observer);
-    void (*notifyObservers)(struct ISubject * pThis);
+    void (*attach)(struct ISubject * subject, struct IObserver * observer);
+    void (*detach)(struct ISubject * subject, struct IObserver * observer);
+    void (*notify)(struct ISubject * subject);
 };
 
 struct IObserver {
-    void (*update)(struct IObserver * pThis, struct ISubject * subject);
+    void (*update)(struct IObserver * observer, struct ISubject * subject);
 };
 
-typedef void (*register_observer_fp)(struct ISubject *, struct IObserver *);
-typedef void (*remove_observer_fp)(struct ISubject *, struct IObserver *);
-typedef void (*notify_observers_fp)(struct ISubject *);
-
+typedef void (*attach_observer_fp)(struct ISubject *, struct IObserver *);
+typedef void (*detach_observer_fp)(struct ISubject *, struct IObserver *);
+typedef void (*notify_observer_fp)(struct ISubject *);
 typedef void (*update_observer_fp)(struct IObserver *, struct ISubject *);
 
 #ifdef __cplusplus

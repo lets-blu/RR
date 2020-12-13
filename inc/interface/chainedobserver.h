@@ -11,7 +11,7 @@ extern "C" {
 #include "observer.h"
 
 typedef struct ChainedObserver {
-    struct IObserver observer; // implementation, must be the first
+    struct IObserver observer;
     struct ChainedObserver * _next;
 } ChainedObserver;
 
