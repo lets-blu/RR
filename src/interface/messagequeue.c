@@ -1,15 +1,14 @@
 #include "messagequeue.h"
 
 // Private method(s)
-PRIVATE STATIC void * createMessageQueueBase(uint8_t itemCount, uint8_t itemSize);
+PRIVATE STATIC void * createMessageQueueBase(uint8_t queueLength, uint8_t itemSize);
 
-#ifdef UNIT_TEST
-PUBLIC MessageQueue newMessageQueue(uint8_t itemCount, uint8_t itemSize)
+PUBLIC MessageQueue newMessageQueue(uint8_t queueLength, uint8_t itemSize)
 {
     MessageQueue queue = {
-        ._base          = createMessageQueueBase(itemCount, itemSize),
+        ._base          = createMessageQueueBase(queueLength, itemSize),
 
-        ._itemCount     = itemCount,
+        ._queueLength   = queueLength,
         ._itemSize      = itemSize,
 
         ._headOffset    = 0,
@@ -19,28 +18,19 @@ PUBLIC MessageQueue newMessageQueue(uint8_t itemCount, uint8_t itemSize)
     return queue;
 }
 
-PUBLIC void enMessageQueue(MessageQueue * pThis, void * item)
+#ifdef UNIT_TEST
+PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
 {
-    if (pThis->_base == NULL)
-    {
-        return;
-    }
-
-    if (getMessageQueueCount(pThis) < pThis->_itemCount)
+    if (getMessageQueueItemCount(pThis) < pThis->_queueLength)
     {
         memcpy(pThis->_base + pThis->_tailOffset, item, pThis->_itemSize);
         pThis->_tailOffset += pThis->_itemSize;
     }
 }
 
-PUBLIC void deMessageQueue(MessageQueue * pThis, void * item)
+PUBLIC void deMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
 {
-    if (pThis->_base == NULL)
-    {
-        return;
-    }
-
-    if (getMessageQueueCount(pThis) > 0)
+    if (getMessageQueueItemCount(pThis) > 0)
     {
         memcpy(item, pThis->_base + pThis->_headOffset, pThis->_itemSize);
         pThis->_headOffset += pThis->_itemSize;
@@ -53,51 +43,47 @@ PUBLIC void deMessageQueue(MessageQueue * pThis, void * item)
         }
     }
 }
-PUBLIC void peekMessageQueue(MessageQueue * pThis, void * item)
-{
-    if (pThis->_base == NULL)
-    {
-        return;
-    }
 
-    if (getMessageQueueCount(pThis) > 0)
+PUBLIC void peekMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
+{
+    if (getMessageQueueItemCount(pThis) > 0)
     {
         memcpy(item, pThis->_base + pThis->_headOffset, pThis->_itemSize);
     }
 }
 
-PUBLIC uint8_t getMessageQueueCount(MessageQueue * pThis)
+PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis)
 {
     return ((pThis->_tailOffset - pThis->_headOffset) / pThis->_itemSize);
 }
 
-PRIVATE STATIC void * createMessageQueueBase(uint8_t itemCount, uint8_t itemSize)
+PRIVATE STATIC void * createMessageQueueBase(uint8_t queueLength, uint8_t itemSize)
 {
-    return malloc(itemCount * itemSize);
+    return malloc(queueLength * itemSize);
 }
 #else
-PUBLIC void enMessageQueue(MessageQueue * pThis, void * item)
+PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
 {
-    xQueueSend(pThis->_base, item, 0);
+    xQueueSend(pThis->_base, item, portMAX_DELAY);
 }
 
-PUBLIC void deMessageQueue(MessageQueue * pThis, void * item)
+PUBLIC void deMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
 {
-    xQueueReceive(pThis->_base, item, 0);
+    xQueueReceive(pThis->_base, item, portMAX_DELAY);
 }
 
-PUBLIC void peekMessageQueue(MessageQueue * pThis, void * item)
+PUBLIC void peekMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
 {
-    xQueuePeek(pThis->_base, item, 0);
+    xQueuePeek(pThis->_base, item, portMAX_DELAY);
 }
 
-PUBLIC uint8_t getMessageQueueCount(MessageQueue * pThis)
+PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis)
 {
     return uxQueueMessagesWaiting(pThis->_base);
 }
 
-PRIVATE STATIC void * createMessageQueueBase(uint8_t itemCount, uint8_t itemSize)
+PRIVATE STATIC void * createMessageQueueBase(uint8_t queueLength, uint8_t itemSize)
 {
-    return xQueueCreate(itemCount, itemSize);
+    return xQueueCreate(queueLength, itemSize);
 }
 #endif // UNIT_TEST

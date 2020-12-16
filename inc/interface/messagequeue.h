@@ -5,39 +5,35 @@
 extern "C" {
 #endif // __cplusplus
 
-#include "stddef.h"
 #include "stdint.h"
 #include "stdlib.h"
 #include "string.h"
 
-#ifdef UNIT_TEST
 #include "cmsis_os.h"
-#else
-#include "FreeRTOS.h"
-#include "queue.h"
-#endif // UNIT_TEST
 
 #include "keywords.h"
 
 typedef struct {
     void * _base;
 
-    uint8_t _itemCount;
+    uint8_t _queueLength;
     uint8_t _itemSize;
 
     uint8_t _headOffset;
     uint8_t _tailOffset;
 } MessageQueue;
 
-// Constructor(s)
-PUBLIC MessageQueue newMessageQueue(uint8_t itemCount, uint8_t itemSize);
+typedef void MessageQueueItem;
+
+// Constructor
+PUBLIC MessageQueue newMessageQueue(uint8_t queueLength, uint8_t itemSize);
 
 // Public method(s)
-PUBLIC void enMessageQueue(MessageQueue * pThis, void * item);
-PUBLIC void deMessageQueue(MessageQueue * pThis, void * item);
-PUBLIC void peekMessageQueue(MessageQueue * pThis, void * item);
+PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item);
+PUBLIC void deMessageQueue(MessageQueue * pThis, MessageQueueItem * item);
+PUBLIC void peekMessageQueue(MessageQueue * pThis, MessageQueueItem * item);
 
-PUBLIC uint8_t getMessageQueueCount(MessageQueue * pThis);
+PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis);
 
 #ifdef __cplusplus
 }
