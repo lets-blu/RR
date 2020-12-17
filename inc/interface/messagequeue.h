@@ -27,6 +27,7 @@ typedef void MessageQueueItem;
 
 // Constructor
 PUBLIC MessageQueue newMessageQueue(uint8_t queueLength, uint8_t itemSize);
+PUBLIC void deleteMessageQueue(MessageQueue * pThis);
 
 // Public method(s)
 PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item);

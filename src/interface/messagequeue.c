@@ -2,6 +2,7 @@
 
 // Private method(s)
 PRIVATE STATIC void * createMessageQueueBase(uint8_t queueLength, uint8_t itemSize);
+PRIVATE STATIC void destoryMessageQueueBase(void * base);
 
 PUBLIC MessageQueue newMessageQueue(uint8_t queueLength, uint8_t itemSize)
 {
@@ -16,6 +17,18 @@ PUBLIC MessageQueue newMessageQueue(uint8_t queueLength, uint8_t itemSize)
     };
 
     return queue;
+}
+
+PUBLIC void deleteMessageQueue(MessageQueue * pThis)
+{
+    destoryMessageQueueBase(pThis->_base);
+    pThis->_base = NULL;
+
+    pThis->_queueLength = 0;
+    pThis->_itemSize = 0;
+
+    pThis->_headOffset = 0;
+    pThis->_tailOffset = 0;
 }
 
 #ifdef UNIT_TEST
@@ -61,6 +74,11 @@ PRIVATE STATIC void * createMessageQueueBase(uint8_t queueLength, uint8_t itemSi
 {
     return malloc(queueLength * itemSize);
 }
+
+PRIVATE STATIC void destoryMessageQueueBase(void * base)
+{
+    free(base);
+}
 #else
 PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
 {
@@ -85,5 +103,10 @@ PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis)
 PRIVATE STATIC void * createMessageQueueBase(uint8_t queueLength, uint8_t itemSize)
 {
     return xQueueCreate(queueLength, itemSize);
+}
+
+PRIVATE STATIC void destoryMessageQueueBase(void * base)
+{
+    vQueueDelete(base);
 }
 #endif // UNIT_TEST
