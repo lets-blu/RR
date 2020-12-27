@@ -9,9 +9,10 @@ extern "C" {
 
 #include "keywords.h"
 #include "observer.h"
+#include "testing.h"
 
 typedef struct ChainedObserver {
-    struct IObserver observer;
+    IObserver observer;
     struct ChainedObserver * _next;
 } ChainedObserver;
 
@@ -19,8 +20,8 @@ typedef struct ChainedObserver {
 PUBLIC ChainedObserver newChainedObserver(void);
 
 // Public method(s)
-PUBLIC VIRTUAL void defaultUpdateChainedObserver(ChainedObserver * pThis, 
-    struct ISubject * subject);
+PUBLIC VIRTUAL void defaultUpdateChainedObserver(ChainedObserver * pThis,
+    ISubject * subject);
 
 #ifdef __cplusplus
 }

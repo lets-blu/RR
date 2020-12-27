@@ -13,8 +13,8 @@ PUBLIC ChainedObserver newChainedObserver(void)
     return observer;
 }
 
-PUBLIC VIRTUAL void defaultUpdateChainedObserver(ChainedObserver * pThis,
-    struct ISubject * subject)
+PUBLIC VIRTUAL void MOCKABLE(defaultUpdateChainedObserver)(ChainedObserver * pThis,
+    ISubject * subject)
 {
     (void)pThis;
     (void)subject;

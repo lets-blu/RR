@@ -7,15 +7,15 @@ extern "C" {
 
 struct IObserver;
 
-struct ISubject {
+typedef struct ISubject {
     void (*attach)(struct ISubject * subject, struct IObserver * observer);
     void (*detach)(struct ISubject * subject, struct IObserver * observer);
     void (*notify)(struct ISubject * subject);
-};
+} ISubject;
 
-struct IObserver {
+typedef struct IObserver {
     void (*update)(struct IObserver * observer, struct ISubject * subject);
-};
+} IObserver;
 
 typedef void (*attach_observer_fp)(struct ISubject *, struct IObserver *);
 typedef void (*detach_observer_fp)(struct ISubject *, struct IObserver *);

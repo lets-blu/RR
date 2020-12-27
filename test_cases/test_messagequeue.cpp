@@ -65,4 +65,3 @@ TEST_F(MessageQueueTest, getMessageQueueItemCount)
         EXPECT_EQ(i + 1, getMessageQueueItemCount(&queue));
     }
 }
-
