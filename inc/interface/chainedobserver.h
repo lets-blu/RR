@@ -20,8 +20,8 @@ typedef struct ChainedObserver {
 PUBLIC ChainedObserver newChainedObserver(void);
 
 // Public method(s)
-PUBLIC VIRTUAL void defaultUpdateChainedObserver(ChainedObserver * pThis,
-    ISubject * subject);
+PUBLIC VIRTUAL void defaultUpdateChainedObserver(
+    ChainedObserver * pThis, ISubject * subject);
 
 #ifdef __cplusplus
 }

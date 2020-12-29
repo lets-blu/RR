@@ -23,8 +23,8 @@ protected:
 
 int ChainedObserverTest::defaultUpdateChainedObserverCallCount;
 
-extern "C" void MOCKABLE(defaultUpdateChainedObserver)(ChainedObserver * pThis,
-    ISubject * subject);
+extern "C" void MOCKABLE(defaultUpdateChainedObserver)(
+    ChainedObserver * pThis, ISubject * subject);
 
 TEST_F(ChainedObserverTest, defaultUpdateChainedObserver)
 {
@@ -34,8 +34,8 @@ TEST_F(ChainedObserverTest, defaultUpdateChainedObserver)
     EXPECT_EQ(1, defaultUpdateChainedObserverCallCount);
 }
 
-PUBLIC VIRTUAL void defaultUpdateChainedObserver(ChainedObserver * pThis,
-    ISubject * subject)
+PUBLIC VIRTUAL void defaultUpdateChainedObserver(
+    ChainedObserver * pThis, ISubject * subject)
 {
     MOCKABLE(defaultUpdateChainedObserver)(pThis, subject);
     ChainedObserverTest::defaultUpdateChainedObserverCallCount++;
