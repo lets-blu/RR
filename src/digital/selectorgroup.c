@@ -35,6 +35,14 @@ PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins)
     return group;
 }
 
+PUBLIC void deleteSelectorGroup(SelectorGroup * pThis)
+{
+    if (pThis->_messagesQueue._base != NULL)
+    {
+        deleteMessageQueue(&pThis->_messagesQueue);
+    }
+}
+
 PUBLIC void addSelectorGroupSelector(SelectorGroup * pThis, DataSelector * sel)
 {
     sel->_next = pThis->_selectors;

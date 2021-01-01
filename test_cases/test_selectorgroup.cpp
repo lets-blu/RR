@@ -41,7 +41,7 @@ protected:
 
     void TearDown()
     {
-        // do nothing here
+        deleteSelectorGroup(&selectorGroup);
     }
 };
 
@@ -57,7 +57,7 @@ TEST_F(SelectorGroupTest, addSelectorGroupSelector)
 
 TEST_F(SelectorGroupTest, getSelectorGroupMessage)
 {
-
+    // test on vScanSelectorGroupThread
 }
 
 TEST_F(SelectorGroupTest, isSelectorGroupScanEnabled)
@@ -68,10 +68,42 @@ TEST_F(SelectorGroupTest, isSelectorGroupScanEnabled)
 TEST_F(SelectorGroupTest, setSelectorGroupScanEnabled)
 {
     setSelectorGroupScanEnabled(&selectorGroup, false);
-    setSelectorGroupScanEnabled(&selectorGroup, false);
-    EXPECT_FALSE(isSelectorGroupScanEnabled(&selectorGroup));
-
-    setSelectorGroupScanEnabled(&selectorGroup, true);
     setSelectorGroupScanEnabled(&selectorGroup, true);
     EXPECT_TRUE(isSelectorGroupScanEnabled(&selectorGroup));
+
+    setSelectorGroupScanEnabled(&selectorGroup, true);
+    setSelectorGroupScanEnabled(&selectorGroup, false);
+    EXPECT_FALSE(isSelectorGroupScanEnabled(&selectorGroup));
+}
+
+TEST_F(SelectorGroupTest, attachSelectorGroupObserver)
+{
+    EXPECT_EQ(&chainedObservers[OBSERVER_COUNT - 1], selectorGroup._observers);
+
+    for (int i = 0; i < OBSERVER_COUNT - 1; i++)
+    {
+        EXPECT_EQ(&chainedObservers[i], chainedObservers[i + 1]._next);
+    }
+}
+
+TEST_F(SelectorGroupTest, detachSelectorGroupObserver)
+{
+    for (int i = 0; i < OBSERVER_COUNT - 1; i++)
+    {
+        detachSelectorGroupObserver(&selectorGroup, &chainedObservers[i].observer);
+        EXPECT_EQ(NULL, chainedObservers[i + 1]._next);
+    }
+
+    detachSelectorGroupObserver(&selectorGroup, &chainedObservers[OBSERVER_COUNT - 1].observer);
+    EXPECT_EQ(NULL, selectorGroup._observers);
+}
+
+TEST_F(SelectorGroupTest, notifySelectorGroupObservers)
+{
+    // test on vScanSelectorGroupThread
+}
+
+TEST_F(SelectorGroupTest, vScanSelectorGroupThread)
+{
+
 }

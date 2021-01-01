@@ -34,6 +34,7 @@ typedef struct {
 
 // Constructor
 PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins);
+PUBLIC void deleteSelectorGroup(SelectorGroup * pThis);
 
 // Public method(s)
 PUBLIC void addSelectorGroupSelector(SelectorGroup * pThis, DataSelector * sel);
