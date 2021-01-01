@@ -4,10 +4,10 @@
 class DataSelectorTest : public ::testing::Test
 {
 protected:
+    DataSelector dataSelector;
+
     const uint8_t START_ADDRESS = 0;
     const uint8_t END_ADDRESS = 7;
-
-    DataSelector dataSelector;
 
     void SetUp()
     {

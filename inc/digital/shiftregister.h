@@ -7,6 +7,7 @@ extern "C" {
 
 #include "stddef.h"
 #include "stdint.h"
+
 #include "keywords.h"
 
 typedef struct ShiftRegister {

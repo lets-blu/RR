@@ -1,5 +1,5 @@
-#include "shiftregister.h"
 #include "gtest/gtest.h"
+#include "shiftregister.h"
 
 #define TEST_BIT2MASK(bit)  (0x01U << (bit))
 

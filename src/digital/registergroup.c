@@ -14,8 +14,8 @@ PUBLIC RegisterGroup newRegisterGroup(RegisterGroupPins pins)
 {
     RegisterGroup group = {
         ._pins              = pins,
-        ._registers         = NULL,
-        ._registersCount    = 0
+        ._registersCount    = 0,
+        ._registers         = NULL
     };
 
     setupGPIOPin(&pins.oePin, OUTPUT);
@@ -29,9 +29,9 @@ PUBLIC RegisterGroup newRegisterGroup(RegisterGroupPins pins)
 
 PUBLIC void addRegisterGroupRegister(RegisterGroup * pThis, ShiftRegister * reg)
 {
+    pThis->_registersCount++;
     reg->_next = pThis->_registers;
     pThis->_registers = reg;
-    pThis->_registersCount++;
 }
 
 PUBLIC void setRegisterGroupBit(RegisterGroup * pThis, uint8_t bit)

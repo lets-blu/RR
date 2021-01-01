@@ -1,8 +1,4 @@
-#include "stddef.h"
-#include "stdint.h"
 #include "gtest/gtest.h"
-
-#include "shiftregister.h"
 #include "registergroup.h"
 
 #define TEST_SLL(data)      ((data) <<= 1)
@@ -16,14 +12,14 @@ protected:
     const uint8_t BIT = 7;
     static const int REGISTERS_COUNT = 2;
 
+    RegisterGroup registerGroup;
+    ShiftRegister shiftRegisters[REGISTERS_COUNT];
+
     GPIO_TypeDef * const PORT = GPIOA;
     const uint16_t OE_PIN = GPIO_PIN_4;
     const uint16_t SER_PIN = GPIO_PIN_7;
     const uint16_t SCK_PIN = GPIO_PIN_5;
     const uint16_t RCK_PIN = GPIO_PIN_3;
-
-    RegisterGroup registerGroup;
-    ShiftRegister shiftRegisters[REGISTERS_COUNT];
 
     void SetUp()
     {

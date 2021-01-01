@@ -34,6 +34,7 @@ SOURCES += \
     src/digital/shiftregister.c \
     src/digital/registergroup.c \
     src/digital/dataselector.c \
+    src/digital/selectorgroup.c \
     test_cases/main.cpp \
     test_cases/test_gpiopin.cpp \
     test_cases/test_led.cpp \
@@ -42,4 +43,5 @@ SOURCES += \
     test_cases/test_registergroup.cpp \
     test_cases/test_dataselector.cpp \
     test_cases/test_chainedobserver.cpp \
-    test_cases/test_messagequeue.cpp
+    test_cases/test_messagequeue.cpp \
+    test_cases/test_selectorgroup.cpp
