@@ -11,7 +11,8 @@ INCLUDEPATH *= \
     inc \
     inc/generic \
     inc/digital \
-    inc/interface
+    inc/interface \
+    inc/watchdog
 
 QMAKE_CFLAGS += \
     -DUNIT_TEST \
@@ -35,6 +36,7 @@ SOURCES += \
     src/digital/registergroup.c \
     src/digital/dataselector.c \
     src/digital/selectorgroup.c \
+    src/watchdog/watchdog.c \
     test_cases/main.cpp \
     test_cases/test_gpiopin.cpp \
     test_cases/test_led.cpp \
@@ -44,4 +46,5 @@ SOURCES += \
     test_cases/test_dataselector.cpp \
     test_cases/test_chainedobserver.cpp \
     test_cases/test_messagequeue.cpp \
-    test_cases/test_selectorgroup.cpp
+    test_cases/test_selectorgroup.cpp \
+    test_cases/test_watchdog.cpp
