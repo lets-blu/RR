@@ -3,8 +3,11 @@
 
 class SelectorGroupTest : public ::testing::Test
 {
+public:
+    static const uint8_t ADDRESS = 7;
+    static const GPIOPinState STATE = HIGH;
+
 protected:
-    const uint8_t BIT = 7;
     static const int SELECTOR_COUNT = 2;
     static const int OBSERVER_COUNT = 2;
 
@@ -18,6 +21,8 @@ protected:
 
     void SetUp()
     {
+        void updateTestChainedObserver(ChainedObserver * observer, ISubject * subject);
+
         GPIOPin scanPin = newGPIOPin(PORT, SCAN_PIN);
         GPIOPin addressPins = newGPIOPin(PORT, ADDRESS_PINS);
 
@@ -35,6 +40,7 @@ protected:
         for (int i = 0; i < OBSERVER_COUNT; i++)
         {
             chainedObservers[i] = newChainedObserver();
+            chainedObservers[i].observer.update = (update_observer_fp)updateTestChainedObserver;
             attachSelectorGroupObserver(&selectorGroup, &chainedObservers[i].observer);
         }
     }
@@ -43,7 +49,15 @@ protected:
     {
         deleteSelectorGroup(&selectorGroup);
     }
+
+    int getInputIndex(uint8_t address)
+    {
+        int observerLocation = OBSERVER_COUNT + (address / 8) - 1;
+        return observerLocation * 8 + address;
+    }
 };
+
+static int updateTestChainedObserverMatchCount;
 
 TEST_F(SelectorGroupTest, addSelectorGroupSelector)
 {
@@ -105,5 +119,26 @@ TEST_F(SelectorGroupTest, notifySelectorGroupObservers)
 
 TEST_F(SelectorGroupTest, vScanSelectorGroupThread)
 {
+    int count = OBSERVER_COUNT;
+    int index = getInputIndex(ADDRESS);
 
+    RESET_GPIO_INSTANCE(PORT);
+    updateTestChainedObserverMatchCount = 0;
+    setSelectorGroupScanEnabled(&selectorGroup, true);
+
+    PORT->IDRArray[index] |= SCAN_PIN;
+    vScanSelectorGroupThread(&selectorGroup);
+    EXPECT_EQ(count, updateTestChainedObserverMatchCount);
+}
+
+void updateTestChainedObserver(ChainedObserver * observer, ISubject * subject)
+{
+    (void)observer;
+    SelectorMessage message = getSelectorGroupMessage((SelectorGroup *)subject);
+
+    if ((message.address == SelectorGroupTest::ADDRESS)
+        && (message.state == SelectorGroupTest::STATE))
+    {
+        updateTestChainedObserverMatchCount++;
+    }
 }

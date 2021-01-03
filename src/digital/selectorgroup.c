@@ -118,7 +118,7 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis)
     if (pThis->_messagesQueue._base == NULL)
     {
         uint8_t queueLength = getSelectorGroupSelectorsCount(pThis);
-        pThis->_messagesQueue = newMessageQueue(queueLength, sizeof(SelectorMessage));
+        pThis->_messagesQueue = newMessageQueue(queueLength * 8, sizeof(SelectorMessage));
     }
 
     osThreadDef(scanThread, vScanSelectorGroupThread, osPriorityNormal, 0, 128);
