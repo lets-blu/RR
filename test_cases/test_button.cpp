@@ -20,7 +20,8 @@ protected:
     }
 };
 
-extern int defaultOnButtonClickCallCount;
+int defaultOnButtonClickCallCount;
+extern "C" void MOCKABLE(defaultOnButtonClick)(Button * pThis);
 
 TEST_F(ButtonTest, isButtonClicked)
 {
@@ -35,14 +36,7 @@ TEST_F(ButtonTest, isButtonClicked)
 
 TEST_F(ButtonTest, onButtonInterruptOccurred)
 {
-    RESET_GPIO_INSTANCE(PORT);
-    PORT->IDRArray[0] &= ~PIN;
-    defaultOnButtonClickCallCount = 0;
-
-    setButtonInterruptEnabled(&button, true);
-    onButtonInterruptOccurred(&button);
-    vButtonInterruptHandler(&button);
-    EXPECT_EQ(1, defaultOnButtonClickCallCount);
+    // test on vButtonInterruptHandler
 }
 
 TEST_F(ButtonTest, isButtonInterruptEnabled)
@@ -70,10 +64,23 @@ TEST_F(ButtonTest, setButtonInterruptEnabled)
 
 TEST_F(ButtonTest, defaultOnButtonClick)
 {
-    // test on setButtonInterruptEnabled
+    // test on vButtonInterruptHandler
 }
 
 TEST_F(ButtonTest, vButtonInterruptHandler)
 {
-    // test on setButtonInterruptEnabled
+    RESET_GPIO_INSTANCE(PORT);
+    PORT->IDRArray[0] &= ~PIN;
+    defaultOnButtonClickCallCount = 0;
+
+    setButtonInterruptEnabled(&button, true);
+    onButtonInterruptOccurred(&button);
+    vButtonInterruptHandler(&button);
+    EXPECT_EQ(1, defaultOnButtonClickCallCount);
+}
+
+PUBLIC VIRTUAL void defaultOnButtonClick(Button * pThis)
+{
+    MOCKABLE(defaultOnButtonClick)(pThis);
+    defaultOnButtonClickCallCount++;
 }
