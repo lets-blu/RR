@@ -22,6 +22,10 @@ protected:
     }
 };
 
+extern "C" GPIOPinState MOCKABLE(readGPIOPin)(GPIOPin * pThis);
+extern "C" void MOCKABLE(writeGPIOPin)(GPIOPin * pThis, GPIOPinState state);
+extern "C" void MOCKABLE(writeGPIOPinValue)(GPIOPin * pThis, uint16_t value);
+
 TEST_F(GPIOPinTest, setupGPIOPin)
 {
     HAL_GPIO_InitCallCount = 0;
@@ -74,4 +78,22 @@ TEST_F(GPIOPinTest, getGPIOPinPort)
 TEST_F(GPIOPinTest, getGPIOPinPin)
 {
     EXPECT_EQ(PIN, getGPIOPinPin(&pin));
+}
+
+PUBLIC GPIOPinState readGPIOPin(GPIOPin * pThis)
+{
+    pThis->_port->IDR = pThis->_port->IDRArray[pThis->_port->IDRIndex++];
+    return MOCKABLE(readGPIOPin)(pThis);
+}
+
+PUBLIC void writeGPIOPin(GPIOPin * pThis, GPIOPinState state)
+{
+    MOCKABLE(writeGPIOPin)(pThis, state);
+    pThis->_port->ODRArray[pThis->_port->ODRIndex++] = pThis->_port->ODR;
+}
+
+PUBLIC void writeGPIOPinValue(GPIOPin * pThis, uint16_t value)
+{
+    MOCKABLE(writeGPIOPinValue)(pThis, value);
+    pThis->_port->ODRArray[pThis->_port->ODRIndex++] = pThis->_port->ODR;
 }

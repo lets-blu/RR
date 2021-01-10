@@ -88,23 +88,3 @@ PRIVATE uint8_t getGPIOPinPinOffset(GPIOPin * pThis)
 
     return offset;
 }
-
-#ifdef UNIT_TEST
-PUBLIC GPIOPinState readGPIOPin(GPIOPin * pThis)
-{
-    pThis->_port->IDR = pThis->_port->IDRArray[pThis->_port->IDRIndex++];
-    return MOCKABLE(readGPIOPin)(pThis);
-}
-
-PUBLIC void writeGPIOPin(GPIOPin * pThis, GPIOPinState state)
-{
-    MOCKABLE(writeGPIOPin)(pThis, state);
-    pThis->_port->ODRArray[pThis->_port->ODRIndex++] = pThis->_port->ODR;
-}
-
-PUBLIC void writeGPIOPinValue(GPIOPin * pThis, uint16_t value)
-{
-    MOCKABLE(writeGPIOPinValue)(pThis, value);
-    pThis->_port->ODRArray[pThis->_port->ODRIndex++] = pThis->_port->ODR;
-}
-#endif // UNIT_TEST
