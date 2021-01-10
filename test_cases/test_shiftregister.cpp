@@ -7,6 +7,7 @@ class ShiftRegisterTest : public ::testing::Test
 {
 protected:
     ShiftRegister shiftRegister;
+
     const uint8_t BIT = 0;
 
     void SetUp()

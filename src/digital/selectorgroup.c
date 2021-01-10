@@ -1,6 +1,7 @@
 #include "selectorgroup.h"
 
-#define SELGRP_READ_INTERVAL    10
+#define SELGRP_READ_INTERVAL    10U
+#define SELGRP_SCAN_INTERVAL    100U
 
 // Private method(s)
 PRIVATE void scanSelectorGroup(SelectorGroup * pThis);
@@ -195,6 +196,6 @@ PUBLIC STATIC void vScanSelectorGroupThread(void const * argument)
     LOOP
     {
         scanSelectorGroup(group);
-        osDelay(100);
+        osDelay(SELGRP_SCAN_INTERVAL);
     }
 }
