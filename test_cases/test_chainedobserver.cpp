@@ -3,16 +3,12 @@
 
 class ChainedObserverTest : public ::testing::Test
 {
-public:
-    static int defaultUpdateChainedObserverCallCount;
-
 protected:
     ChainedObserver observer;
 
     void SetUp()
     {
         observer = newChainedObserver();
-        observer.observer.update = (update_observer_fp)defaultUpdateChainedObserver;
     }
 
     void TearDown()
@@ -21,8 +17,7 @@ protected:
     }
 };
 
-int ChainedObserverTest::defaultUpdateChainedObserverCallCount;
-
+int defaultUpdateChainedObserverCallCount;
 extern "C" void MOCKABLE(defaultUpdateChainedObserver)(
     ChainedObserver * pThis, ISubject * subject);
 
@@ -38,5 +33,5 @@ PUBLIC VIRTUAL void defaultUpdateChainedObserver(
     ChainedObserver * pThis, ISubject * subject)
 {
     MOCKABLE(defaultUpdateChainedObserver)(pThis, subject);
-    ChainedObserverTest::defaultUpdateChainedObserverCallCount++;
+    defaultUpdateChainedObserverCallCount++;
 }
