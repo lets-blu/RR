@@ -9,7 +9,7 @@ PRIVATE void scanSelectorGroup(SelectorGroup * pThis);
 PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis);
 PRIVATE void disableSelectorGroupScan(SelectorGroup * pThis);
 
-PRIVATE uint8_t getSelectorGroupSelectorsCount(SelectorGroup * pThis);
+PRIVATE uint8_t getSelectorGroupAddressCount(SelectorGroup * pThis);
 
 PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins)
 {
@@ -118,8 +118,8 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis)
 
     if (pThis->_messagesQueue._base == NULL)
     {
-        uint8_t queueLength = getSelectorGroupSelectorsCount(pThis);
-        pThis->_messagesQueue = newMessageQueue(queueLength * 8, sizeof(SelectorMessage));
+        uint8_t queueLength = getSelectorGroupAddressCount(pThis);
+        pThis->_messagesQueue = newMessageQueue(queueLength, sizeof(SelectorMessage));
     }
 
     osThreadDef(scanThread, vScanSelectorGroupThread, osPriorityNormal, 0, 128);
@@ -135,13 +135,16 @@ PRIVATE void disableSelectorGroupScan(SelectorGroup * pThis)
     }
 }
 
-PRIVATE uint8_t getSelectorGroupSelectorsCount(SelectorGroup * pThis)
+PRIVATE uint8_t getSelectorGroupAddressCount(SelectorGroup * pThis)
 {
     uint8_t count = 0;
 
     for (DataSelector * sel = pThis->_selectors; sel != NULL; sel = sel->_next)
     {
-        count++;
+        for (uint8_t addr = sel->_startAddress; addr <= sel->_endAddress; addr++)
+        {
+            count++;
+        }
     }
 
     return count;

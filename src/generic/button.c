@@ -110,17 +110,17 @@ PRIVATE void enableButtonInterrupt(Button * pThis)
         return;
     }
 
+    // get interrupt mode
+    if (pThis->_clickState == LOW)
+    {
+        mode = INTERRUPT_FALLING | PULLUP;
+    }
+
     // initialize binary semaphore for interrupt handler
     if (pThis->_interruptSemaphore == NULL)
     {
         osSemaphoreDef(semaphore);
         pThis->_interruptSemaphore = osSemaphoreCreate(osSemaphore(semaphore), 1);
-    }
-
-    // get interrupt mode
-    if (pThis->_clickState == LOW)
-    {
-        mode = INTERRUPT_FALLING | PULLUP;
     }
 
     // enable button interrupt

@@ -33,7 +33,7 @@ typedef struct Button {
     void (*onClick)(struct Button * pThis);
 } Button;
 
-typedef void (*on_button_click_fp)(Button *);
+typedef void (*button_clicked_fp)(Button *);
 
 // Constructor
 PUBLIC Button newButton(GPIOPin pin, GPIOPinState clickState);
