@@ -40,7 +40,8 @@ protected:
         for (int i = 0; i < OBSERVER_COUNT; i++)
         {
             chainedObservers[i] = newChainedObserver();
-            chainedObservers[i].observer.update = (update_observer_fp)updateTestChainedObserver;
+            chainedObservers[i].observer.update
+                = (update_observer_fp)updateTestChainedObserver;
             attachSelectorGroupObserver(&selectorGroup, &chainedObservers[i].observer);
         }
     }
@@ -108,7 +109,8 @@ TEST_F(SelectorGroupTest, detachSelectorGroupObserver)
         EXPECT_EQ(NULL, chainedObservers[i + 1]._next);
     }
 
-    detachSelectorGroupObserver(&selectorGroup, &chainedObservers[OBSERVER_COUNT - 1].observer);
+    detachSelectorGroupObserver(
+        &selectorGroup, &chainedObservers[OBSERVER_COUNT - 1].observer);
     EXPECT_EQ(NULL, selectorGroup._observers);
 }
 

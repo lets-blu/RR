@@ -84,7 +84,8 @@ TEST_F(RegisterGroupTest, setRegisterGroupBit)
 
     if (shiftRegister != NULL)
     {
-        EXPECT_EQ(TEST_BIT2MASK(BIT % 8), shiftRegister->_data & TEST_BIT2MASK(BIT % 8));
+        EXPECT_EQ(
+            TEST_BIT2MASK(BIT % 8), shiftRegister->_data & TEST_BIT2MASK(BIT % 8));
     }
 }
 
