@@ -10,8 +10,8 @@ CONFIG += thread
 INCLUDEPATH *= \
     inc \
     inc/generic \
-    inc/digital \
     inc/interface \
+    inc/digital \
     inc/watchdog
 
 QMAKE_CFLAGS += \
@@ -41,10 +41,10 @@ SOURCES += \
     test_cases/test_gpiopin.cpp \
     test_cases/test_led.cpp \
     test_cases/test_button.cpp \
+    test_cases/test_chainedobserver.cpp \
+    test_cases/test_messagequeue.cpp \
     test_cases/test_shiftregister.cpp \
     test_cases/test_registergroup.cpp \
     test_cases/test_dataselector.cpp \
-    test_cases/test_chainedobserver.cpp \
-    test_cases/test_messagequeue.cpp \
     test_cases/test_selectorgroup.cpp \
     test_cases/test_watchdog.cpp

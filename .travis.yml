@@ -2,8 +2,7 @@ language: cpp
 
 before_install:
   - sudo apt update
-  - sudo apt install -f qt5-default valgrind lcov
-  - gem install lcoveralls
+  - sudo apt install -f qt5-default valgrind
 
 script:
   - mkdir out && cd out
@@ -13,8 +12,6 @@ script:
 after_success:
   - cat valgrind.log
   - bash <(curl -s https://codecov.io/bash)
-  - lcov -c -d . -o coverage.info
-  - lcoveralls --token ${COVERALLS_TOKEN}
 
 notifications:
   email:

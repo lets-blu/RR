@@ -72,8 +72,5 @@ Thumbs.db
 *.exe
 
 # Custom files
-.vs/
 .vscode/
 out/
-debug/
-release/
