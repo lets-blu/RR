@@ -52,8 +52,8 @@ protected:
 
     int getInputIndex(uint8_t address)
     {
-        int observerLocation = OBSERVER_COUNT + (address / 8) - 1;
-        return observerLocation * 8 + address;
+        int location = OBSERVER_COUNT - (address / 8) - 1;
+        return location * 8 + address % 8;
     }
 };
 

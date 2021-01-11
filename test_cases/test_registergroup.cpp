@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 #include "registergroup.h"
 
-#define TEST_SLL(data)      ((data) <<= 1)
-#define TEST_MSB(data)      ((data) & 0x80)
+#define TEST_SLL(data)      ((data) <<= 1U)
+#define TEST_MSB(data)      ((data) & 0x80U)
 
 #define TEST_BIT2MASK(bit)  (0x01U << (bit))
 

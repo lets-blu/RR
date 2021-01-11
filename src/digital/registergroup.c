@@ -1,7 +1,7 @@
 #include "registergroup.h"
 
-#define REGGRP_SLL(data)    ((data) <<= 1)
-#define REGGRP_MSB(data)    ((data) & 0x80)
+#define REGGRP_SLL(data)    ((data) <<= 1U)
+#define REGGRP_MSB(data)    ((data) & 0x80U)
 
 // Private method(s)
 PRIVATE void prepareRegisterGroupSer(RegisterGroup * pThis, uint8_t data);
