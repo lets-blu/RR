@@ -1,0 +1,15 @@
+{
+    "name": "RR",
+    "version": "2.1.0",
+    "build":
+    {
+        "flags":
+        [
+            "-I inc",
+            "-I inc/generic",
+            "-I inc/digital",
+            "-I inc/watchdog",
+            "-I inc/interface"
+        ]
+    }
+}
