@@ -17,10 +17,10 @@ typedef struct IObserver {
     void (*update)(struct IObserver * observer, struct ISubject * subject);
 } IObserver;
 
-typedef void (*attach_observer_fp)(struct ISubject *, struct IObserver *);
-typedef void (*detach_observer_fp)(struct ISubject *, struct IObserver *);
-typedef void (*notify_observer_fp)(struct ISubject *);
-typedef void (*update_observer_fp)(struct IObserver *, struct ISubject *);
+typedef void (*attach_observer_fp)(ISubject *, IObserver *);
+typedef void (*detach_observer_fp)(ISubject *, IObserver *);
+typedef void (*notify_observer_fp)(ISubject *);
+typedef void (*update_observer_fp)(IObserver *, ISubject *);
 
 #ifdef __cplusplus
 }

@@ -57,7 +57,7 @@ PUBLIC SelectorMessage getSelectorGroupMessage(SelectorGroup * pThis)
         .state      = HIGH
     };
 
-    peekMessageQueue(&pThis->_messagesQueue, &message);
+    peekMessageQueue(&pThis->_messagesQueue, &message, 0);
 
     return message;
 }
@@ -97,14 +97,14 @@ PRIVATE void scanSelectorGroup(SelectorGroup * pThis)
             
             message.address = addr;
             message.state = readGPIOPin(&pThis->_scanPin);
-            enMessageQueue(&pThis->_messagesQueue, &message);
+            enMessageQueue(&pThis->_messagesQueue, &message, 0);
         }
     }
 
     while (getMessageQueueItemCount(&pThis->_messagesQueue) > 0)
     {
         notifySelectorGroupObservers(pThis);
-        deMessageQueue(&pThis->_messagesQueue, &message);
+        deMessageQueue(&pThis->_messagesQueue, &message, 0);
     }
 }
 

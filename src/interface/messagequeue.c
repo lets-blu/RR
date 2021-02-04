@@ -32,8 +32,11 @@ PUBLIC void deleteMessageQueue(MessageQueue * pThis)
 }
 
 #ifdef UNIT_TEST
-PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
+PUBLIC void enMessageQueue(
+    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
 {
+    (void)delay;
+
     if (getMessageQueueItemCount(pThis) < pThis->_queueLength)
     {
         memcpy(pThis->_base + pThis->_tailOffset, item, pThis->_itemSize);
@@ -41,8 +44,11 @@ PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
     }
 }
 
-PUBLIC void deMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
+PUBLIC void deMessageQueue(
+    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
 {
+    (void)delay;
+
     if (getMessageQueueItemCount(pThis) > 0)
     {
         memcpy(item, pThis->_base + pThis->_headOffset, pThis->_itemSize);
@@ -57,8 +63,11 @@ PUBLIC void deMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
     }
 }
 
-PUBLIC void peekMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
+PUBLIC void peekMessageQueue(
+    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
 {
+    (void)delay;
+
     if (getMessageQueueItemCount(pThis) > 0)
     {
         memcpy(item, pThis->_base + pThis->_headOffset, pThis->_itemSize);
@@ -80,19 +89,22 @@ PRIVATE STATIC void destoryMessageQueueBase(void * base)
     free(base);
 }
 #else
-PUBLIC void enMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
+PUBLIC void enMessageQueue(
+    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
 {
-    xQueueSend(pThis->_base, item, portMAX_DELAY);
+    xQueueSend(pThis->_base, item, delay);
 }
 
-PUBLIC void deMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
+PUBLIC void deMessageQueue(
+    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
 {
-    xQueueReceive(pThis->_base, item, portMAX_DELAY);
+    xQueueReceive(pThis->_base, item, delay);
 }
 
-PUBLIC void peekMessageQueue(MessageQueue * pThis, MessageQueueItem * item)
+PUBLIC void peekMessageQueue(
+    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
 {
-    xQueuePeek(pThis->_base, item, portMAX_DELAY);
+    xQueuePeek(pThis->_base, item, delay);
 }
 
 PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis)

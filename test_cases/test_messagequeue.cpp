@@ -31,12 +31,12 @@ TEST_F(MessageQueueTest, deMessageQueue)
 
     for (int i = 0; i < QUEUE_LENGTH; i++)
     {
-        enMessageQueue(&queue, &i);
+        enMessageQueue(&queue, &i, 0);
     }
 
     for (int i = 0; i < QUEUE_LENGTH; i++)
     {
-        deMessageQueue(&queue, &item);
+        deMessageQueue(&queue, &item, 0);
         EXPECT_EQ(i, item);
     }
 }
@@ -47,12 +47,12 @@ TEST_F(MessageQueueTest, peekMessageQueue)
 
     for (int i = 0; i < QUEUE_LENGTH; i++)
     {
-        enMessageQueue(&queue, &i);
+        enMessageQueue(&queue, &i, 0);
     }
 
     for (int i = 0; i < QUEUE_LENGTH; i++)
     {
-        peekMessageQueue(&queue, &item);
+        peekMessageQueue(&queue, &item, 0);
         EXPECT_EQ(0, item);
     }
 }
@@ -61,7 +61,7 @@ TEST_F(MessageQueueTest, getMessageQueueItemCount)
 {
     for (int i = 0; i < QUEUE_LENGTH; i++)
     {
-        enMessageQueue(&queue, &i);
+        enMessageQueue(&queue, &i, 0);
         EXPECT_EQ(i + 1, getMessageQueueItemCount(&queue));
     }
 }
