@@ -23,7 +23,7 @@ typedef struct {
     uint8_t _tailOffset;
 } MessageQueue;
 
-typedef void * MessageQueueItem;
+typedef void MessageQueueItem;
 
 // Constructor
 PUBLIC MessageQueue newMessageQueue(uint8_t queueLength, uint8_t itemSize);
@@ -31,11 +31,11 @@ PUBLIC void deleteMessageQueue(MessageQueue * pThis);
 
 // Public method(s)
 PUBLIC void enMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay);
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay);
 PUBLIC void deMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay);
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay);
 PUBLIC void peekMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay);
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay);
 
 PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis);
 

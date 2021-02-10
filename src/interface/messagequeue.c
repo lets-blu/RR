@@ -33,7 +33,7 @@ PUBLIC void deleteMessageQueue(MessageQueue * pThis)
 
 #ifdef UNIT_TEST
 PUBLIC void enMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay)
 {
     (void)delay;
 
@@ -45,7 +45,7 @@ PUBLIC void enMessageQueue(
 }
 
 PUBLIC void deMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay)
 {
     (void)delay;
 
@@ -64,7 +64,7 @@ PUBLIC void deMessageQueue(
 }
 
 PUBLIC void peekMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay)
 {
     (void)delay;
 
@@ -90,19 +90,19 @@ PRIVATE STATIC void destoryMessageQueueBase(void * base)
 }
 #else
 PUBLIC void enMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay)
 {
     xQueueSend(pThis->_base, item, delay);
 }
 
 PUBLIC void deMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay)
 {
     xQueueReceive(pThis->_base, item, delay);
 }
 
 PUBLIC void peekMessageQueue(
-    MessageQueue * pThis, MessageQueueItem item, uint32_t delay)
+    MessageQueue * pThis, MessageQueueItem * item, uint32_t delay)
 {
     xQueuePeek(pThis->_base, item, delay);
 }
