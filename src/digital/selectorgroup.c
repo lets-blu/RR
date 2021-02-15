@@ -38,7 +38,7 @@ PUBLIC SelectorGroup newSelectorGroup(GPIOPin scanPin, GPIOPin addressPins)
 
 PUBLIC void deleteSelectorGroup(SelectorGroup * pThis)
 {
-    if (pThis->_messagesQueue._base != NULL)
+    if (IS_MSGQ_CREATED(&pThis->_messagesQueue))
     {
         deleteMessageQueue(&pThis->_messagesQueue);
     }
@@ -50,7 +50,7 @@ PUBLIC void addSelectorGroupSelector(SelectorGroup * pThis, DataSelector * sel)
     pThis->_selectors = sel;
 }
 
-PUBLIC SelectorMessage getSelectorGroupMessage(SelectorGroup * pThis)
+PUBLIC SelectorMessage peekSelectorGroupMessage(SelectorGroup * pThis)
 {
     SelectorMessage message = {
         .address    = 0x00, 
@@ -116,7 +116,7 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis)
         return;
     }
 
-    if (pThis->_messagesQueue._base == NULL)
+    if (!IS_MSGQ_CREATED(&pThis->_messagesQueue))
     {
         uint8_t queueLength = getSelectorGroupAddressCount(pThis);
         pThis->_messagesQueue = newMessageQueue(queueLength, sizeof(SelectorMessage));
@@ -141,10 +141,7 @@ PRIVATE uint8_t getSelectorGroupAddressCount(SelectorGroup * pThis)
 
     for (DataSelector * sel = pThis->_selectors; sel != NULL; sel = sel->_next)
     {
-        for (uint8_t addr = sel->_startAddress; addr <= sel->_endAddress; addr++)
-        {
-            count++;
-        }
+        count += (sel->_endAddress - sel->_startAddress + 1);
     }
 
     return count;
@@ -175,7 +172,7 @@ PUBLIC VIRTUAL void detachSelectorGroupObserver(
     // if observer not located in head
     for (o = pThis->_observers; o != NULL && o->_next != chained; o = o->_next)
     {
-        // do noting here
+        // do nothing here
     }
 
     if (o != NULL)

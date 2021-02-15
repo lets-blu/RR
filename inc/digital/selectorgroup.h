@@ -38,7 +38,7 @@ PUBLIC void deleteSelectorGroup(SelectorGroup * pThis);
 
 // Public method(s)
 PUBLIC void addSelectorGroupSelector(SelectorGroup * pThis, DataSelector * sel);
-PUBLIC SelectorMessage getSelectorGroupMessage(SelectorGroup * pThis);
+PUBLIC SelectorMessage peekSelectorGroupMessage(SelectorGroup * pThis);
 
 PUBLIC bool isSelectorGroupScanEnabled(SelectorGroup * pThis);
 PUBLIC void setSelectorGroupScanEnabled(SelectorGroup * pThis, bool enabled);

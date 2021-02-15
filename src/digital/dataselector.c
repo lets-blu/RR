@@ -4,11 +4,11 @@ PUBLIC DataSelector newDataSelector(uint8_t startAddress, uint8_t endAddress)
 {
     assert(startAddress <= endAddress);
     
-    DataSelector selector = {
+    DataSelector sel = {
         ._startAddress  = startAddress,
         ._endAddress    = endAddress,
         ._next          = NULL
     };
 
-    return selector;
+    return sel;
 }

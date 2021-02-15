@@ -70,7 +70,7 @@ TEST_F(SelectorGroupTest, addSelectorGroupSelector)
     }
 }
 
-TEST_F(SelectorGroupTest, getSelectorGroupMessage)
+TEST_F(SelectorGroupTest, peekSelectorGroupMessage)
 {
     // test on vScanSelectorGroupThread
 }
@@ -136,7 +136,7 @@ TEST_F(SelectorGroupTest, vScanSelectorGroupThread)
 void updateTestChainedObserver(ChainedObserver * observer, ISubject * subject)
 {
     (void)observer;
-    SelectorMessage message = getSelectorGroupMessage((SelectorGroup *)subject);
+    SelectorMessage message = peekSelectorGroupMessage((SelectorGroup *)subject);
 
     if ((message.address == SelectorGroupTest::ADDRESS)
         && (message.state == SelectorGroupTest::STATE))

@@ -13,6 +13,9 @@ extern "C" {
 
 #include "keywords.h"
 
+#define IS_MSGQ_CREATED(queue) \
+    ((queue)->_base != NULL)
+
 typedef struct {
     void * _base;
 
