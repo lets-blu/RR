@@ -3,14 +3,14 @@
 #define WDT_INSTANCE    IWDG
 #define WDT_PRESCALER   IWDG_PRESCALER_64
 
-PUBLIC Watchdog newWatchdog(void)
+PUBLIC Watchdog newWatchdog(uint16_t counter)
 {
     Watchdog watchdog = {
         ._iwdg = {
             .Instance = WDT_INSTANCE, 
             .Init = {
                 .Prescaler  = WDT_PRESCALER,
-                .Reload     = 0
+                .Reload     = (uint16_t)(10 * counter / pow(2, WDT_PRESCALER))
             }
         }
     };
@@ -18,9 +18,8 @@ PUBLIC Watchdog newWatchdog(void)
     return watchdog;
 }
 
-PUBLIC void enableWatchdog(Watchdog * pThis, uint16_t timeout)
+PUBLIC void enableWatchdog(Watchdog * pThis)
 {
-    pThis->_iwdg.Init.Reload = (uint16_t)(10 * timeout / pow(2, WDT_PRESCALER));
     HAL_IWDG_Init(&pThis->_iwdg);
 }
 

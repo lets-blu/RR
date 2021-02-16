@@ -10,7 +10,7 @@ protected:
 
     void SetUp()
     {
-        watchdog = newWatchdog();
+        watchdog = newWatchdog(TIMEOUT);
     }
 
     void TearDown()
@@ -23,7 +23,7 @@ TEST_F(WatchdogTest, enableWatchdog)
 {
     HAL_IWDG_InitCallCount = 0;
 
-    enableWatchdog(&watchdog, TIMEOUT);
+    enableWatchdog(&watchdog);
     EXPECT_EQ(1, HAL_IWDG_InitCallCount);
 }
 

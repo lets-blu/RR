@@ -7,7 +7,6 @@ extern "C" {
 
 #include "math.h"
 #include "stdint.h"
-
 #include "keywords.h"
 
 #ifdef UNIT_TEST
@@ -23,10 +22,10 @@ typedef struct {
 } Watchdog;
 
 // Constructor
-PUBLIC Watchdog newWatchdog(void);
+PUBLIC Watchdog newWatchdog(uint16_t counter);
 
 // Public method(s)
-PUBLIC void enableWatchdog(Watchdog * pThis, uint16_t timeout);
+PUBLIC void enableWatchdog(Watchdog * pThis);
 PUBLIC void reloadWatchdog(Watchdog * pThis);
 
 #ifdef __cplusplus
