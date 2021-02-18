@@ -40,7 +40,10 @@ PUBLIC bool isButtonClicked(Button * pThis)
 
 PUBLIC void onButtonInterruptOccurred(Button * pThis)
 {
-    osSemaphoreRelease(pThis->_interruptSemaphore);
+    if (isButtonInterruptEnabled(pThis))
+    {
+        osSemaphoreRelease(pThis->_interruptSemaphore);
+    }
 }
 
 PUBLIC bool isButtonInterruptEnabled(Button * pThis)
@@ -130,7 +133,7 @@ PRIVATE void enableButtonInterrupt(Button * pThis)
     HAL_NVIC_SetPriority(irqn, BUTTON_PREEMPT_PRIORITY, BUTTON_SUB_PRIORITY);
     HAL_NVIC_EnableIRQ(irqn);
 
-    osSemaphoreWait(pThis->_interruptSemaphore, 0); // clear interrupt semaphore
+    osSemaphoreWait(pThis->_interruptSemaphore, 0);
     osThreadDef(handler, vButtonInterruptHandler, osPriorityRealtime, 0, 128);
     pThis->_interruptHandler = osThreadCreate(osThread(handler), pThis);
 }

@@ -74,6 +74,12 @@ PUBLIC void peekMessageQueue(
     }
 }
 
+PUBLIC void clearMessageQueue(MessageQueue * pThis)
+{
+    pThis->_headOffset = 0;
+    pThis->_tailOffset = 0;
+}
+
 PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis)
 {
     return ((pThis->_tailOffset - pThis->_headOffset) / pThis->_itemSize);
@@ -105,6 +111,11 @@ PUBLIC void peekMessageQueue(
     MessageQueue * pThis, MessageQueueItem * item, uint32_t delay)
 {
     xQueuePeek(pThis->_base, item, delay);
+}
+
+PUBLIC void clearMessageQueue(MessageQueue * pThis)
+{
+    xQueueReset(pThis->_base);
 }
 
 PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis)

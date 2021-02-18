@@ -57,6 +57,17 @@ TEST_F(MessageQueueTest, peekMessageQueue)
     }
 }
 
+TEST_F(MessageQueueTest, clearMessageQueue)
+{
+    for (int i = 0; i < QUEUE_LENGTH; i++)
+    {
+        enMessageQueue(&queue, &i, 0);
+    }
+
+    clearMessageQueue(&queue);
+    EXPECT_EQ(0, getMessageQueueItemCount(&queue));
+}
+
 TEST_F(MessageQueueTest, getMessageQueueItemCount)
 {
     for (int i = 0; i < QUEUE_LENGTH; i++)

@@ -40,6 +40,7 @@ PUBLIC void deMessageQueue(
 PUBLIC void peekMessageQueue(
     MessageQueue * pThis, MessageQueueItem * item, uint32_t delay);
 
+PUBLIC void clearMessageQueue(MessageQueue * pThis);
 PUBLIC uint8_t getMessageQueueItemCount(MessageQueue * pThis);
 
 #ifdef __cplusplus

@@ -122,6 +122,7 @@ PRIVATE void enableSelectorGroupScan(SelectorGroup * pThis)
         pThis->_messagesQueue = newMessageQueue(queueLength, sizeof(SelectorMessage));
     }
 
+    clearMessageQueue(&pThis->_messagesQueue);
     osThreadDef(scanThread, vScanSelectorGroupThread, osPriorityNormal, 0, 128);
     pThis->_scanThread = osThreadCreate(osThread(scanThread), pThis);
 }
