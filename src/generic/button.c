@@ -40,10 +40,7 @@ PUBLIC bool isButtonClicked(Button * pThis)
 
 PUBLIC void onButtonInterruptOccurred(Button * pThis)
 {
-    if (isButtonInterruptEnabled(pThis))
-    {
-        osSemaphoreRelease(pThis->_interruptSemaphore);
-    }
+    osSemaphoreRelease(pThis->_interruptSemaphore);
 }
 
 PUBLIC bool isButtonInterruptEnabled(Button * pThis)
