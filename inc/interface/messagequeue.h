@@ -10,7 +10,6 @@ extern "C" {
 #include "string.h"
 
 #include "cmsis_os.h"
-
 #include "keywords.h"
 
 #define IS_MSGQ_CREATED(queue) \

@@ -9,16 +9,16 @@ extern "C" {
 #include "stddef.h"
 #include "stdint.h"
 
+#include "cmsis_os.h"
+
 #include "gpiopin.h"
 #include "keywords.h"
 #include "testing.h"
 
 #ifdef UNIT_TEST
-#include "cmsis_os.h"
 #include "hal.h"
 #include "hal_cortex.h"
 #else
-#include "cmsis_os.h"
 #include "stm32f1xx_hal.h"
 #include "stm32f1xx_hal_cortex.h"
 #endif // UNIT_TEST
