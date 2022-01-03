@@ -1,21 +1,11 @@
 {
     "name": "RR",
-    "version": "V2.0.0",
+    "version": "2.0.0",
     "build":
     {
         "flags":
         [
-            "-I include",
-            "-I bsp/inc",
-            "-I digital/inc",
-            "-I generic/inc",
-            "-I interface/inc",
-            "-I watchdog/inc",
-            "-I display/inc",
-            "-I ethernet/inc",
-            "-I ethernet/third/Ethernet",
-            "-I ethernet/third/Ethernet/W5500",
-            "-I ethernet/third/Internet/DHCP"
+            "-I inc"
         ]
     }
 }
