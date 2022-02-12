@@ -3,13 +3,12 @@
 PUBLIC LinkedList newLinkedList(void)
 {
     LinkedList list = {
-        ._count = 0,
-        ._head = NULL,
-        .listMethods = {
-            .add = (IListAddMethod)addLinkedListItem,
-            .remove = (IListRemoveMethod)removeLinkedListItem,
-            .find = (IListFindMethod)findLinkedListItem
-        }
+        .base = {
+            .add = (ListAddMethod)addLinkedListItem,
+            .remove = (ListRemoveMethod)removeLinkedListItem,
+            .find = (ListFindMethod)findLinkedListItem
+        },
+        ._head = NULL
     };
 
     return list;
@@ -23,10 +22,10 @@ PUBLIC void deleteLinkedList(LinkedList * pThis)
 PUBLIC LinkedListItem newLinkedListItem(void)
 {
     LinkedListItem item = {
-        ._next = NULL,
-        .listItemMethods = {
-            .equals = (IListItemEqualsMethod)equalsLinkedListItem
-        }
+        .base = {
+            .equals = (ListItemEqualsMethod)equalsLinkedListItem
+        },
+        ._next = NULL
     };
 
     return item;
@@ -48,7 +47,7 @@ PUBLIC VIRTUAL int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * it
         return -1;
     }
 
-    // find the existed item
+    // find the existed
     index = 0;
     existed = pThis->_head;
 
@@ -67,7 +66,7 @@ PUBLIC VIRTUAL int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * it
     item->_next = pThis->_head;
     pThis->_head = item;
 
-    return pThis->_count++;
+    return 0;
 }
 
 PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * item)
@@ -81,10 +80,9 @@ PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * it
     }
 
     // if item is the head
-    if (item->listItemMethods.equals((struct IListItem *)item, (struct IListItem *)pThis->_head))
+    if (item->base.equals((struct ListItem *)item, (struct ListItem *)pThis->_head))
     {
         pThis->_head = pThis->_head->_next;
-        pThis->_count--;
         return;
     }
 
@@ -93,7 +91,7 @@ PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * it
 
     while (previous != NULL)
     {
-        if (item->listItemMethods.equals((struct IListItem *)item, (struct IListItem *)previous))
+        if (item->base.equals((struct ListItem *)item, (struct ListItem *)previous->_next))
         {
             break;
         }
@@ -101,15 +99,16 @@ PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * it
         previous = previous->_next;
     }
 
-    // the previous is found, remove it from list
+    // if the previous is found, remove it from list
     if (previous != NULL)
     {
         previous->_next = previous->_next->_next;
-        pThis->_count--;
     }
 }
 
-PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(LinkedList * pThis, IListFindCallback callback)
+PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(
+        LinkedList * pThis,
+        LinkedListFindCallback callback)
 {
     LinkedListItem * item = NULL;
 
@@ -124,7 +123,7 @@ PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(LinkedList * pThis, IListFind
 
     while (item != NULL)
     {
-        if (callback((struct IListItem *)item))
+        if (callback(item))
         {
             return item;
         }

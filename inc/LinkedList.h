@@ -9,24 +9,25 @@ extern "C" {
 #include "stddef.h"
 #include "stdint.h"
 
-#include "IList.h"
 #include "Keywords.h"
+#include "List.h"
 
 #define IS_LINKED_LIST_CREATED(linkedList) \
-    (IS_ILIST_CREATED(&(linkedList)->listMethods))
+    (IS_LIST_CREATED(&(linkedList)->base))
 
 struct LinkedListItem;
 
 typedef struct {
-    uint32_t _count;
+    struct List base;
     struct LinkedListItem * _head;
-    struct IList listMethods;
 } LinkedList;
 
 typedef struct LinkedListItem {
+    struct ListItem base;
     struct LinkedListItem * _next;
-    struct IListItem listItemMethods;
 } LinkedListItem;
+
+typedef bool (*LinkedListFindCallback)(LinkedListItem *);
 
 // (De)constructors
 PUBLIC LinkedList newLinkedList(void);
@@ -38,7 +39,10 @@ PUBLIC void deleteLinkedListItem(LinkedListItem * pThis);
 // Public methods
 PUBLIC VIRTUAL int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * item);
 PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * item);
-PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(LinkedList * pThis, IListFindCallback callback);
+
+PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(
+        LinkedList * pThis,
+        LinkedListFindCallback callback);
 
 PUBLIC VIRTUAL bool equalsLinkedListItem(LinkedListItem * pThis, LinkedListItem * item);
 
