@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 #include "LinkedList.h"
 
-#define LINKED_LIST_TEST_MAX_ITEMS_COUNT	3
+#define LINKED_LIST_TEST_MAX_ITEMS_COUNT    3
 #define LINKED_LIST_TEST_ADD_ITEM_INDEX     0
 #define LINKED_LIST_TEST_REMOVE_ITEM_INDEX  1
 #define LINKED_LIST_TEST_FIND_ITEM_INDEX    2
