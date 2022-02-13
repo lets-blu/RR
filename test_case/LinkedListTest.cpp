@@ -1,7 +1,7 @@
 #include "LinkedListTest.h"
 
 // Static members
-int LinkedListTest::findIndex = 0;
+int LinkedListTest::findIndex = -1;
 
 TEST_F(LinkedListTest, add)
 {
@@ -121,7 +121,7 @@ TEST_F(LinkedListTest, find)
 
     LinkedListItem *item = findLinkedListItem(
             &_linkedList,
-            findLinkedListTestItemCallback);
+            (LinkedListFindCallback)findLinkedListTestItemCallback);
 
     EXPECT_EQ(&_testItems[LINKED_LIST_TEST_FIND_ITEM_INDEX].base, item);
 }
@@ -136,7 +136,7 @@ TEST_F(LinkedListTest, findNonexist)
 
     LinkedListItem *item = findLinkedListItem(
             &_linkedList,
-            findLinkedListTestItemCallback);
+            (LinkedListFindCallback)findLinkedListTestItemCallback);
 
     EXPECT_EQ(NULL, item);
 }
@@ -237,12 +237,12 @@ PUBLIC VIRTUAL bool equalsLinkedListTestItem(
     return (pThis->_number == item->_number);
 }
 
-PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListItem * item)
+PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListTestItem * item)
 {
     if (!IS_LINKED_LIST_TEST_ITEM((struct ListItem *)item))
     {
         return false;
     }
 
-    return (((LinkedListTestItem *)item)->_number == LinkedListTest::findIndex);
+    return (item->_number == LinkedListTest::findIndex);
 }

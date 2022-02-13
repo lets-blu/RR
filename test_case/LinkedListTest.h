@@ -42,6 +42,6 @@ PUBLIC VIRTUAL bool equalsLinkedListTestItem(
         LinkedListTestItem * pThis,
         LinkedListTestItem * item);
 
-PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListItem * item);
+PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListTestItem * item);
 
 #endif // __LINKED_LIST_TEST_H__

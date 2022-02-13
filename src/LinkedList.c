@@ -80,7 +80,7 @@ PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * it
     }
 
     // if item is the head
-    if (item->base.equals((struct ListItem *)item, (struct ListItem *)pThis->_head))
+    if (item->base.equals(&item->base, &pThis->_head->base))
     {
         pThis->_head = pThis->_head->_next;
         return;
@@ -91,7 +91,7 @@ PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * it
 
     while (previous != NULL)
     {
-        if (item->base.equals((struct ListItem *)item, (struct ListItem *)previous->_next))
+        if (item->base.equals(&item->base, &previous->_next->base))
         {
             break;
         }
