@@ -37,10 +37,10 @@ PUBLIC LinkedListItem newLinkedListItem(void);
 PUBLIC void deleteLinkedListItem(LinkedListItem * pThis);
 
 // Public methods
-PUBLIC VIRTUAL int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * item);
-PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * item);
+PUBLIC int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * item);
+PUBLIC void removeLinkedListItem(LinkedList * pThis, LinkedListItem * item);
 
-PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(
+PUBLIC LinkedListItem * findLinkedListItem(
         LinkedList * pThis,
         LinkedListFindCallback callback);
 

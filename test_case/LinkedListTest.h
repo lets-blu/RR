@@ -9,9 +9,9 @@
 #define LINKED_LIST_TEST_REMOVE_ITEM_INDEX  1
 #define LINKED_LIST_TEST_FIND_ITEM_INDEX    2
 
-#define IS_LINKED_LIST_TEST_ITEM(listItem) \
-    ((listItem) != NULL && \
-     (listItem)->equals == (ListItemEqualsMethod)equalsLinkedListTestItem)
+#define IS_LINKED_LIST_TEST_ITEM(linkedListItem) \
+    ((linkedListItem) != NULL && \
+     (linkedListItem)->base.equals == (ListItemEqualsMethod)equalsLinkedListTestItem)
 
 typedef struct {
     LinkedListItem base;
@@ -38,10 +38,10 @@ PUBLIC LinkedListTestItem newLinkedListTestItem(int number);
 PUBLIC void deleteLinkedListTestItem(LinkedListTestItem * pThis);
 
 // Public methods
-PUBLIC VIRTUAL bool equalsLinkedListTestItem(
+PUBLIC OVERRIDE bool equalsLinkedListTestItem(
         LinkedListTestItem * pThis,
-        LinkedListTestItem * item);
+        LinkedListItem * item);
 
-PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListTestItem * item);
+PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListItem * item);
 
 #endif // __LINKED_LIST_TEST_H__

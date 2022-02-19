@@ -121,7 +121,7 @@ TEST_F(LinkedListTest, find)
 
     LinkedListItem *item = findLinkedListItem(
             &_linkedList,
-            (LinkedListFindCallback)findLinkedListTestItemCallback);
+            findLinkedListTestItemCallback);
 
     EXPECT_EQ(&_testItems[LINKED_LIST_TEST_FIND_ITEM_INDEX].base, item);
 }
@@ -136,7 +136,7 @@ TEST_F(LinkedListTest, findNonexist)
 
     LinkedListItem *item = findLinkedListItem(
             &_linkedList,
-            (LinkedListFindCallback)findLinkedListTestItemCallback);
+            findLinkedListTestItemCallback);
 
     EXPECT_EQ(NULL, item);
 }
@@ -208,7 +208,7 @@ PUBLIC LinkedListTestItem newLinkedListTestItem(int number)
         ._number = number
     };
 
-    // overwrite equals method
+    // override equals method
     ListItem * listItem = (ListItem *)&testItem;
     listItem->equals = (ListItemEqualsMethod)equalsLinkedListTestItem;
 
@@ -220,29 +220,29 @@ PUBLIC void deleteLinkedListTestItem(LinkedListTestItem * pThis)
     (void)pThis;
 }
 
-PUBLIC VIRTUAL bool equalsLinkedListTestItem(
+PUBLIC OVERRIDE bool equalsLinkedListTestItem(
         LinkedListTestItem * pThis,
-        LinkedListTestItem * item)
+        LinkedListItem * item)
 {
-    if (!IS_LINKED_LIST_TEST_ITEM((struct ListItem *)pThis))
+    if (!IS_LINKED_LIST_TEST_ITEM(&pThis->base))
     {
         return false;
     }
 
-    if (!IS_LINKED_LIST_TEST_ITEM((struct ListItem *)item))
+    if (!IS_LINKED_LIST_TEST_ITEM(item))
     {
         return false;
     }
 
-    return (pThis->_number == item->_number);
+    return (pThis->_number == ((LinkedListTestItem *)item)->_number);
 }
 
-PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListTestItem * item)
+PUBLIC STATIC bool findLinkedListTestItemCallback(LinkedListItem * item)
 {
-    if (!IS_LINKED_LIST_TEST_ITEM((struct ListItem *)item))
+    if (!IS_LINKED_LIST_TEST_ITEM(item))
     {
         return false;
     }
 
-    return (item->_number == LinkedListTest::findIndex);
+    return (LinkedListTest::findIndex == ((LinkedListTestItem *)item)->_number);
 }

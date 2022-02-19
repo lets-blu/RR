@@ -36,7 +36,7 @@ PUBLIC void deleteLinkedListItem(LinkedListItem * pThis)
     (void)pThis;
 }
 
-PUBLIC VIRTUAL int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * item)
+PUBLIC int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * item)
 {
     int32_t index = -1;
     LinkedListItem * existed = NULL;
@@ -69,7 +69,7 @@ PUBLIC VIRTUAL int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * it
     return 0;
 }
 
-PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * item)
+PUBLIC void removeLinkedListItem(LinkedList * pThis, LinkedListItem * item)
 {
     LinkedListItem * previous = NULL;
 
@@ -106,7 +106,7 @@ PUBLIC VIRTUAL void removeLinkedListItem(LinkedList * pThis, LinkedListItem * it
     }
 }
 
-PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(
+PUBLIC LinkedListItem * findLinkedListItem(
         LinkedList * pThis,
         LinkedListFindCallback callback)
 {
@@ -118,7 +118,7 @@ PUBLIC VIRTUAL LinkedListItem * findLinkedListItem(
         return NULL;
     }
 
-    // find item
+    // find the item
     item = pThis->_head;
 
     while (item != NULL)
