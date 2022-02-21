@@ -9,6 +9,7 @@ extern "C" {
 #define PRIVATE     static
 #define VIRTUAL     
 #define OVERRIDE    
+
 #define STATIC      
 
 #ifdef __cplusplus
