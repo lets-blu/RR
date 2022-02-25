@@ -2,7 +2,6 @@ TEMPLATE = app
 CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
-CONFIG += thread
 
 # Add GTest
 GTEST_DIR = $$PWD/test_framework/googletest
@@ -39,6 +38,3 @@ INCLUDEPATH *= \
 SOURCES += \
     $$TCASE_DIR/main.cpp \
     $$TCASE_DIR/LinkedListTest.cpp
-
-QMAKE_CXXFLAGS += \
-    -std=c++11
