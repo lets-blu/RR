@@ -2,7 +2,7 @@ language: cpp
 
 before_install:
   - sudo apt update
-  - sudo apt -y install qt5-default libpthread-stubs0-dev
+  - sudo apt -y install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools libpthread-stubs0-dev
 
 script:
   - mkdir out && cd out

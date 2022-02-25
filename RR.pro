@@ -38,3 +38,6 @@ INCLUDEPATH *= \
 SOURCES += \
     $$TCASE_DIR/main.cpp \
     $$TCASE_DIR/LinkedListTest.cpp
+
+QMAKE_CXXFLAGS += \
+    -std=c++11
