@@ -1,0 +1,15 @@
+before_install:
+  - sudo apt update
+  - sudo apt -y install qt5-default
+
+script:
+  - mkdir out && cd out
+  - qmake ../RR.pro && make
+  - ./RR
+
+notifications:
+  email:
+    recipients:
+      - lets_blu@outlook.com
+  on_success: always
+  on_failure: always
