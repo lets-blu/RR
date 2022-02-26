@@ -1,6 +1,5 @@
 TEMPLATE = app
-CONFIG += console
-CONFIG += c++11
+CONFIG += console c++11
 CONFIG += thread
 CONFIG -= app_bundle
 CONFIG -= qt
@@ -40,6 +39,3 @@ INCLUDEPATH *= \
 SOURCES += \
     $$TCASE_DIR/main.cpp \
     $$TCASE_DIR/LinkedListTest.cpp
-
-QMAKE_CXXFLAGS += \
-    -std=c++11
