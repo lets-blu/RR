@@ -7,23 +7,20 @@ extern "C" {
 
 #include "stdbool.h"
 #include "stddef.h"
-#include "stdint.h"
+#include "string.h"
 
+#include "IList.h"
 #include "Keywords.h"
-#include "List.h"
-
-#define IS_LINKED_LIST_CREATED(linkedList) \
-    (IS_LIST_CREATED(&(linkedList)->base))
 
 struct LinkedListItem;
 
-typedef struct {
-    struct List base;
+typedef struct LinkedList {
+    struct IList list;
     struct LinkedListItem * _head;
 } LinkedList;
 
 typedef struct LinkedListItem {
-    struct ListItem base;
+    struct IListItem listItem;
     struct LinkedListItem * _next;
 } LinkedListItem;
 
@@ -36,15 +33,12 @@ PUBLIC void deleteLinkedList(LinkedList * pThis);
 PUBLIC LinkedListItem newLinkedListItem(void);
 PUBLIC void deleteLinkedListItem(LinkedListItem * pThis);
 
-// Public methods
-PUBLIC int32_t addLinkedListItem(LinkedList * pThis, LinkedListItem * item);
-PUBLIC void removeLinkedListItem(LinkedList * pThis, LinkedListItem * item);
+// Public reload methods
+PUBLIC int addLinkedListItem(LinkedList * pThis, LinkedListItem * item);
+PUBLIC LinkedListItem * removeLinkedListItem(LinkedList * pThis, LinkedListItem * item);
+PUBLIC LinkedListItem * findLinkedListItem(LinkedList * pThis, LinkedListFindCallback callback);
 
-PUBLIC LinkedListItem * findLinkedListItem(
-        LinkedList * pThis,
-        LinkedListFindCallback callback);
-
-PUBLIC VIRTUAL bool equalsLinkedListItem(LinkedListItem * pThis, LinkedListItem * item);
+PUBLIC bool equalsLinkedListItem(LinkedListItem * pThis, LinkedListItem * item);
 
 #ifdef __cplusplus
 }

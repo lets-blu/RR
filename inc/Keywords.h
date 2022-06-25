@@ -5,12 +5,9 @@
 extern "C" {
 #endif // __cplusplus
 
-#define PUBLIC      
-#define PRIVATE     static
-#define VIRTUAL     
-#define OVERRIDE    
-
-#define STATIC      
+#define PUBLIC  
+#define PRIVATE static
+#define STATIC  
 
 #ifdef __cplusplus
 }

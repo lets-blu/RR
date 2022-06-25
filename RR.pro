@@ -37,5 +37,4 @@ INCLUDEPATH *= \
     $$TCASE_DIR
 
 SOURCES += \
-    $$TCASE_DIR/main.cpp \
-    $$TCASE_DIR/LinkedListTest.cpp
+    $$TCASE_DIR/main.cpp
