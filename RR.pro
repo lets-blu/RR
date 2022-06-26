@@ -1,8 +1,6 @@
 TEMPLATE = app
-CONFIG += console c++11
-CONFIG += thread
-CONFIG -= app_bundle
-CONFIG -= qt
+CONFIG += console c++11 thread
+CONFIG -= app_bundle qt
 
 # Add GTest
 GTEST_DIR = $$PWD/test_framework/googletest
@@ -30,11 +28,12 @@ SOURCES += \
     $$RR_DIR/src/LinkedList.c
 
 # Add test case
-TCASE_DIR = $$PWD/test_case
-requires(exists($$TCASE_DIR))
+CASE_DIR = $$PWD/test_case
+requires(exists($$CASE_DIR))
 
-INCLUDEPATH *= \
-    $$TCASE_DIR
+HEADERS += \
+    $$CASE_DIR/LinkedListTest.h
 
 SOURCES += \
-    $$TCASE_DIR/main.cpp
+    $$CASE_DIR/main.cpp \
+    $$CASE_DIR/LinkedListTest.cpp
