@@ -25,15 +25,18 @@ INCLUDEPATH *= \
     $$RR_DIR/inc
 
 SOURCES += \
-    $$RR_DIR/src/LinkedList.c
+    $$RR_DIR/src/LinkedList.c \
+    $$RR_DIR/src/ArrayList.c
 
 # Add test case
 CASE_DIR = $$PWD/test_case
 requires(exists($$CASE_DIR))
 
 HEADERS += \
-    $$CASE_DIR/LinkedListTest.h
+    $$CASE_DIR/LinkedListTest.h \
+    test_case/ArrayListTest.h
 
 SOURCES += \
-    $$CASE_DIR/main.cpp \
-    $$CASE_DIR/LinkedListTest.cpp
+    $$CASE_DIR/main.cpp             \
+    $$CASE_DIR/LinkedListTest.cpp   \
+    $$CASE_DIR/ArrayListTest.cpp
