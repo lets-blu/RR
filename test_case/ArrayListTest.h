@@ -4,38 +4,46 @@
 #include "ArrayList.h"
 #include "gtest/gtest.h"
 
-#define ARRAY_LIST_TEST_MAX_ITEM_COUNT		3
-#define ARRAY_LIST_TEST_ADD_ITEM_INDEX		0
-#define ARRAY_LIST_TEST_REMOVE_ITEM_INDEX	1
-#define ARRAY_LIST_TEST_FIND_ITEM_INDEX		2
+#define ARRAY_LIST_TEST_MAX_ITEMS_COUNT     3
+#define ARRAY_LIST_TEST_ADD_ITEM_INDEX      0
+#define ARRAY_LIST_TEST_REMOVE_ITEM_INDEX   1
+#define ARRAY_LIST_TEST_FIND_ITEM_INDEX     2
 
-#define IS_ARRAY_NUMBER_ITEM(item) \
-    ((item) != NULL && \
-     ((struct IListItem *)(item))->equals == (IListItemEqualsMethod)equalsArrayNumberItem)
+#define ArrayListTestItem2IListItem(item) \
+    ((struct IListItem *)(item))
+
+#define IListItem2ArrayListTestItem(item) \
+    ((ArrayListTestItem *)(item))
+
+#define isArrayListTestItem(listItem) \
+    ((listItem) != NULL && \
+     (listItem)->equals == (IListItemEqualsMethod)equalsArrayListTestItem)
 
 typedef struct {
     ArrayListItem base;
     int _number;
-} ArrayNumberItem;
+} ArrayListTestItem;
 
 class ArrayListTest : public ::testing::Test {
 protected:
     ArrayList _arrayList;
-    ArrayNumberItem _numberItems[ARRAY_LIST_TEST_MAX_ITEM_COUNT];
+    ArrayListTestItem _testItems[ARRAY_LIST_TEST_MAX_ITEMS_COUNT];
 
 public:
     void SetUp();
     void TearDown();
 protected:
     void GenerateArrayList();
-    int GetArrayListItemCount();
+    void CheckArrayList(int removeIndex);
 };
 
 // (De)constructors
-PUBLIC ArrayNumberItem newArrayNumberItem(int number);
-PUBLIC void deleteArrayNumberItem(ArrayNumberItem * pThis);
+PUBLIC ArrayListTestItem newArrayListTestItem(int number);
+PUBLIC void deleteArrayListTestItem(ArrayListTestItem * pThis);
 
-// Public reload methods
-PUBLIC bool equalsArrayNumberItem(ArrayNumberItem * pThis, ArrayNumberItem * item);
+// Public methods
+PUBLIC bool equalsArrayListTestItem(
+    ArrayListTestItem * pThis,
+    ArrayListTestItem * item);
 
 #endif // __ARRAY_LIST_TEST_H__

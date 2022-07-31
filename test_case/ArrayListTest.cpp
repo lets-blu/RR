@@ -1,7 +1,6 @@
 #include "ArrayListTest.h"
 
-// Private members
-PRIVATE STATIC int findIndex = ARRAY_LIST_TEST_FIND_ITEM_INDEX;
+// Private methods 
 PRIVATE STATIC bool findArrayNumberItemCallback(ArrayListItem * item);
 
 TEST_F(ArrayListTest, add)
@@ -18,11 +17,14 @@ TEST_F(ArrayListTest, remove)
     // remove item
     ArrayListItem * removeItem = removeArrayListItem(
         &_arrayList,
-        &_numberItems[ARRAY_LIST_TEST_REMOVE_ITEM_INDEX].base);
+        &_testItems[ARRAY_LIST_TEST_REMOVE_ITEM_INDEX].base);
 
     // check result
-    EXPECT_EQ(&_numberItems[ARRAY_LIST_TEST_REMOVE_ITEM_INDEX].base, removeItem);
-    EXPECT_EQ(ARRAY_LIST_TEST_MAX_ITEM_COUNT - 1, GetArrayListItemCount());
+    EXPECT_EQ(&_testItems[ARRAY_LIST_TEST_REMOVE_ITEM_INDEX].base, removeItem);
+    EXPECT_EQ((size_t)ARRAY_LIST_TEST_MAX_ITEMS_COUNT - 1, _arrayList._itemsCount);
+
+    // check list
+    CheckArrayList(ARRAY_LIST_TEST_REMOVE_ITEM_INDEX);
 }
 
 TEST_F(ArrayListTest, find)
@@ -36,19 +38,44 @@ TEST_F(ArrayListTest, find)
         findArrayNumberItemCallback);
 
     // check result
-    struct IListItem * listItem
-        = (struct IListItem *)&_numberItems[ARRAY_LIST_TEST_FIND_ITEM_INDEX];
+    ArrayListTestItem * item = IListItem2ArrayListTestItem(findItem);
+    EXPECT_EQ(ARRAY_LIST_TEST_FIND_ITEM_INDEX, item->_number);
+}
 
-    EXPECT_TRUE(listItem->equals(listItem, &findItem->listItem));
+TEST_F(ArrayListTest, removeAt)
+{
+    // generate list
+    GenerateArrayList();
+
+    // remove the item
+    ArrayListTestItem item = {{0}, 0};
+
+    bool isRemove = removeArrayListItemAt(
+        &_arrayList,
+        ARRAY_LIST_TEST_REMOVE_ITEM_INDEX,
+        &item.base);
+
+    // check result
+    EXPECT_TRUE(isRemove);
+    EXPECT_EQ(ARRAY_LIST_TEST_REMOVE_ITEM_INDEX, item._number);
+    EXPECT_EQ((size_t)ARRAY_LIST_TEST_MAX_ITEMS_COUNT - 1, _arrayList._itemsCount);
+
+    // check list
+    CheckArrayList(ARRAY_LIST_TEST_REMOVE_ITEM_INDEX);
+}
+
+TEST_F(ArrayListTest, getItemsCount)
+{
+    // test in other cases
 }
 
 void ArrayListTest::SetUp()
 {
-    _arrayList = newArrayList(ARRAY_LIST_TEST_MAX_ITEM_COUNT, sizeof(ArrayNumberItem));
+    _arrayList = newArrayList(ARRAY_LIST_TEST_MAX_ITEMS_COUNT, sizeof(ArrayListTestItem));
 
-    for (int i = 0; i < ARRAY_LIST_TEST_MAX_ITEM_COUNT; i++)
+    for (int i = 0; i < ARRAY_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
-        _numberItems[i] = newArrayNumberItem(i);
+        _testItems[i] = newArrayListTestItem(i);
     }
 }
 
@@ -56,65 +83,88 @@ void ArrayListTest::TearDown()
 {
     deleteArrayList(&_arrayList);
 
-    for (int i = 0; i < ARRAY_LIST_TEST_MAX_ITEM_COUNT; i++)
+    for (int i = 0; i < ARRAY_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
-        deleteArrayNumberItem(&_numberItems[i]);
+        deleteArrayListTestItem(&_testItems[i]);
     }
 }
 
 void ArrayListTest::GenerateArrayList()
 {
     // add items
-    for (int i = 0; i < ARRAY_LIST_TEST_MAX_ITEM_COUNT; i++)
+    for (int i = 0; i < ARRAY_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
         EXPECT_EQ(
-            GetArrayListItemCount() - 1,
-            addArrayListItem(&_arrayList, &_numberItems[i].base));
+            getArrayListItemsCount(&_arrayList) - 1,
+            (size_t)addArrayListItem(&_arrayList, &_testItems[i].base));
     }
 
     // check result
-    EXPECT_EQ(ARRAY_LIST_TEST_MAX_ITEM_COUNT, GetArrayListItemCount());
+    EXPECT_EQ((size_t)ARRAY_LIST_TEST_MAX_ITEMS_COUNT, _arrayList._itemsCount);
+
+    // check list
+    CheckArrayList(ARRAY_LIST_TEST_MAX_ITEMS_COUNT);
 }
 
-int ArrayListTest::GetArrayListItemCount()
+void ArrayListTest::CheckArrayList(int removeIndex)
 {
-    return _arrayList._itemsCount;
+    int number = 0;
+    uint8_t * cursor = _arrayList._base;
+
+    for (int i = 0; (size_t)i < _arrayList._itemsCount; i++)
+    {
+        ArrayListTestItem * item = (ArrayListTestItem *)cursor;
+
+        if (i == removeIndex)
+        {
+            number++;
+        }
+
+        EXPECT_EQ(number, item->_number);
+        number++;
+        cursor += _arrayList._itemSize;
+    }
 }
 
-PUBLIC ArrayNumberItem newArrayNumberItem(int number)
+PUBLIC ArrayListTestItem newArrayListTestItem(int number)
 {
-    ArrayNumberItem item = {
-        .base		= newArrayListItem(),
-        ._number	= number
+    ArrayListTestItem item = {
+        .base       = newArrayListItem(),
+        ._number    = number
     };
 
-    struct IListItem * listItem = (struct IListItem *)&item;
-    listItem->equals = (IListItemEqualsMethod)equalsArrayNumberItem;
+    struct IListItem * listItem = ArrayListTestItem2IListItem(&item);
+    listItem->equals = (IListItemEqualsMethod)equalsArrayListTestItem;
 
     return item;
 }
 
-PUBLIC void deleteArrayNumberItem(ArrayNumberItem * pThis)
+PUBLIC void deleteArrayListTestItem(ArrayListTestItem * pThis)
 {
-    memset(pThis, 0, sizeof(ArrayNumberItem));
+    deleteArrayListItem(&pThis->base);
+    memset(pThis, 0, sizeof(ArrayListTestItem));
 }
 
-PUBLIC bool equalsArrayNumberItem(ArrayNumberItem * pThis, ArrayNumberItem * item)
+PUBLIC bool equalsArrayListTestItem(
+    ArrayListTestItem * pThis,
+    ArrayListTestItem * item)
 {
-    if (!IS_ARRAY_NUMBER_ITEM(pThis) || !IS_ARRAY_NUMBER_ITEM(item))
+    if (!isArrayListTestItem(ArrayListTestItem2IListItem(item)))
     {
         return false;
     }
 
-    return pThis->_number == item->_number;
+    return (pThis->_number == item->_number);
 }
 
 PRIVATE STATIC bool findArrayNumberItemCallback(ArrayListItem * item)
 {
-    if (!IS_ARRAY_NUMBER_ITEM(item))
+    ArrayListTestItem * testItem  = (ArrayListTestItem *)item;
+
+    if (!isArrayListTestItem(ArrayListTestItem2IListItem(item)))
     {
         return false;
     }
 
-    return ((ArrayNumberItem *)item)->_number == findIndex;
+    return (testItem->_number == ARRAY_LIST_TEST_FIND_ITEM_INDEX);
 }

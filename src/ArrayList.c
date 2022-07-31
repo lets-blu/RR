@@ -11,6 +11,7 @@ PUBLIC ArrayList newArrayList(size_t arrayLength, size_t itemSize)
 
         ._arrayLength   = arrayLength,
         ._itemSize      = itemSize,
+
         ._itemsCount    = 0,
         ._base          = malloc(arrayLength * itemSize)
     };
@@ -56,7 +57,6 @@ PUBLIC int addArrayListItem(ArrayList * pThis, ArrayListItem * item)
 
     // 3. add item to array
     memcpy(pThis->_base + pThis->_itemsCount * pThis->_itemSize, item, pThis->_itemSize);
-
     return pThis->_itemsCount++;
 }
 
@@ -91,19 +91,7 @@ PUBLIC ArrayListItem * removeArrayListItem(ArrayList * pThis, ArrayListItem * it
         cursor += pThis->_itemSize;
     }
 
-    // 4. remove the item
-    if (cursor != pThis->_base + pThis->_itemsCount * pThis->_itemSize)
-    {
-        memmove(
-            cursor,
-            cursor + pThis->_itemSize,
-            (pThis->_itemsCount - index - 1) * pThis->_itemSize);
-
-        pThis->_itemsCount--;
-        return item;
-    }
-
-    return NULL;
+    return removeArrayListItemAt(pThis, index, NULL) ? item : NULL;
 }
 
 PUBLIC ArrayListItem * findArrayListItem(ArrayList * pThis, ArrayListFindCallback callback)
@@ -136,6 +124,40 @@ PUBLIC ArrayListItem * findArrayListItem(ArrayList * pThis, ArrayListFindCallbac
     }
 
     return NULL;
+}
+
+PUBLIC bool removeArrayListItemAt(ArrayList * pThis, int index, ArrayListItem * item)
+{
+    // 1. check parameters
+    if (pThis == NULL || index < 0)
+    {
+        return false;
+    }
+
+    // 2. check array status
+    if (pThis->_base == NULL || (size_t)index >= pThis->_itemsCount)
+    {
+        return false;
+    }
+
+    // 3. copy item and remove it
+    if (item != NULL)
+    {
+        memcpy(item, pThis->_base + index * pThis->_itemSize, pThis->_itemSize);
+    }
+
+    memmove(
+        pThis->_base + index * pThis->_itemSize,
+        pThis->_base + (index + 1) * pThis->_itemSize,
+        (pThis->_itemsCount - index - 1) * pThis->_itemSize);
+
+    pThis->_itemsCount--;
+    return true;
+}
+
+PUBLIC size_t getArrayListItemsCount(ArrayList * pThis)
+{
+    return (pThis == NULL) ? 0 : pThis->_itemsCount;
 }
 
 PUBLIC bool equalsArrayListItem(ArrayListItem * pThis, ArrayListItem * item)
