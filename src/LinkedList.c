@@ -1,5 +1,9 @@
 #include "LinkedList.h"
 
+// Private methods
+PRIVATE LinkedListItem * removeLinkedListHead(LinkedList * pThis);
+PRIVATE LinkedListItem * removeLinkedListNonhead(LinkedList * pThis, LinkedListItem * previous);
+
 PUBLIC LinkedList newLinkedList(void)
 {
     LinkedList list = {
@@ -9,7 +13,9 @@ PUBLIC LinkedList newLinkedList(void)
             .find   = (IListFindMethod)findLinkedListItem
         },
 
-        ._head = NULL
+        ._itemsCount    = 0,
+        ._head          = NULL,
+        ._tail          = NULL
     };
 
     return list;
@@ -41,68 +47,70 @@ PUBLIC void deleteLinkedListItem(LinkedListItem * pThis)
 PUBLIC int addLinkedListItem(LinkedList * pThis, LinkedListItem * item)
 {
     // 1. check parameters
-    if (pThis == NULL || item == NULL) {
+    if (pThis == NULL || item == NULL)
+    {
         return -1;
     }
 
-    // 2. add item to head
-    item->_next = pThis->_head;
-    pThis->_head = item;
+    // 2. add item to tail 
+    if (pThis->_head == NULL)
+    {
+        pThis->_head = item;
+    }
+    else
+    {
+        pThis->_tail->_next = item;
+    }
 
-    return 0;
+    pThis->_tail = item;
+    return pThis->_itemsCount++;
 }
 
 PUBLIC LinkedListItem * removeLinkedListItem(LinkedList * pThis, LinkedListItem * item)
 {
-    LinkedListItem * deleteItem = NULL;
-    LinkedListItem * cursorItem = NULL;
+    LinkedListItem * previous = NULL;
 
     // 1. check parameters
-    if (pThis == NULL || item == NULL) {
+    if (pThis == NULL || item == NULL)
+    {
         return NULL;
     }
 
     // 2. if the item is at the head of list
-    if (item->listItem.equals(&item->listItem, &pThis->_head->listItem)) {
-        deleteItem = pThis->_head;
-
-        pThis->_head = deleteItem->_next;
-        deleteItem->_next = NULL;
-
-        return deleteItem;
+    if (item->listItem.equals(&item->listItem, &pThis->_head->listItem))
+    {
+        return removeLinkedListHead(pThis);
     }
 
     // 3. if the item is not at the head of list
-    cursorItem = pThis->_head;
+    previous = pThis->_head;
 
-    while (cursorItem != NULL) {
-        if (item->listItem.equals(&item->listItem, &cursorItem->_next->listItem)) {
+    while (previous != NULL)
+    {
+        if (item->listItem.equals(&item->listItem, &previous->_next->listItem))
+        {
             break;
         }
 
-        cursorItem = cursorItem->_next;
+        previous = previous->_next;
     }
 
-    if (cursorItem != NULL) {
-        deleteItem = cursorItem->_next;
-
-        cursorItem->_next = deleteItem->_next;
-        deleteItem->_next = NULL;
-    }
-
-    return deleteItem;
+    return removeLinkedListNonhead(pThis, previous);
 }
 
 PUBLIC LinkedListItem * findLinkedListItem(LinkedList * pThis, LinkedListFindCallback callback)
 {
     // 1. check parameters
-    if (pThis == NULL || callback == NULL) {
+    if (pThis == NULL || callback == NULL)
+    {
         return NULL;
     }
 
     // 2. find the item
-    for (LinkedListItem * item = pThis->_head; item != NULL; item = item->_next) {
-        if (callback(item)) {
+    for (LinkedListItem * item = pThis->_head; item != NULL; item = item->_next)
+    {
+        if (callback(item))
+        {
             return item;
         }
     }
@@ -110,7 +118,83 @@ PUBLIC LinkedListItem * findLinkedListItem(LinkedList * pThis, LinkedListFindCal
     return NULL;
 }
 
+PUBLIC LinkedListItem * removeLinkedListItemAt(LinkedList * pThis, int index)
+{
+    LinkedListItem * previous = NULL;
+
+    // 1. check parameters
+    if (pThis == NULL || index < 0)
+    {
+        return NULL;
+    }
+
+    // 2. if the item is at the head of the list
+    if (index == 0)
+    {
+        return removeLinkedListHead(pThis);
+    }
+
+    // 3. if the item is not at the head of the list
+    previous = pThis->_head;
+
+    for (int i = 0; i < index - 1 && previous != NULL; i++)
+    {
+        previous = previous->_next;
+    }
+
+    return removeLinkedListNonhead(pThis, previous);
+}
+
+PUBLIC size_t getLinkedListItemsCount(LinkedList * pThis)
+{
+    return (pThis == NULL) ? 0 : pThis->_itemsCount;
+}
+
 PUBLIC bool equalsLinkedListItem(LinkedListItem * pThis, LinkedListItem * item)
 {
     return (pThis == NULL || item == NULL) ? false : (pThis == item);
+}
+
+PRIVATE LinkedListItem * removeLinkedListHead(LinkedList * pThis)
+{
+    LinkedListItem * removeItem = NULL;
+
+    if (pThis->_head == NULL)
+    {
+        return NULL;
+    }
+
+    removeItem = pThis->_head;
+    pThis->_head = removeItem->_next;
+    removeItem->_next = NULL;
+
+    if (pThis->_head == NULL)
+    {
+        pThis->_tail = NULL;
+    }
+
+    pThis->_itemsCount--;
+    return removeItem;
+}
+
+PRIVATE LinkedListItem * removeLinkedListNonhead(LinkedList * pThis, LinkedListItem * previous)
+{
+    LinkedListItem * removeItem = NULL;
+
+    if (previous == NULL)
+    {
+        return NULL;
+    }
+
+    removeItem = previous->_next;
+    previous->_next = removeItem->_next;
+    removeItem->_next = NULL;
+
+    if (pThis->_tail == removeItem)
+    {
+        pThis->_tail = previous;
+    }
+
+    pThis->_itemsCount--;
+    return removeItem;
 }

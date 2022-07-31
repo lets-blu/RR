@@ -1,10 +1,7 @@
 #include "LinkedListTest.h"
 
-// Static members
-int LinkedListTest::findIndex = LINKED_LIST_TEST_FIND_ITEM_INDEX;
-
 // Private methods
-PRIVATE STATIC bool findLinkedNumberItemCallback(LinkedListItem * item);
+PRIVATE STATIC bool findLinkedListTestItemCallback(LinkedListItem * item);
 
 TEST_F(LinkedListTest, add)
 {
@@ -12,7 +9,7 @@ TEST_F(LinkedListTest, add)
     GenerateLinkedList();
 }
 
-TEST_F(LinkedListTest, removeHead)
+TEST_F(LinkedListTest, remove_Head)
 {
     // generate list
     GenerateLinkedList();
@@ -20,28 +17,20 @@ TEST_F(LinkedListTest, removeHead)
     // remove the head
     LinkedListItem * removeItem = removeLinkedListItem(
         &_linkedList,
-        &_numberItems[0].base);
+        &_testItems[0].base);
 
     // check result
-    EXPECT_EQ(&_numberItems[0].base, removeItem);
-    EXPECT_EQ(&_numberItems[1].base, _linkedList._head);
-    EXPECT_EQ(LINKED_LIST_TEST_MAX_ITEM_COUNT - 1, GetLinkedListItemCount());
+    EXPECT_EQ(&_testItems[0].base, removeItem);
+
+    EXPECT_EQ((size_t)LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1, _linkedList._itemsCount); 
+    EXPECT_EQ(&_testItems[1].base, _linkedList._head);
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1].base, _linkedList._tail);
 
     // check list
-    for (int i = 1; i < LINKED_LIST_TEST_MAX_ITEM_COUNT; i++)
-    {
-        if (i == LINKED_LIST_TEST_MAX_ITEM_COUNT - 1)
-        {
-            EXPECT_EQ(NULL, _numberItems->base._next);
-        }
-        else
-        {
-            EXPECT_EQ(&_numberItems[i + 1].base, _numberItems[i].base._next);
-        }
-    }
+    CheckLinkedList(1);
 }
 
-TEST_F(LinkedListTest, removeNonhead)
+TEST_F(LinkedListTest, remove_Nonhead)
 {
     // generate list
     GenerateLinkedList();
@@ -49,43 +38,21 @@ TEST_F(LinkedListTest, removeNonhead)
     // remove the non-head
     LinkedListItem * removeItem = removeLinkedListItem(
         &_linkedList,
-        &_numberItems[LINKED_LIST_TEST_REMOVE_ITEM_INDEX].base);
+        &_testItems[LINKED_LIST_TEST_REMOVE_ITEM_INDEX].base);
 
     // check result
-    EXPECT_EQ(&_numberItems[LINKED_LIST_TEST_REMOVE_ITEM_INDEX].base, removeItem);
-    EXPECT_EQ(&_numberItems[0].base, _linkedList._head);
-    EXPECT_EQ(LINKED_LIST_TEST_MAX_ITEM_COUNT - 1, GetLinkedListItemCount());
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_REMOVE_ITEM_INDEX].base, removeItem);
+
+    EXPECT_EQ((size_t)LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1, _linkedList._itemsCount); 
+    EXPECT_EQ(&_testItems[0].base, _linkedList._head);
+#if (LINKED_LIST_TEST_REMOVE_ITEM_INDEX == LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1)
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT - 2].base, _linkedList._tail);
+#else
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1].base, _linkedList._tail);
+#endif
 
     // check list
-    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEM_COUNT; i++)
-    {
-        if (i == LINKED_LIST_TEST_REMOVE_ITEM_INDEX)
-        {
-            continue;
-        }
-        else if (i == LINKED_LIST_TEST_REMOVE_ITEM_INDEX - 1)
-        {
-            if (i == LINKED_LIST_TEST_MAX_ITEM_COUNT - 2)
-            {
-                EXPECT_EQ(NULL, _numberItems[i].base._next);
-            }
-            else
-            {
-                EXPECT_EQ(&_numberItems[i + 2].base, _numberItems[i].base._next);
-            }
-        }
-        else
-        {
-            if (i == LINKED_LIST_TEST_MAX_ITEM_COUNT - 1)
-            {
-                EXPECT_EQ(NULL, _numberItems[i].base._next);
-            }
-            else
-            {
-                EXPECT_EQ(&_numberItems[i + 1].base, _numberItems[i].base._next);
-            }
-        }
-    }
+    CheckLinkedListRemove(LINKED_LIST_TEST_REMOVE_ITEM_INDEX);
 }
 
 TEST_F(LinkedListTest, find)
@@ -96,19 +63,68 @@ TEST_F(LinkedListTest, find)
     // find the item
     LinkedListItem * findItem = findLinkedListItem(
         &_linkedList,
-        findLinkedNumberItemCallback);
+        findLinkedListTestItemCallback);
 
     // check result
-    EXPECT_EQ(&_numberItems[LINKED_LIST_TEST_FIND_ITEM_INDEX].base, findItem);
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_FIND_ITEM_INDEX].base, findItem);
+}
+
+TEST_F(LinkedListTest, removeAt_Head)
+{
+    // generate list
+    GenerateLinkedList();
+
+    // remove the head
+    LinkedListItem * removeItem = removeLinkedListItemAt(&_linkedList, 0);
+
+    // check result
+    EXPECT_EQ(&_testItems[0].base, removeItem);
+
+    EXPECT_EQ((size_t)LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1, _linkedList._itemsCount);
+    EXPECT_EQ(&_testItems[1].base, _linkedList._head);
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1].base, _linkedList._tail);
+
+    // check list
+    CheckLinkedList(1);
+}
+
+TEST_F(LinkedListTest, removeAt_Nonhead)
+{
+    // generate list
+    GenerateLinkedList();
+
+    // remove the non-head
+    LinkedListItem * removeItem = removeLinkedListItemAt(
+        &_linkedList,
+        LINKED_LIST_TEST_REMOVE_ITEM_INDEX);
+    
+    // check result
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_REMOVE_ITEM_INDEX].base, removeItem);
+
+    EXPECT_EQ((size_t)LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1, _linkedList._itemsCount);
+    EXPECT_EQ(&_testItems[0].base, _linkedList._head);
+#if (LINKED_LIST_TEST_REMOVE_ITEM_INDEX == LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1)
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT- 2].base, _linkedList._tail);
+#else
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1].base, _linkedList._tail);
+#endif
+
+    // check list
+    CheckLinkedListRemove(LINKED_LIST_TEST_REMOVE_ITEM_INDEX);
+}
+
+TEST_F(LinkedListTest, getItemsCount)
+{
+    // test in other cases
 }
 
 void LinkedListTest::SetUp()
 {
     _linkedList = newLinkedList();
 
-    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEM_COUNT; i++)
+    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
-        _numberItems[i] = newLinkedNumberItem(i);
+        _testItems[i] = newLinkedListTestItem(i);
     }
 }
 
@@ -116,84 +132,118 @@ void LinkedListTest::TearDown()
 {
     deleteLinkedList(&_linkedList);
 
-    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEM_COUNT; i++)
+    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
-        deleteLinkedNumberItem(&_numberItems[i]);
+        deleteLinkedListTestItem(&_testItems[i]);
     }
 }
 
 void LinkedListTest::GenerateLinkedList()
 {
     // add items
-    for (int i = LINKED_LIST_TEST_MAX_ITEM_COUNT; i > 0; i--)
+    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
-        EXPECT_EQ(0, addLinkedListItem(&_linkedList, &_numberItems[i - 1].base));
+        EXPECT_EQ(
+            getLinkedListItemsCount(&_linkedList) - 1,
+            (size_t)addLinkedListItem(&_linkedList, &_testItems[i].base));
     }
 
     // check result
-    EXPECT_EQ(&_numberItems[0].base, _linkedList._head);
-    EXPECT_EQ(LINKED_LIST_TEST_MAX_ITEM_COUNT, GetLinkedListItemCount());
+    EXPECT_EQ((size_t)LINKED_LIST_TEST_MAX_ITEMS_COUNT, _linkedList._itemsCount);
+    EXPECT_EQ(&_testItems[0].base, _linkedList._head);
+    EXPECT_EQ(&_testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1].base, _linkedList._tail);
 
     // check list
-    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEM_COUNT; i++)
+    CheckLinkedList(0);
+}
+
+void LinkedListTest::CheckLinkedList(int startIndex)
+{
+    for (int i = startIndex; i < LINKED_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
-        if (i == LINKED_LIST_TEST_MAX_ITEM_COUNT - 1)
+        if (i == LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1)
         {
-            EXPECT_EQ(NULL, _numberItems[i].base._next);
+            EXPECT_EQ(NULL, _testItems[i].base._next);
         }
         else
         {
-            EXPECT_EQ(&_numberItems[i + 1].base, _numberItems[i].base._next);
+            EXPECT_EQ(&_testItems[i + 1].base, _testItems[i].base._next);
         }
     }
 }
 
-int LinkedListTest::GetLinkedListItemCount()
+void LinkedListTest::CheckLinkedListRemove(int removeIndex)
 {
-    int count = 0;
-
-    for (LinkedListItem * item = _linkedList._head; item != NULL; item = item->_next)
+    for (int i = 0; i < LINKED_LIST_TEST_MAX_ITEMS_COUNT; i++)
     {
-        count++;
+        if (i == removeIndex)
+        {
+            continue;
+        }
+        else if (i == removeIndex - 1)
+        {
+            if (i == LINKED_LIST_TEST_MAX_ITEMS_COUNT - 2)
+            {
+                EXPECT_EQ(NULL, _testItems[i].base._next);
+            }
+            else
+            {
+                EXPECT_EQ(&_testItems[i + 2].base, _testItems[i].base._next);
+            }
+        }
+        else
+        {
+            if (i == LINKED_LIST_TEST_MAX_ITEMS_COUNT - 1)
+            {
+                EXPECT_EQ(NULL, _testItems[i].base._next);
+            }
+            else
+            {
+                EXPECT_EQ(&_testItems[i + 1].base, _testItems[i].base._next);
+            }
+        }
     }
-
-    return count;
 }
 
-PUBLIC LinkedNumberItem newLinkedNumberItem(int number)
+PUBLIC LinkedListTestItem newLinkedListTestItem(int number)
 {
-    LinkedNumberItem item = {
-        .base		= newLinkedListItem(),
-        ._number	= number
+    LinkedListTestItem item = {
+        .base       = newLinkedListItem(),
+        ._number    = number
     };
 
-    struct IListItem * listItem = (struct IListItem *)&item;
-    listItem->equals = (IListItemEqualsMethod)equalsLinkedNumberItem;
+    struct IListItem * listItem = LinkedListTestItem2IListItem(&item);
+    listItem->equals = (IListItemEqualsMethod)equalsLinkedListTestItem;
 
     return item;
 }
 
-PUBLIC void deleteLinkedNumberItem(LinkedNumberItem * pThis)
+PUBLIC void deleteLinkedListTestItem(LinkedListTestItem * pThis)
 {
-    memset(pThis, 0, sizeof(LinkedNumberItem));
+    deleteLinkedListItem(&pThis->base);
+    memset(pThis, 0, sizeof(LinkedListTestItem));
 }
 
-PUBLIC bool equalsLinkedNumberItem(LinkedNumberItem * pThis, LinkedNumberItem * item)
+PUBLIC bool equalsLinkedListTestItem(
+    LinkedListTestItem * pThis,
+    LinkedListTestItem * item)
 {
-    if (!IS_LINKED_NUMBER_ITEM(pThis) || !IS_LINKED_NUMBER_ITEM(item))
+    if (!isLinkedListTestItem(LinkedListTestItem2IListItem(item)))
     {
         return false;
     }
 
-    return pThis->_number == item->_number;
+    return (pThis->_number == item->_number);
 }
 
-PRIVATE STATIC bool findLinkedNumberItemCallback(LinkedListItem * item)
+PRIVATE STATIC bool findLinkedListTestItemCallback(LinkedListItem * item)
 {
-    if (!IS_LINKED_NUMBER_ITEM(item))
+    LinkedListTestItem * testItem = (LinkedListTestItem *)item;
+
+    if (!isLinkedListTestItem(LinkedListTestItem2IListItem(testItem)))
     {
         return false;
     }
 
-    return ((LinkedNumberItem *)item)->_number == LinkedListTest::findIndex;
+    return (testItem->_number == LINKED_LIST_TEST_FIND_ITEM_INDEX);
 }

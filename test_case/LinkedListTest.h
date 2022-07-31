@@ -4,40 +4,47 @@
 #include "LinkedList.h"
 #include "gtest/gtest.h"
 
-#define LINKED_LIST_TEST_MAX_ITEM_COUNT		3
-#define LINKED_LIST_TEST_ADD_ITEM_INDEX		0
-#define LINKED_LIST_TEST_REMOVE_ITEM_INDEX	1
-#define LINKED_LIST_TEST_FIND_ITEM_INDEX	2
+#define LINKED_LIST_TEST_MAX_ITEMS_COUNT    3
+#define LINKED_LIST_TEST_ADD_ITEM_INDEX     0
+#define LINKED_LIST_TEST_REMOVE_ITEM_INDEX  1
+#define LINKED_LIST_TEST_FIND_ITEM_INDEX    2
 
-#define IS_LINKED_NUMBER_ITEM(item)	\
-    ((item) != NULL && \
-     ((struct IListItem *)(item))->equals == (IListItemEqualsMethod)equalsLinkedNumberItem)
+#define LinkedListTestItem2IListItem(item) \
+    ((struct IListItem *)(item))
+
+#define IListItem2LinkedListTestItem(item) \
+    ((LinkedListTestItem *)(item))
+
+#define isLinkedListTestItem(listItem) \
+    ((listItem) != NULL && \
+     (listItem)->equals == (IListItemEqualsMethod)equalsLinkedListTestItem)
 
 typedef struct {
     LinkedListItem base;
     int _number;
-} LinkedNumberItem;
+} LinkedListTestItem;
 
 class LinkedListTest : public ::testing::Test {
-public:
-    static int findIndex;
 protected:
     LinkedList _linkedList;
-    LinkedNumberItem _numberItems[LINKED_LIST_TEST_MAX_ITEM_COUNT];
+    LinkedListTestItem _testItems[LINKED_LIST_TEST_MAX_ITEMS_COUNT];
 
 public:
     void SetUp();
     void TearDown();
 protected:
     void GenerateLinkedList();
-    int GetLinkedListItemCount();
+    void CheckLinkedList(int startIndex);
+    void CheckLinkedListRemove(int removeIndex);
 };
 
 // (De)constructors
-PUBLIC LinkedNumberItem newLinkedNumberItem(int number);
-PUBLIC void deleteLinkedNumberItem(LinkedNumberItem * pThis);
+PUBLIC LinkedListTestItem newLinkedListTestItem(int number);
+PUBLIC void deleteLinkedListTestItem(LinkedListTestItem * pThis);
 
-// Public reload methods
-PUBLIC bool equalsLinkedNumberItem(LinkedNumberItem * pThis, LinkedNumberItem * item);
+// Public methods
+PUBLIC bool equalsLinkedListTestItem(
+    LinkedListTestItem * pThis,
+    LinkedListTestItem * item);
 
 #endif // __LINKED_LIST_TEST_H__
