@@ -1,4 +1,4 @@
-#include "ArrayList.h"
+#include "inc/Utility/ArrayList.h"
 
 PUBLIC ArrayList newArrayList(size_t arrayLength, size_t itemSize)
 {

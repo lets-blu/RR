@@ -1,4 +1,4 @@
-#include "LinkedList.h"
+#include "inc/Utility/LinkedList.h"
 
 // Private methods
 PRIVATE LinkedListItem * removeLinkedListHead(LinkedList * pThis);

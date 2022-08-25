@@ -9,8 +9,8 @@ extern "C" {
 #include "stdint.h"
 #include "string.h"
 
-#include "IList.h"
-#include "Keywords.h"
+#include "inc/Keywords.h"
+#include "inc/Utility/IList.h"
 
 struct LinkedListItem;
 

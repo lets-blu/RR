@@ -1,8 +1,8 @@
 #ifndef __LINKED_LIST_TEST_H__
 #define __LINKED_LIST_TEST_H__
 
-#include "LinkedList.h"
 #include "gtest/gtest.h"
+#include "inc/Utility/LinkedList.h"
 
 #define LINKED_LIST_TEST_MAX_ITEMS_COUNT    3
 #define LINKED_LIST_TEST_ADD_ITEM_INDEX     0

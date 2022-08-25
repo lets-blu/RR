@@ -1,8 +1,8 @@
 #ifndef __ARRAY_LIST_TEST_H__
 #define __ARRAY_LIST_TEST_H__
 
-#include "ArrayList.h"
 #include "gtest/gtest.h"
+#include "inc/Utility/ArrayList.h"
 
 #define ARRAY_LIST_TEST_MAX_ITEMS_COUNT     3
 #define ARRAY_LIST_TEST_ADD_ITEM_INDEX      0
