@@ -1,0 +1,26 @@
+# Generic
+GENERIC_ARDUINO_PORT		LITERAL1
+GPIOPin				KEYWORD1
+constructGPIOPin			KEYWORD2
+deconstructGPIOPin			KEYWORD2
+LED				KEYWORD1
+constructLED			KEYWORD2
+deconstructLED			KEYWORD2
+turnOnLED			KEYWORD2
+turnOffLED			KEYWORD2
+
+# Syslog
+STATIC_LOG_FILTER			LITERAL1
+LOG_I				LITERAL1
+LOG_W				LITERAL1
+LOG_E				LITERAL1
+LogFilter				KEYWORD1
+DefaultLogPrinter			KEYWORD1
+constructDefaultLogPrinter		KEYWORD2
+deconstructDefaultLogPrinter		KEYWORD2
+LogPrinterManager			KEYWORD1
+addPrinterToLogPrinterManager	KEYWORD2
+removePrinterFromLogPrinterManager	KEYWORD2
+setDefaultPrinterToLogPrinterManager	KEYWORD2
+getDefaultPrinterToLogPrinterManager	KEYWORD2
+instanceOfLogPrinterManager		KEYWORD2

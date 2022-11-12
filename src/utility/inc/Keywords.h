@@ -5,9 +5,9 @@
 extern "C" {
 #endif // __cplusplus
 
-#define PUBLIC  
+#define PUBLIC      
 #define PRIVATE static
-#define STATIC  
+#define STATIC
 
 #ifdef __cplusplus
 }
