@@ -7,8 +7,10 @@ extern "C" {
 
 #include "utility/inc/Keywords.h"
 
-#ifdef ARDUINO
+#if defined(ARDUINO)
 #include "porting/inc/GPIOPinArduino.h"
+#elif defined(USE_HAL_DRIVER)
+#include "porting/inc/GPIOPinSTM32Cube.h"
 #endif
 
 typedef struct {

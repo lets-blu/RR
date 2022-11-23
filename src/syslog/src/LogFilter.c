@@ -55,7 +55,7 @@ PUBLIC size_t printStringLogByLogFilter(
     }
 
     va_start(ap, format);
-    vsnprintf(buffer, MAX_LOG_FILTER_STRING_LENGTH, format, ap);
+    vsprintf(buffer, format, ap);
     va_end(ap);
 
     return printer->print(printer, (uint8_t *)buffer, strlen(buffer));

@@ -8,10 +8,13 @@ extern "C" {
 // Generic
 #include "generic/inc/LED.h"
 
+// Resource
+#include "resource/inc/MutexResource.h"
+
 // Syslog
 #include "syslog/inc/LogFilter.h"
-#include "syslog/inc/DefaultLogPrinter.h"
 #include "syslog/inc/LogPrinterManager.h"
+#include "syslog/inc/StandardLogPrinter.h"
 
 #ifdef __cplusplus
 }
