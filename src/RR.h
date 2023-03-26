@@ -5,19 +5,15 @@
 extern "C" {
 #endif // __cplusplus
 
-// Generic
-#include "generic/inc/LED.h"
+// Core
+#include "core/device/inc/DeviceManager.h"
 
-// Resource
-#include "resource/inc/MutexResource.h"
-
-// Syslog
-#include "syslog/inc/LogFilter.h"
-#include "syslog/inc/LogPrinterManager.h"
-#include "syslog/inc/StandardLogPrinter.h"
+// Basic
+#include "basic/led/inc/LED.h"
 
 #ifdef __cplusplus
 }
 #endif // __cplusplus
 
 #endif // __RR_H__
+
