@@ -1,5 +1,8 @@
 #include "basic/led/inc/LED.h"
 
+// Private method(s)
+PRIVATE STATIC LogFilter filter = STATIC_LOG_FILTER("LED", LOG_LEVEL_INFO);
+
 PUBLIC void constructLED(
     LED *instance, void *port, unsigned int pin, PinState lightState)
 {
@@ -33,6 +36,8 @@ PUBLIC void turnOnLED(LED *pThis)
     } else {
         writeStateToBasePin(pThis->_basePin, PIN_STATE_HIGH);
     }
+
+    LOG_I(&filter, "0x%x turned on", pThis);
 }
 
 PUBLIC void turnOffLED(LED *pThis)
@@ -46,5 +51,7 @@ PUBLIC void turnOffLED(LED *pThis)
     } else {
         writeStateToBasePin(pThis->_basePin, PIN_STATE_LOW);
     }
+
+    LOG_I(&filter, "0x%x turned off", pThis);
 }
 

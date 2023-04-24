@@ -43,6 +43,21 @@ PUBLIC void deconstructLinkedListItem(LinkedListItem *instance)
     }
 }
 
+PUBLIC void constructLinkedListIterator(
+    LinkedListIterator *instance, LinkedList *list)
+{
+    if (instance != NULL && list != NULL) {
+        instance->_next = list->_head;
+    }
+}
+
+PUBLIC void deconstructLinkedListIterator(LinkedListIterator *instance)
+{
+    if (instance != NULL) {
+        memset(instance, 0, sizeof(LinkedListIterator));
+    }
+}
+
 PUBLIC int addItemToLinkedList(LinkedList *pThis, LinkedListItem *item)
 {
     // 1. Check arguments
@@ -107,8 +122,9 @@ PUBLIC LinkedListItem *removeIndexFromLinkedList(LinkedList *pThis, int index)
     // 3. If item not at the head
     previous = pThis->_head;
 
-    for (unsigned int i = 0; i < index - 1 && previous != NULL; i++) {
+    while (index != 0) {
         previous = previous->_next;
+        index--;
     }
 
     return removeNonHeadFromLinkedList(pThis, previous);
@@ -117,16 +133,21 @@ PUBLIC LinkedListItem *removeIndexFromLinkedList(LinkedList *pThis, int index)
 PUBLIC LinkedListItem *findItemFromLinkedList(
     LinkedList *pThis, LinkedListFindCallback callback, void *argument)
 {
+    LinkedListItem *item= NULL;
     // 1. Check arguments
     if (pThis == NULL || callback == NULL) {
         return NULL;
     }
 
     // 2. Find item
-    for (LinkedListItem *item = pThis->_head; item != NULL; item = item->_next) {
+    item = pThis->_head;
+
+    while (item != NULL) {
         if (callback(item, argument)) {
             return item;
         }
+
+        item = item->_next;
     }
 
     return NULL;
@@ -135,6 +156,27 @@ PUBLIC LinkedListItem *findItemFromLinkedList(
 PUBLIC bool compareLinkedListItem(LinkedListItem *pThis, LinkedListItem *item)
 {
     return (pThis == NULL || item == NULL) ? false : (pThis == item);
+}
+
+PUBLIC bool hasNextOfLinkedListIterator(LinkedListIterator *pThis)
+{
+    if (pThis != NULL) {
+        return (pThis->_next != NULL);
+    }
+
+    return false;
+}
+
+PUBLIC LinkedListItem *nextOfLinkedListIterator(LinkedListIterator *pThis)
+{
+    LinkedListItem *next = NULL;
+
+    if (hasNextOfLinkedListIterator(pThis)) {
+        next = pThis->_next;
+        pThis->_next = next->_next;
+    }
+
+    return next;
 }
 
 PRIVATE LinkedListItem *removeHeadFromLinkedList(LinkedList *pThis)

@@ -21,13 +21,13 @@ PROTECTED void doWriteValueToArduinoPin(ArduinoPin *pThis, unsigned int value);
 
 // Virtial methods table
 static const BasePinVtbl basePinVtbl = {
-    ._doSetup       = (BasePinDoSetupMethod)doSetupArduinoPin,
+    (BasePinDoSetupMethod)doSetupArduinoPin,
 
-    ._doReadState   = (BasePinDoReadStateMethod)doReadStateFromArduinoPin,
-    ._doWriteState  = (BasePinDoWriteStateMethod)doWriteStateToArduinoPin,
+    (BasePinDoReadStateMethod)doReadStateFromArduinoPin,
+    (BasePinDoWriteStateMethod)doWriteStateToArduinoPin,
 
-    ._doReadValue   = (BasePinDoReadValueMethod)doReadValueFromArduinoPin,
-    ._doWriteValue  = (BasePinDoWriteValueMethod)doWriteValueToArduinoPin
+    (BasePinDoReadValueMethod)doReadValueFromArduinoPin,
+    (BasePinDoWriteValueMethod)doWriteValueToArduinoPin
 };
 
 PUBLIC void constructArduinoPin(ArduinoPin *instance, uint8_t pin)

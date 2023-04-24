@@ -10,6 +10,8 @@ extern "C" {
 
 #include "core/common/inc/Keywords.h"
 #include "core/device/inc/DeviceManager.h"
+#include "core/log/inc/LogFilter.h"
+
 #include "port/common/inc/BasePin.h"
 
 typedef struct {

@@ -12,11 +12,8 @@ PROTECTED void destoryBasePinByArduinoFactory(
 
 // Virtual methods table
 static const BaseFactoryVtbl factoryVtbl ={
-    ._doCreateBasePin
-        = (BaseFactoryDoCreateBasePinMethod)createBasePinByArduinoFactory,
-
-    ._doDestoryBasePin
-        = (BaseFactoryDoDestoryBasePinMethod)destoryBasePinByArduinoFactory
+    (BaseFactoryDoCreateBasePinMethod)createBasePinByArduinoFactory,
+    (BaseFactoryDoDestoryBasePinMethod)destoryBasePinByArduinoFactory
 };
 
 // Method implement(s)
