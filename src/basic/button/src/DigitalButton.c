@@ -7,17 +7,20 @@ PROTECTED void deconstructBaseButton(BaseButton *instance);
 PROTECTED void constructBaseScannable(BaseScannable *instance);
 PROTECTED void deconstructBaseScannable(BaseScannable *instance);
 
-PROTECTED void notifyPushByDigitalButton(DigitalButton *pThis);
-PROTECTED void notifyReleaseByDigitalButton(DigitalButton *pThis);
+// Override method(s)
+PUBLIC OVERRIDE void notifyPushByDigitalButtonBaseButton(BaseButton *button);
+PUBLIC OVERRIDE void notifyReleaseByDigitalButtonBaseButton(BaseButton *button);
+
+PUBLIC OVERRIDE void scanDigitalButtonBaseScannable(BaseScannable *scannable);
 
 // Virtual methods table
 static const BaseButtonVtbl buttonVtbl = {
-    (BaseButtonNotifyPushMethod)notifyPushByDigitalButton,
-    (BaseButtonNotifyReleaseMethod)notifyReleaseByDigitalButton
+    .notifyPush     = notifyPushByDigitalButtonBaseButton,
+    .notifyRelease  = notifyReleaseByDigitalButtonBaseButton
 };
 
 static const BaseScannableVtbl scannableVtbl = {
-    (BaseScannableScanMethod)scanDigitalButton
+    .scan           = scanDigitalButtonBaseScannable
 };
 
 // Method implement(s)
@@ -66,6 +69,7 @@ PUBLIC void deconstructDigitalButton(DigitalButton *instance)
 
     // 2. deconstruct member(s)
     destoryBasePinByDeviceManager(manager, instance->_basePin);
+
     deconstructLinkedList(&instance->_pushHandlers);
     deconstructLinkedList(&instance->_releaseHandlers);
 
@@ -104,9 +108,50 @@ PUBLIC void removeReleaseHandlerFromDigitalButton(
     }
 }
 
-PUBLIC void scanDigitalButton(DigitalButton *pThis)
+PUBLIC OVERRIDE void notifyPushByDigitalButtonBaseButton(BaseButton *button)
+{
+    LinkedListIterator iterator;
+    EventHandler *handler = NULL;
+    DigitalButton *pThis = BaseButton2DigitalButton(button);
+
+    if (pThis == NULL) {
+        return;
+    }
+
+    constructLinkedListIterator(&iterator, &pThis->_pushHandlers);
+
+    while (hasNextOfLinkedListIterator(&iterator)) {
+        handler = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
+        handler->callback(handler, pThis, NULL);
+    }
+
+    deconstructLinkedListIterator(&iterator);
+}
+
+PUBLIC OVERRIDE void notifyReleaseByDigitalButtonBaseButton(BaseButton *button)
+{
+    LinkedListIterator iterator;
+    EventHandler *handler = NULL;
+    DigitalButton *pThis = BaseButton2DigitalButton(button);
+
+    if (pThis == NULL) {
+        return;
+    }
+
+    constructLinkedListIterator(&iterator, &pThis->_releaseHandlers);
+
+    while (hasNextOfLinkedListIterator(&iterator)) {
+        handler = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
+        handler->callback(handler, pThis, NULL);
+    }
+
+    deconstructLinkedListIterator(&iterator);
+}
+
+PUBLIC OVERRIDE void scanDigitalButtonBaseScannable(BaseScannable *scannable)
 {
     const IButtonState *currentState = NULL;
+    DigitalButton *pThis = BaseScannable2DigitalButton(scannable);
 
     if (pThis == NULL) {
         return;
@@ -121,45 +166,5 @@ PUBLIC void scanDigitalButton(DigitalButton *pThis)
         currentState->vtbl->onRelease(
             (IButtonState *)currentState, &pThis->baseButton);
     }
-}
-
-PROTECTED void notifyPushByDigitalButton(DigitalButton *pThis)
-{
-    LinkedListIterator iterator;
-
-    if (pThis == NULL) {
-        return;
-    }
-
-    constructLinkedListIterator(&iterator, &pThis->_pushHandlers);
-
-    while (hasNextOfLinkedListIterator(&iterator)) {
-        EventHandler *handler
-            = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
-
-        handler->callback(handler, pThis, NULL);
-    }
-
-    deconstructLinkedListIterator(&iterator);
-}
-
-PROTECTED void notifyReleaseByDigitalButton(DigitalButton *pThis)
-{
-    LinkedListIterator iterator;
-
-    if (pThis == NULL) {
-        return;
-    }
-
-    constructLinkedListIterator(&iterator, &pThis->_releaseHandlers);
-
-    while (hasNextOfLinkedListIterator(&iterator)) {
-        EventHandler *handler
-            = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
-
-        handler->callback(handler, pThis, NULL);
-    }
-
-    deconstructLinkedListIterator(&iterator);
 }
 

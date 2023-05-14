@@ -20,12 +20,9 @@ typedef struct BaseButton {
 } BaseButton;
 
 typedef struct BaseButtonVtbl {
-    void (*_notifyPush)(BaseButton *pThis);
-    void (*_notifyRelease)(BaseButton *pThis);
+    void (*notifyPush)(BaseButton *pThis);
+    void (*notifyRelease)(BaseButton *pThis);
 } BaseButtonVtbl;
-
-typedef void (*BaseButtonNotifyPushMethod)(BaseButton *);
-typedef void (*BaseButtonNotifyReleaseMethod)(BaseButton *);
 
 // Public method(s)
 PUBLIC void setStateToBaseButton(

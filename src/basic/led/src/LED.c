@@ -1,6 +1,6 @@
 #include "basic/led/inc/LED.h"
 
-// Private method(s)
+// Private member(s)
 PRIVATE STATIC LogFilter filter = STATIC_LOG_FILTER("LED", LOG_LEVEL_INFO);
 
 PUBLIC void constructLED(

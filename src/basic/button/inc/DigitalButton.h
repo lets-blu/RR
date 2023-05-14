@@ -19,6 +19,12 @@ extern "C" {
 
 #include "port/common/inc/BasePin.h"
 
+#define BaseButton2DigitalButton(instance)      \
+    BASE_TO_SUB_CAST(instance, DigitalButton, baseButton)
+
+#define BaseScannable2DigitalButton(instance)   \
+    BASE_TO_SUB_CAST(instance, DigitalButton, baseScannable)
+
 typedef struct {
     BaseButton baseButton;
     BaseScannable baseScannable;
@@ -48,8 +54,6 @@ PUBLIC void addReleaseHandlerToDigitalButton(
 
 PUBLIC void removeReleaseHandlerFromDigitalButton(
     DigitalButton *pThis, EventHandler *handler);
-
-PUBLIC void scanDigitalButton(DigitalButton *pThis);
 
 #ifdef __cplusplus
 }

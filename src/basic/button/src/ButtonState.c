@@ -1,29 +1,66 @@
 #include "basic/button/inc/BaseButton.h"
 #include "basic/button/inc/ButtonState.h"
 
+// Override method(s)
+PUBLIC OVERRIDE void onPushOnButtonStateReleaseButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE void onReleaseOnButtonStateReleasedButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE const char *toStringOnButtonStateReleasedButtonState(
+    IButtonState *state);
+
+PUBLIC OVERRIDE void onPushOnButtonStateConfirmPushButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE void onReleaseOnButtonStateConfirmPushButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE const char *toStringOnButtonStateConfirmPushButtonState(
+    IButtonState *state);
+
+PUBLIC OVERRIDE void onPushOnButtonStatePushedButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE void onReleaseOnButtonStatePushedButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE const char *toStringOnButtonStatePushedButtonState(
+    IButtonState *state);
+
+PUBLIC OVERRIDE void onPushOnButtonStateConfirmReleaseButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE void onReleaseOnButtonStateConfirmReleaseButtonState(
+    IButtonState *state, struct BaseButton *button);
+
+PUBLIC OVERRIDE const char *toStringOnButtonStateConfirmReleaseButtonState(
+    IButtonState *state);
+
 // Virtual methods table
 static const IButtonStateVtbl buttonStateReleasedVtbl = {
-    (IButtonStateOnPushMethod)onPushOnButtonStateReleased,
-    (IButtonStateOnReleaseMethod)onReleaseOnButtonStateReleased,
-    (IButtonStateToStringMethod)toStringOnButtonStateReleased
+    .onPush     = onPushOnButtonStateReleaseButtonState,
+    .onRelease  = onReleaseOnButtonStateReleasedButtonState,
+    .toString   = toStringOnButtonStateReleasedButtonState
 };
 
 static const IButtonStateVtbl buttonStateConfirmPushVtbl = {
-    (IButtonStateOnPushMethod)onPushOnButtonStateConfirmPush,
-    (IButtonStateOnReleaseMethod)onReleaseOnButtonStateConfirmPush,
-    (IButtonStateToStringMethod)toStringOnButtonStateConfirmPush
+    .onPush     = onPushOnButtonStateConfirmPushButtonState,
+    .onRelease  = onReleaseOnButtonStateConfirmPushButtonState,
+    .toString   = toStringOnButtonStateConfirmPushButtonState
 };
 
 static const IButtonStateVtbl buttonStatePushedVtbl = {
-    (IButtonStateOnPushMethod)onPushOnButtonStatePushed,
-    (IButtonStateOnReleaseMethod)onReleaseOnButtonStatePushed,
-    (IButtonStateToStringMethod)toStringOnButtonStatePushed
+    .onPush     = onPushOnButtonStatePushedButtonState,
+    .onRelease  = onReleaseOnButtonStatePushedButtonState,
+    .toString   = toStringOnButtonStatePushedButtonState
 };
 
 static const IButtonStateVtbl buttonStateConfirmReleaseVtbl = {
-    (IButtonStateOnPushMethod)onPushOnButtonStateConfirmRelease,
-    (IButtonStateOnReleaseMethod)onReleaseOnButtonStateConfirmRelease,
-    (IButtonStateToStringMethod)toStringOnButtonStateConfirmRelease
+    .onPush     = onPushOnButtonStateConfirmReleaseButtonState,
+    .onRelease  = onReleaseOnButtonStateConfirmReleaseButtonState,
+    .toString   = toStringOnButtonStateConfirmReleaseButtonState
 };
 
 // Private member(s)
@@ -57,159 +94,95 @@ PUBLIC STATIC const IButtonState *BUTTON_STATE_CONFIRM_RELEASE
     = &buttonStateConfirmRelease.buttonState;
 
 // Method implement(s)
-PUBLIC void constructButtonStateReleased(
-    ButtonStateReleased *instance)
+PUBLIC OVERRIDE void onPushOnButtonStateReleaseButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    if (instance != NULL) {
-        instance->buttonState.vtbl = &buttonStateReleasedVtbl;
-    }
-}
-
-PUBLIC void deconstructButtonStateReleased(
-    ButtonStateReleased *instance)
-{
-    if (instance != NULL) {
-        memset(instance, 0, sizeof(ButtonStateReleased));
-    }
-}
-
-PUBLIC void constructButtonStateConfirmPush(
-    ButtonStateConfirmPush *instance)
-{
-    if (instance != NULL) {
-        instance->buttonState.vtbl = &buttonStateConfirmPushVtbl;
-    }
-}
-
-PUBLIC void deconstructButtonStateConfirmPush(
-    ButtonStateConfirmPush *instance)
-{
-    if (instance != NULL) {
-        memset(instance, 0, sizeof(ButtonStateConfirmPush));
-    }
-}
-
-PUBLIC void constructButtonStatePushed(
-    ButtonStatePushed *instance)
-{
-    if (instance != NULL) {
-        instance->buttonState.vtbl = &buttonStatePushedVtbl;
-    }
-}
-
-PUBLIC void deconstructButtonStatePushed(
-    ButtonStatePushed *instance)
-{
-    if (instance != NULL) {
-        memset(instance, 0, sizeof(ButtonStatePushed));
-    }
-}
-
-PUBLIC void constructButtonStateConfirmRelease(
-    ButtonStateConfirmRelease *instance)
-{
-    if (instance != NULL) {
-        instance->buttonState.vtbl = &buttonStateConfirmReleaseVtbl;
-    }
-}
-
-PUBLIC void deconstructButtonStateConfirmRelease(
-    ButtonStateConfirmRelease *instance)
-{
-    if (instance != NULL) {
-        memset(instance, 0, sizeof(ButtonStateConfirmRelease));
-    }
-}
-
-PUBLIC void onPushOnButtonStateReleased(
-    ButtonStateReleased *pThis, BaseButton *button)
-{
-    if (pThis != NULL && button != NULL) {
+    if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_CONFIRM_PUSH);
     }
 }
 
-PUBLIC void onReleaseOnButtonStateReleased(
-    ButtonStateReleased *pThis, BaseButton *button)
+PUBLIC OVERRIDE void onReleaseOnButtonStateReleasedButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    (void)pThis;
+    (void)state;
     (void)button;
 }
 
-PUBLIC const char *toStringOnButtonStateReleased(
-    ButtonStateReleased *pThis)
+PUBLIC OVERRIDE const char *toStringOnButtonStateReleasedButtonState(
+    IButtonState *state)
 {
-    (void)pThis;
+    (void)state;
     return "RELEASED";
 }
 
-PUBLIC void onPushOnButtonStateConfirmPush(
-    ButtonStateConfirmPush *pThis, BaseButton *button)
+PUBLIC OVERRIDE void onPushOnButtonStateConfirmPushButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    if (pThis != NULL && button != NULL) {
+    if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_PUSHED);
-        button->vtbl->_notifyPush(button);
+        button->vtbl->notifyPush(button);
     }
 }
 
-PUBLIC void onReleaseOnButtonStateConfirmPush(
-    ButtonStateConfirmPush *pThis, BaseButton *button)
+PUBLIC OVERRIDE void onReleaseOnButtonStateConfirmPushButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    if (pThis != NULL && button != NULL) {
+    if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_RELEASED);
     }
 }
 
-PUBLIC const char *toStringOnButtonStateConfirmPush(
-    ButtonStateConfirmPush *pThis)
+PUBLIC OVERRIDE const char *toStringOnButtonStateConfirmPushButtonState(
+    IButtonState *state)
 {
-    (void)pThis;
+    (void)state;
     return "CONFIRM_PUSH";
 }
 
-PUBLIC void onPushOnButtonStatePushed(
-    ButtonStatePushed *pThis, BaseButton *button)
+PUBLIC OVERRIDE void onPushOnButtonStatePushedButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    (void)pThis;
+    (void)state;
     (void)button;
 }
 
-PUBLIC void onReleaseOnButtonStatePushed(
-    ButtonStatePushed *pThis, BaseButton *button)
+PUBLIC OVERRIDE void onReleaseOnButtonStatePushedButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    if (pThis != NULL && button != NULL) {
+    if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_CONFIRM_RELEASE);
     }
 }
 
-PUBLIC const char *toStringOnButtonStatePushed(
-    ButtonStatePushed *pThis)
+PUBLIC OVERRIDE const char *toStringOnButtonStatePushedButtonState(
+    IButtonState *state)
 {
-    (void)pThis;
+    (void)state;
     return "PUSHED";
 }
 
-PUBLIC void onPushOnButtonStateConfirmRelease(
-    ButtonStateConfirmRelease *pThis, BaseButton *button)
+PUBLIC OVERRIDE void onPushOnButtonStateConfirmReleaseButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    if (pThis != NULL && button != NULL) {
+    if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_PUSHED);
     }
 }
 
-PUBLIC void onReleaseOnButtonStateConfirmRelease(
-    ButtonStateConfirmRelease *pThis, BaseButton *button)
+PUBLIC OVERRIDE void onReleaseOnButtonStateConfirmReleaseButtonState(
+    IButtonState *state, struct BaseButton *button)
 {
-    if (pThis != NULL && button != NULL) {
+    if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_RELEASED);
-        button->vtbl->_notifyRelease(button);
+        button->vtbl->notifyRelease(button);
     }
 }
 
-PUBLIC const char *toStringOnButtonStateConfirmRelease(
-    ButtonStateConfirmRelease *pThis)
+PUBLIC OVERRIDE const char *toStringOnButtonStateConfirmReleaseButtonState(
+    IButtonState *state)
 {
-    (void)pThis;
+    (void)state;
     return "CONFIRM_RELEASE";
 }
 

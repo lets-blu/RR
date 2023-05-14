@@ -5,11 +5,18 @@
 extern "C" {
 #endif // __cplusplus
 
-#define PUBLIC      
-#define PROTECTED   
+#include <stddef.h>
+#include <stdint.h>
+
+#define PUBLIC
+#define PROTECTED
 #define PRIVATE     static
 
-#define STATIC      
+#define STATIC
+#define OVERRIDE
+
+#define BASE_TO_SUB_CAST(instance, subType, baseName) \
+    ((subType *)((uint8_t *)(instance) - offsetof(subType, baseName)))
 
 #ifdef __cplusplus
 }
