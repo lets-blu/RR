@@ -22,6 +22,22 @@ PUBLIC void deconstructDeviceManager(DeviceManager *instance)
     }
 }
 
+PUBLIC void setFactoryToDeviceManager(
+    DeviceManager *pThis, BaseFactory *factory)
+{
+    if (pThis != NULL) {
+        pThis->_factory = factory;
+    }
+}
+
+PUBLIC void setBasePinToDeviceManager(
+    DeviceManager *pThis, unsigned int number, unsigned int size)
+{
+    if (pThis != NULL && !IS_DEVICE_POOL_CONSTRUCTED(&pThis->_basePinPool)) {
+        constructDevicePool(&pThis->_basePinPool, number, size);
+    }
+}
+
 PUBLIC BasePin *createBasePinByDeviceManager(
     DeviceManager *pThis, void *port, unsigned int pin)
 {
@@ -53,22 +69,6 @@ PUBLIC void destoryBasePinByDeviceManager(
     }
 
     freeToDevicePool(&pThis->_basePinPool, &instance->base);
-}
-
-PUBLIC void setFactoryToDeviceManager(
-    DeviceManager *pThis, BaseFactory *factory)
-{
-    if (pThis != NULL) {
-        pThis->_factory = factory;
-    }
-}
-
-PUBLIC void setBasePinToDeviceManager(
-    DeviceManager *pThis, unsigned int number, unsigned int size)
-{
-    if (pThis != NULL && !IS_DEVICE_POOL_CONSTRUCTED(&pThis->_basePinPool)) {
-        constructDevicePool(&pThis->_basePinPool, number, size);
-    }
 }
 
 PUBLIC STATIC DeviceManager *instanceOfDeviceManager(void)

@@ -13,7 +13,7 @@ extern "C" {
 
 struct BaseScannableVtbl;
 
-typedef struct BaseScannable {
+typedef struct {
     LinkedListItem base;
     const struct BaseScannableVtbl *vtbl;
 } BaseScannable;
@@ -22,10 +22,9 @@ typedef struct BaseScannableVtbl {
     void (*scan)(BaseScannable *pThis);
 } BaseScannableVtbl;
 
-typedef void (*BaseScannableScanMethod)(BaseScannable *);
-
 #ifdef __cplusplus
 }
 #endif // __cplusplus
 
 #endif // __BASE_SCANNABLE_H__
+

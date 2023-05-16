@@ -9,7 +9,6 @@ PROTECTED void constructBaseDevice(BaseDevice *instance)
 {
     if (instance != NULL) {
         constructLinkedListItem(&instance->base);
-        instance->_referenceCount = 0;
     }
 }
 

@@ -1,5 +1,6 @@
 #include "core/device/inc/DevicePool.h"
 
+// Method implement(s)
 PUBLIC void constructDevicePool(
     DevicePool *instance, unsigned int number, unsigned int size)
 {

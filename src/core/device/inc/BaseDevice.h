@@ -12,11 +12,10 @@ extern "C" {
 #include "core/list/inc/LinkedList.h"
 
 #define LinkedListItem2BaseDevice(instance) \
-    ((BaseDevice *)((LinkedListItem *)(instance)))
+    BASE_TO_SUB_CAST(instance, BaseDevice, base)
 
 typedef struct {
     LinkedListItem base;
-    unsigned int _referenceCount;
 } BaseDevice;
 
 #ifdef __cplusplus

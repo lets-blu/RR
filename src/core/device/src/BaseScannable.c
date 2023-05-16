@@ -20,3 +20,4 @@ PROTECTED void deconstructBaseScannable(BaseScannable *instance)
         memset(instance, 0, sizeof(BaseScannable));
     }
 }
+

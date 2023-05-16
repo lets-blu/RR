@@ -11,6 +11,7 @@ extern "C" {
 
 #include "core/common/inc/Keywords.h"
 #include "core/device/inc/DevicePool.h"
+
 #include "port/common/inc/BaseFactory.h"
 #include "port/common/inc/BasePin.h"
 
@@ -27,17 +28,17 @@ typedef struct {
 PUBLIC void deconstructDeviceManager(DeviceManager *instance);
 
 // Public method(s)
-PUBLIC BasePin *createBasePinByDeviceManager(
-    DeviceManager *pThis, void *port, unsigned int pin);
-
-PUBLIC void destoryBasePinByDeviceManager(
-    DeviceManager *pThis, BasePin *instance);
-
 PUBLIC void setFactoryToDeviceManager(
     DeviceManager *pThis, BaseFactory *factory);
 
 PUBLIC void setBasePinToDeviceManager(
     DeviceManager *pThis, unsigned int number, unsigned int size);
+
+PUBLIC BasePin *createBasePinByDeviceManager(
+    DeviceManager *pThis, void *port, unsigned int pin);
+
+PUBLIC void destoryBasePinByDeviceManager(
+    DeviceManager *pThis, BasePin *instance);
 
 PUBLIC STATIC DeviceManager *instanceOfDeviceManager(void);
 
