@@ -6,9 +6,13 @@ PRIVATE LinkedListItem *removeHeadFromLinkedList(LinkedList *pThis);
 PRIVATE LinkedListItem *removeNonHeadFromLinkedList(
     LinkedList *pThis, LinkedListItem *previous);
 
+// Override method(s)
+PUBLIC OVERRIDE bool compareLinkedListItem(
+    LinkedListItem *pThis, LinkedListItem *item);
+
 // Virtual methods table
 static const LinkedListItemVtbl itemVtbl = {
-    .compare = (LinkedListItemCompareMethod)compareLinkedListItem
+    .compare = compareLinkedListItem
 };
 
 // Method implement(s)
@@ -133,7 +137,8 @@ PUBLIC LinkedListItem *removeIndexFromLinkedList(LinkedList *pThis, int index)
 PUBLIC LinkedListItem *findItemFromLinkedList(
     LinkedList *pThis, LinkedListFindCallback callback, void *argument)
 {
-    LinkedListItem *item= NULL;
+    LinkedListItem *item = NULL;
+
     // 1. Check arguments
     if (pThis == NULL || callback == NULL) {
         return NULL;
@@ -153,18 +158,14 @@ PUBLIC LinkedListItem *findItemFromLinkedList(
     return NULL;
 }
 
-PUBLIC bool compareLinkedListItem(LinkedListItem *pThis, LinkedListItem *item)
-{
-    return (pThis == NULL || item == NULL) ? false : (pThis == item);
-}
 
 PUBLIC bool hasNextOfLinkedListIterator(LinkedListIterator *pThis)
 {
-    if (pThis != NULL) {
-        return (pThis->_next != NULL);
+    if (pThis == NULL) {
+        return false;
     }
 
-    return false;
+    return (pThis->_next !=NULL);
 }
 
 PUBLIC LinkedListItem *nextOfLinkedListIterator(LinkedListIterator *pThis)
@@ -193,7 +194,9 @@ PRIVATE LinkedListItem *removeHeadFromLinkedList(LinkedList *pThis)
     pThis->_head = remove->_next;
     remove->_next = NULL;
 
+    // 3. Update items count
     pThis->_itemsCount--;
+
     return remove;
 }
 
@@ -212,11 +215,19 @@ PRIVATE LinkedListItem *removeNonHeadFromLinkedList(
     previous->_next = remove->_next;
     remove->_next = NULL;
 
+    // 3. Update items count
+    pThis->_itemsCount--;
+
     if (pThis->_tail == remove) {
         pThis->_tail = previous;
     }
 
-    pThis->_itemsCount--;
     return remove;
+}
+
+PUBLIC OVERRIDE bool compareLinkedListItem(
+    LinkedListItem *pThis, LinkedListItem *item)
+{
+    return (pThis == NULL || item == NULL) ? false : (pThis == item);
 }
 

@@ -1,5 +1,6 @@
 #include "core/log/inc/LogFilter.h"
 
+// Method implement(s)
 PUBLIC void constructLogFilter(
     LogFilter *instance, const char *name, LogLevel filterLevel)
 {
@@ -39,3 +40,4 @@ PUBLIC int printStringByLogFilter(
 
     return length;
 }
+

@@ -65,3 +65,4 @@ PUBLIC int printStringByLogFilter(
 #endif // __cplusplus
 
 #endif // __LOG_FILTER_H__
+

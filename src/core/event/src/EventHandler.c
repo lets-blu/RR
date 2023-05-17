@@ -17,3 +17,4 @@ PUBLIC void deconstructEventHandler(EventHandler *instance)
         memset(instance, 0, sizeof(EventHandler));
     }
 }
+

@@ -34,7 +34,6 @@ typedef struct LinkedListItemVtbl {
 } LinkedListItemVtbl;
 
 typedef bool (*LinkedListFindCallback)(LinkedListItem *, void *);
-typedef bool (*LinkedListItemCompareMethod)(LinkedListItem *, LinkedListItem *);
 
 // (De)constructors
 PUBLIC void constructLinkedList(LinkedList *instance);
@@ -58,8 +57,6 @@ PUBLIC LinkedListItem *removeIndexFromLinkedList(LinkedList *pThis, int index);
 
 PUBLIC LinkedListItem *findItemFromLinkedList(
     LinkedList *pThis, LinkedListFindCallback callback, void *argument);
-
-PUBLIC bool compareLinkedListItem(LinkedListItem *pThis, LinkedListItem *item);
 
 PUBLIC bool hasNextOfLinkedListIterator(LinkedListIterator *pThis);
 PUBLIC LinkedListItem *nextOfLinkedListIterator(LinkedListIterator *pThis);

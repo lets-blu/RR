@@ -12,7 +12,7 @@ extern "C" {
 #include "core/list/inc/LinkedList.h"
 
 #define LinkedListItem2EventHandler(instance) \
-    ((EventHandler *)((LinkedListItem *)(instance)))
+    BASE_TO_SUB_CAST(instance, EventHandler, base)
 
 typedef struct EventHandler {
     LinkedListItem base;
@@ -32,3 +32,4 @@ PUBLIC void deconstructEventHandler(EventHandler *instance);
 #endif // __cplusplus
 
 #endif // __EVENT_HANDLER_H__
+
