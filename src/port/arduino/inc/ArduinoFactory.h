@@ -9,18 +9,19 @@ extern "C" {
 #include <string.h>
 
 #include "core/common/inc/Keywords.h"
+
 #include "port/arduino/inc/ArduinoPin.h"
 #include "port/common/inc/BasePin.h"
 #include "port/common/inc/BaseFactory.h"
 
 #define BaseFactory2ArduinoFactory(instance) \
-    ((ArduinoFactory *)((BaseFactory *)(instance)))
+    BASE_TO_SUB_CAST(instance, ArduinoFactory, base)
 
 typedef struct {
     BaseFactory base;
 } ArduinoFactory;
 
-// (De)constructor
+// (De)constructors
 PUBLIC void constructArduinoFactory(ArduinoFactory *instance);
 PUBLIC void deconstructAduinoFactory(ArduinoFactory *instance);
 

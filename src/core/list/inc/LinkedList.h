@@ -48,12 +48,14 @@ PUBLIC void constructLinkedListIterator(
 PUBLIC void deconstructLinkedListIterator(LinkedListIterator *instance);
 
 // Public method(s)
-PUBLIC int addItemToLinkedList(LinkedList *pThis, LinkedListItem *item);
+PUBLIC int addItemToLinkedList(
+    LinkedList *pThis, LinkedListItem *item);
 
 PUBLIC LinkedListItem *removeItemFromLinkedList(
     LinkedList *pThis, LinkedListItem *item);
 
-PUBLIC LinkedListItem *removeIndexFromLinkedList(LinkedList *pThis, int index);
+PUBLIC LinkedListItem *removeIndexFromLinkedList(
+    LinkedList *pThis, int index);
 
 PUBLIC LinkedListItem *findItemFromLinkedList(
     LinkedList *pThis, LinkedListFindCallback callback, void *argument);

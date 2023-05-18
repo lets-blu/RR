@@ -24,11 +24,6 @@ typedef struct BaseFactoryVtbl {
     void (*_doDestoryBasePin)(BaseFactory *pThis, BasePin *instance);
 } BaseFactoryVtbl;
 
-typedef void (*BaseFactoryDoCreateBasePinMethod)(
-    BaseFactory *, BasePin *, void *, unsigned int);
-
-typedef void (*BaseFactoryDoDestoryBasePinMethod)(BaseFactory *, BasePin *);
-
 // Public method(s)
 PUBLIC void createBasePinByBaseFactory(
     BaseFactory *pThis, BasePin *instance, void *port, unsigned int pin);

@@ -11,23 +11,31 @@ extern "C" {
 PROTECTED void constructBasePin(BasePin *instance, void *port, unsigned int pin);
 PROTECTED void deconstructBasePin(BasePin *instance);
 
-PROTECTED void doSetupArduinoPin(ArduinoPin *pThis, PinMode mode);
+// Override method(s)
+PROTECTED OVERRIDE void doSetupArduinoPinBase(
+    BasePin *pin, PinMode mode);
 
-PROTECTED PinState doReadStateFromArduinoPin(ArduinoPin *pThis);
-PROTECTED void doWriteStateToArduinoPin(ArduinoPin *pThis, PinState state);
+PROTECTED OVERRIDE PinState doReadStateFromArduinoPinBase(
+    BasePin *pin);
 
-PROTECTED unsigned int doReadValueFromArduinoPin(ArduinoPin *pThis);
-PROTECTED void doWriteValueToArduinoPin(ArduinoPin *pThis, unsigned int value);
+PROTECTED OVERRIDE void doWriteStateToArduinoPinBase(
+    BasePin *pin, PinState state);
+
+PROTECTED OVERRIDE unsigned int doReadValueFromArduinoPinBase(
+    BasePin *pin);
+
+PROTECTED OVERRIDE void doWriteValueToArduinoPinBase(
+    BasePin *pin, unsigned int value);
 
 // Virtial methods table
 static const BasePinVtbl basePinVtbl = {
-    (BasePinDoSetupMethod)doSetupArduinoPin,
+    ._doSetup       = doSetupArduinoPinBase,
+    
+    ._doReadState   = doReadStateFromArduinoPinBase,
+    ._doWriteState  = doWriteStateToArduinoPinBase,
 
-    (BasePinDoReadStateMethod)doReadStateFromArduinoPin,
-    (BasePinDoWriteStateMethod)doWriteStateToArduinoPin,
-
-    (BasePinDoReadValueMethod)doReadValueFromArduinoPin,
-    (BasePinDoWriteValueMethod)doWriteValueToArduinoPin
+    ._doReadValue   = doReadValueFromArduinoPinBase,
+    ._doWriteValue  = doWriteValueToArduinoPinBase
 };
 
 PUBLIC void constructArduinoPin(ArduinoPin *instance, uint8_t pin)
@@ -46,25 +54,26 @@ PUBLIC void deconstructArduinoPin(ArduinoPin *instance)
     }
 }
 
-PROTECTED void doSetupArduinoPin(ArduinoPin *pThis, PinMode mode)
+PROTECTED OVERRIDE void doSetupArduinoPinBase(
+    BasePin *pin, PinMode mode)
 {
-    if (pThis == NULL) {
+    if (pin == NULL) {
         return;
     }
 
     switch (mode) {
         case PIN_MODE_INPUT: {
-            pinMode(getPinFromBasePin(&pThis->base), mode);
+            pinMode(getPinFromBasePin(pin), mode);
             break;
         }
 
         case PIN_MODE_OUTPUT: {
-            pinMode(getPinFromBasePin(&pThis->base), mode);
+            pinMode(getPinFromBasePin(pin), mode);
             break;
         }
 
         case PIN_MODE_INPUT_PULLUP: {
-            pinMode(getPinFromBasePin(&pThis->base), mode);
+            pinMode(getPinFromBasePin(pin), mode);
             break;
         }
 
@@ -74,45 +83,49 @@ PROTECTED void doSetupArduinoPin(ArduinoPin *pThis, PinMode mode)
     }
 }
 
-PROTECTED PinState doReadStateFromArduinoPin(ArduinoPin *pThis)
+PROTECTED OVERRIDE PinState doReadStateFromArduinoPinBase(
+    BasePin *pin)
 {
-    if (pThis == NULL) {
+    if (pin == NULL) {
         return PIN_STATE_LOW;
     }
 
-    if (digitalRead(getPinFromBasePin(&pThis->base)) == LOW) {
+    if (digitalRead(getPinFromBasePin(pin)) == LOW) {
         return PIN_STATE_LOW;
     } else {
         return PIN_STATE_HIGH;
     }
 }
 
-PROTECTED void doWriteStateToArduinoPin(ArduinoPin *pThis, PinState state)
+PROTECTED OVERRIDE void doWriteStateToArduinoPinBase(
+    BasePin *pin, PinState state)
 {
-    if (pThis == NULL) {
+    if (pin == NULL) {
         return;
     }
 
     if (state == PIN_STATE_LOW) {
-        digitalWrite(getPinFromBasePin(&pThis->base), LOW);
+        digitalWrite(getPinFromBasePin(pin), LOW);
     } else {
-        digitalWrite(getPinFromBasePin(&pThis->base), HIGH);
+        digitalWrite(getPinFromBasePin(pin), HIGH);
     }
 }
 
-PROTECTED unsigned int doReadValueFromArduinoPin(ArduinoPin *pThis)
+PROTECTED OVERRIDE unsigned int doReadValueFromArduinoPinBase(
+    BasePin *pin)
 {
-    if (pThis != NULL) {
-        return analogRead(getPinFromBasePin(&pThis->base));
+    if (pin != NULL) {
+        return 0;
     }
 
-    return 0;
+    return analogRead(getPinFromBasePin(pin));
 }
 
-PROTECTED void doWriteValueToArduinoPin(ArduinoPin *pThis, unsigned int value)
+PROTECTED OVERRIDE void doWriteValueToArduinoPinBase(
+    BasePin *pin, unsigned int value)
 {
-    if (pThis != NULL) {
-        analogWrite(getPinFromBasePin(&pThis->base), value);
+    if (pin != NULL) {
+        analogWrite(getPinFromBasePin(pin), value);
     }
 }
 

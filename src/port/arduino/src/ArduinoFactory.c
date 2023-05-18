@@ -4,16 +4,17 @@
 PROTECTED void constructBaseFactory(BaseFactory *instance);
 PROTECTED void deconstructBaseFactory(BaseFactory *instance);
 
-PROTECTED void createBasePinByArduinoFactory(
-    ArduinoFactory *pThis, BasePin *instance, void *port, unsigned int pin);
+// Override method(s)
+PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
+    BaseFactory *factory, BasePin *instance, void *port, unsigned int pin);
 
-PROTECTED void destoryBasePinByArduinoFactory(
-    ArduinoFactory *pThis, BasePin *instance);
+PROTECTED OVERRIDE void doDestoryBasePinByArduinoFactoryBase(
+    BaseFactory *factory, BasePin *instance);
 
 // Virtual methods table
-static const BaseFactoryVtbl factoryVtbl ={
-    (BaseFactoryDoCreateBasePinMethod)createBasePinByArduinoFactory,
-    (BaseFactoryDoDestoryBasePinMethod)destoryBasePinByArduinoFactory
+static const BaseFactoryVtbl factoryVtbl = {
+    ._doCreateBasePin   = doCreateBasePinByArduinoFactoryBase,
+    ._doDestoryBasePin  = doDestoryBasePinByArduinoFactoryBase
 };
 
 // Method implement(s)
@@ -33,20 +34,20 @@ PUBLIC void deconstructAduinoFactory(ArduinoFactory *instance)
     }
 }
 
-PROTECTED void createBasePinByArduinoFactory(
-    ArduinoFactory *pThis, BasePin *instance, void *port, unsigned int pin)
+PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
+    BaseFactory *factory, BasePin *instance, void *port, unsigned int pin)
 {
     (void)port;
 
-    if (pThis != NULL) {
+    if (factory != NULL && instance != NULL) {
         constructArduinoPin(BasePin2ArduinoPin(instance), (uint8_t)pin);
     }
 }
 
-PROTECTED void destoryBasePinByArduinoFactory(
-    ArduinoFactory *pThis, BasePin *instance)
+PROTECTED OVERRIDE void doDestoryBasePinByArduinoFactoryBase(
+    BaseFactory *factory, BasePin *instance)
 {
-    if (pThis != NULL) {
+    if (factory != NULL && instance != NULL) {
         deconstructArduinoPin(BasePin2ArduinoPin(instance));
     }
 }

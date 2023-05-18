@@ -13,13 +13,13 @@ extern "C" {
 #include "port/common/inc/BasePin.h"
 
 #define BasePin2ArduinoPin(instance) \
-    ((ArduinoPin *)((BasePin *)(instance)))
+    BASE_TO_SUB_CAST(instance, ArduinoPin, base)
 
 typedef struct {
     BasePin base;
 } ArduinoPin;
 
-// (De)constructor
+// (De)constructors
 PUBLIC void constructArduinoPin(ArduinoPin *instance, uint8_t pin);
 PUBLIC void deconstructArduinoPin(ArduinoPin *instance);
 

@@ -54,6 +54,7 @@ PUBLIC BasePin *createBasePinByDeviceManager(
     }
 
     createBasePinByBaseFactory(pThis->_factory, instance, port, pin);
+
     return instance;
 }
 

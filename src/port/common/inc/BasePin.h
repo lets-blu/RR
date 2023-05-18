@@ -12,7 +12,7 @@ extern "C" {
 #include "core/device/inc/BaseDevice.h"
 
 #define BaseDevice2BasePin(instance) \
-    ((BasePin *)((BaseDevice *)(instance)))
+    BASE_TO_SUB_CAST(instance, BasePin, base)
 
 struct BasePinVtbl;
 
@@ -29,6 +29,7 @@ typedef enum {
 
 typedef struct {
     BaseDevice base;
+
     void *_port;
     unsigned int _pin;
     const struct BasePinVtbl *vtbl;
@@ -43,14 +44,6 @@ typedef struct BasePinVtbl {
     unsigned int (*_doReadValue)(BasePin *pThis);
     void (*_doWriteValue)(BasePin *pThis, unsigned int value);
 } BasePinVtbl;
-
-typedef void (*BasePinDoSetupMethod)(BasePin *, PinMode);
-
-typedef PinState (*BasePinDoReadStateMethod)(BasePin *);
-typedef void (*BasePinDoWriteStateMethod)(BasePin *, PinState);
-
-typedef unsigned int (*BasePinDoReadValueMethod)(BasePin *);
-typedef void (*BasePinDoWriteValueMethod)(BasePin *, unsigned int);
 
 // Public method(s)
 PUBLIC void setupBasePin(BasePin *pThis, PinMode mode);

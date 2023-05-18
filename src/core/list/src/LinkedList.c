@@ -62,7 +62,8 @@ PUBLIC void deconstructLinkedListIterator(LinkedListIterator *instance)
     }
 }
 
-PUBLIC int addItemToLinkedList(LinkedList *pThis, LinkedListItem *item)
+PUBLIC int addItemToLinkedList(
+    LinkedList *pThis, LinkedListItem *item)
 {
     // 1. Check arguments
     if (pThis == NULL || item == NULL) {
@@ -109,7 +110,8 @@ PUBLIC LinkedListItem *removeItemFromLinkedList(
     return removeNonHeadFromLinkedList(pThis, previous);
 }
 
-PUBLIC LinkedListItem *removeIndexFromLinkedList(LinkedList *pThis, int index)
+PUBLIC LinkedListItem *removeIndexFromLinkedList(
+    LinkedList *pThis, int index)
 {
     LinkedListItem *previous = NULL;
 

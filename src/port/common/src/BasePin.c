@@ -40,11 +40,11 @@ PUBLIC void setupBasePin(BasePin *pThis, PinMode mode)
 
 PUBLIC PinState readStateFromBasePin(BasePin *pThis)
 {
-    if (pThis != NULL) {
-        return pThis->vtbl->_doReadState(pThis);
+    if (pThis == NULL) {
+        return PIN_STATE_LOW;
     }
 
-    return PIN_STATE_LOW;
+    return pThis->vtbl->_doReadState(pThis);
 }
 
 PUBLIC void writeStateToBasePin(BasePin *pThis, PinState state)
@@ -56,11 +56,11 @@ PUBLIC void writeStateToBasePin(BasePin *pThis, PinState state)
 
 PUBLIC unsigned int readValueFromBasePin(BasePin *pThis)
 {
-    if (pThis != NULL) {
-        return  pThis->vtbl->_doReadValue(pThis);
+    if (pThis == NULL) {
+        return 0;
     }
 
-    return 0;
+    return pThis->vtbl->_doReadValue(pThis);
 }
 
 PUBLIC void writeValueToBasePin(BasePin *pThis, unsigned int value)
@@ -72,19 +72,11 @@ PUBLIC void writeValueToBasePin(BasePin *pThis, unsigned int value)
 
 PUBLIC void *getPortFromBasePin(BasePin *pThis)
 {
-    if (pThis != NULL) {
-        return pThis->_port;
-    }
-
-    return NULL;
+    return (pThis == NULL) ? NULL : pThis->_port;
 }
 
 PUBLIC unsigned int getPinFromBasePin(BasePin *pThis)
 {
-    if (pThis != NULL) {
-        return pThis->_pin;
-    }
-
-    return 0;
+    return (pThis == NULL) ? 0 : pThis->_pin;
 }
 
