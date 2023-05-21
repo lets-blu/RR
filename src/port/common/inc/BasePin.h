@@ -54,9 +54,6 @@ PUBLIC void writeStateToBasePin(BasePin *pThis, PinState state);
 PUBLIC unsigned int readValueFromBasePin(BasePin *pThis);
 PUBLIC void writeValueToBasePin(BasePin *pThis, unsigned int value);
 
-PUBLIC void *getPortFromBasePin(BasePin *pThis);
-PUBLIC unsigned int getPinFromBasePin(BasePin *pThis);
-
 #ifdef __cplusplus
 }
 #endif // __cplusplus

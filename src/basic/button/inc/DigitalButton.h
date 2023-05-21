@@ -55,6 +55,8 @@ PUBLIC void addReleaseHandlerToDigitalButton(
 PUBLIC void removeReleaseHandlerFromDigitalButton(
     DigitalButton *pThis, EventHandler *handler);
 
+PUBLIC void scanDigitalButton(DigitalButton *pThis);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

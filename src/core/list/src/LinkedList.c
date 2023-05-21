@@ -1,7 +1,8 @@
 #include "core/list/inc/LinkedList.h"
 
 // Private method(s)
-PRIVATE LinkedListItem *removeHeadFromLinkedList(LinkedList *pThis);
+PRIVATE LinkedListItem *removeHeadFromLinkedList(
+    LinkedList *pThis);
 
 PRIVATE LinkedListItem *removeNonHeadFromLinkedList(
     LinkedList *pThis, LinkedListItem *previous);
@@ -182,7 +183,8 @@ PUBLIC LinkedListItem *nextOfLinkedListIterator(LinkedListIterator *pThis)
     return next;
 }
 
-PRIVATE LinkedListItem *removeHeadFromLinkedList(LinkedList *pThis)
+PRIVATE LinkedListItem *removeHeadFromLinkedList(
+    LinkedList *pThis)
 {
     LinkedListItem *remove = NULL;
 
@@ -198,7 +200,6 @@ PRIVATE LinkedListItem *removeHeadFromLinkedList(LinkedList *pThis)
 
     // 3. Update items count
     pThis->_itemsCount--;
-
     return remove;
 }
 

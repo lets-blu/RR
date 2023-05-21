@@ -42,12 +42,12 @@ PUBLIC void deconstructDevicePool(DevicePool *instance)
 
 PUBLIC BaseDevice *allocateFromDevicePool(DevicePool *pThis)
 {
-    if (pThis != NULL) {
-        return LinkedListItem2BaseDevice(
-            removeIndexFromLinkedList(&pThis->_freeList, 0));
+    if (pThis == NULL) {
+        return NULL;
     }
 
-    return NULL;
+    return LinkedListItem2BaseDevice(
+        removeIndexFromLinkedList(&pThis->_freeList, 0));
 }
 
 PUBLIC void freeToDevicePool(DevicePool *pThis, BaseDevice *device)

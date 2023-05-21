@@ -1,0 +1,50 @@
+# Datatypes (KEYWORD1)
+# Core
+DeviceManager					KEYWORD1
+EventHandler					KEYWORD1
+LogFilter					KEYWORD1
+# Basic
+LED						KEYWORD1
+DigitalButton					KEYWORD1
+# Port
+ArduinoFactory					KEYWORD1
+
+# Methods and Functions (KEYWORD2)
+# Core
+instanceOfDeviceManager				KEYWORD2
+setFactoryToDeviceManager			KEYWORD2
+setBasePinToDeviceManager			KEYWORD2
+constructEventHandler				KEYWORD2
+deconstructEventHandler				KEYWORD2
+# Basic
+constructLED					KEYWORD2
+deconstructLED					KEYWORD2
+turnOnLED					KEYWORD2
+turnOffLED					KEYWORD2
+constructDigitalButton				KEYWORD2
+deconstructDigitalButton			KEYWORD2
+addPushHandlerToDigitalButton			KEYWORD2
+removePushHandlerToDigitalButton		KEYWORD2
+addReleaseHandlerToDigitalButton		KEYWORD2
+removeReleaseHandlerToDigitalButton		KEYWORD2
+scanDigitalButton				KEYWORD2
+# Port
+constructArduinoFactory				KEYWORD2
+deconstructArduinoFactory			KEYWORD2
+
+# Instances (KEYWORD2)
+
+# Constants (LITERAL1)
+# Core
+STATIC_LOG_FILTER				LITERAL1
+LOG_I						LITERAL1
+LOG_W						LITERAL1
+LOG_E						LITERAL1
+LOG_LEVEL_INFO					LITERAL1
+LOG_LEVEL_WARNING				LITERAL1
+LOG_LEVEL_ERROR					LITERAL1
+LOG_LEVEL_OFF					LITERAL1
+# Port
+PIN_STATE_LOW					LITERAL1
+PIN_STATE_HIGH					LITERAL1
+

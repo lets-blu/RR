@@ -3,6 +3,7 @@
 // Private member(s)
 PRIVATE STATIC LogFilter filter = STATIC_LOG_FILTER("LED", LOG_LEVEL_INFO);
 
+// Method implement(s)
 PUBLIC void constructLED(
     LED *instance, void *port, unsigned int pin, PinState lightState)
 {

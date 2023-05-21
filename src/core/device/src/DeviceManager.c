@@ -18,6 +18,7 @@ PRIVATE void constructDeviceManager(DeviceManager *instance)
 PUBLIC void deconstructDeviceManager(DeviceManager *instance)
 {
     if (instance != NULL) {
+        deconstructDevicePool(&instance->_basePinPool);
         memset(instance, 0, sizeof(DeviceManager));
     }
 }

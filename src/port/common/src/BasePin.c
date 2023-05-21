@@ -4,11 +4,14 @@
 PROTECTED void constructBaseDevice(BaseDevice *instance);
 PROTECTED void deconstructBaseDevice(BaseDevice *instance);
 
-PROTECTED void constructBasePin(BasePin *instance, void *port, unsigned int pin);
+PROTECTED void constructBasePin(
+    BasePin *instance, void *port, unsigned int pin);
+
 PROTECTED void deconstructBasePin(BasePin *instance);
 
 // Method implement(s)
-PROTECTED void constructBasePin(BasePin *instance, void *port, unsigned int pin)
+PROTECTED void constructBasePin(
+    BasePin *instance, void *port, unsigned int pin)
 {
     if (instance == NULL) {
         return;
@@ -68,15 +71,5 @@ PUBLIC void writeValueToBasePin(BasePin *pThis, unsigned int value)
     if (pThis != NULL) {
         pThis->vtbl->_doWriteValue(pThis, value);
     }
-}
-
-PUBLIC void *getPortFromBasePin(BasePin *pThis)
-{
-    return (pThis == NULL) ? NULL : pThis->_port;
-}
-
-PUBLIC unsigned int getPinFromBasePin(BasePin *pThis)
-{
-    return (pThis == NULL) ? 0 : pThis->_pin;
 }
 

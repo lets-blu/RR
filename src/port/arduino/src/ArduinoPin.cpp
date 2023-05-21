@@ -8,7 +8,9 @@ extern "C" {
 #endif // __cplusplus
 
 // Protected method(s)
-PROTECTED void constructBasePin(BasePin *instance, void *port, unsigned int pin);
+PROTECTED void constructBasePin(
+    BasePin *instance, void *port, unsigned int pin);
+
 PROTECTED void deconstructBasePin(BasePin *instance);
 
 // Override method(s)
@@ -63,17 +65,17 @@ PROTECTED OVERRIDE void doSetupArduinoPinBase(
 
     switch (mode) {
         case PIN_MODE_INPUT: {
-            pinMode(getPinFromBasePin(pin), mode);
+            pinMode(pin->_pin, mode);
             break;
         }
 
         case PIN_MODE_OUTPUT: {
-            pinMode(getPinFromBasePin(pin), mode);
+            pinMode(pin->_pin, mode);
             break;
         }
 
         case PIN_MODE_INPUT_PULLUP: {
-            pinMode(getPinFromBasePin(pin), mode);
+            pinMode(pin->_pin, mode);
             break;
         }
 
@@ -90,7 +92,7 @@ PROTECTED OVERRIDE PinState doReadStateFromArduinoPinBase(
         return PIN_STATE_LOW;
     }
 
-    if (digitalRead(getPinFromBasePin(pin)) == LOW) {
+    if (digitalRead(pin->_pin) == LOW) {
         return PIN_STATE_LOW;
     } else {
         return PIN_STATE_HIGH;
@@ -105,9 +107,9 @@ PROTECTED OVERRIDE void doWriteStateToArduinoPinBase(
     }
 
     if (state == PIN_STATE_LOW) {
-        digitalWrite(getPinFromBasePin(pin), LOW);
+        digitalWrite(pin->_pin, LOW);
     } else {
-        digitalWrite(getPinFromBasePin(pin), HIGH);
+        digitalWrite(pin->_pin, HIGH);
     }
 }
 
@@ -118,14 +120,14 @@ PROTECTED OVERRIDE unsigned int doReadValueFromArduinoPinBase(
         return 0;
     }
 
-    return analogRead(getPinFromBasePin(pin));
+    return analogRead(pin->_pin);
 }
 
 PROTECTED OVERRIDE void doWriteValueToArduinoPinBase(
     BasePin *pin, unsigned int value)
 {
     if (pin != NULL) {
-        analogWrite(getPinFromBasePin(pin), value);
+        analogWrite(pin->_pin, value);
     }
 }
 

@@ -108,6 +108,13 @@ PUBLIC void removeReleaseHandlerFromDigitalButton(
     }
 }
 
+PUBLIC void scanDigitalButton(DigitalButton *pThis)
+{
+    if (pThis != NULL) {
+        scanDigitalButtonBaseScannable(&pThis->baseScannable);
+    }
+}
+
 PUBLIC OVERRIDE void notifyPushByDigitalButtonBaseButton(BaseButton *button)
 {
     LinkedListIterator iterator;
