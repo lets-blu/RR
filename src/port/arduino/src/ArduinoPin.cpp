@@ -116,7 +116,7 @@ PROTECTED OVERRIDE void doWriteStateToArduinoPinBase(
 PROTECTED OVERRIDE unsigned int doReadValueFromArduinoPinBase(
     BasePin *pin)
 {
-    if (pin != NULL) {
+    if (pin == NULL) {
         return 0;
     }
 

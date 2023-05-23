@@ -11,6 +11,8 @@ extern "C" {
 #include "core/log/inc/LogFilter.h"
 
 // Basic
+#include "basic/button/inc/AnalogButton.h"
+#include "basic/button/inc/AnalogButtonGroup.h"
 #include "basic/button/inc/DigitalButton.h"
 #include "basic/led/inc/LED.h"
 

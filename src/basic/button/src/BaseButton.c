@@ -37,7 +37,8 @@ PUBLIC void setStateToBaseButton(
     previousState = pThis->_currentState;
     pThis->_currentState = state;
 
-    LOG_I(&filter, "setState, %s -> %s",
+    LOG_I(&filter, "0x%x setState, %s -> %s",
+        pThis,
         previousState->vtbl->toString((IButtonState *)previousState),
         state->vtbl->toString((IButtonState *)state));
 }
