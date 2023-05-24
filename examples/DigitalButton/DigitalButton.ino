@@ -3,8 +3,7 @@
 
 ArduinoFactory factory;
 DigitalButton button;
-EventHandler pushHandler;
-EventHandler releaseHandler;
+EventHandler handler;
 
 LogFilter filter = STATIC_LOG_FILTER("Main", LOG_LEVEL_INFO);
 
@@ -35,11 +34,8 @@ void setup() {
   setBasePinToDeviceManager(manager, 1, sizeof(ArduinoPin));
 
   constructDigitalButton(&button, NULL, A5, PIN_STATE_LOW);
-  constructEventHandler(&pushHandler, onPush);
-  constructEventHandler(&releaseHandler, onRelease);
-
-  addPushHandlerToDigitalButton(&button, &pushHandler);
-  addReleaseHandlerToDigitalButton(&button, &releaseHandler);
+  constructEventHandler(&handler, onClick);
+  addClickHandlerToDigitalButton(&button, &handler);
 }
 
 void loop() {
@@ -47,19 +43,14 @@ void loop() {
   delay(50);
 }
 
-void onPush(EventHandler *handler, void *sender, void *argument) {
+void onClick(EventHandler *handler, void *sender, void *argument) {
+  (void)handler;
   (void)argument;
 
-  if (handler == &pushHandler && sender == &button) {
-    LOG_I(&filter, "Button pushed!");
-  }
-}
-
-void onRelease(EventHandler *handler, void *sender, void *argument) {
-  (void)argument;
-
-  if (handler == &releaseHandler && sender == &button) {
-    LOG_I(&filter, "Button released!");
+  if (sender == &button) {
+    LOG_I(&filter, "Button clicked!");
+  } else {
+    LOG_I(&filter, "Unknown sender 0x%x", sender);
   }
 }
 

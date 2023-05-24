@@ -6,12 +6,16 @@ LogFilter					KEYWORD1
 # Basic
 LED						KEYWORD1
 DigitalButton					KEYWORD1
+AnalogButton					KEYWORD1
+AnalogButtonGroup				KEYWORD1
 # Port
 ArduinoFactory					KEYWORD1
+ArduinoPin					KEYWORD1
 
 # Methods and Functions (KEYWORD2)
 # Core
 instanceOfDeviceManager				KEYWORD2
+deconstructDeviceManager			KEYWORD2
 setFactoryToDeviceManager			KEYWORD2
 setBasePinToDeviceManager			KEYWORD2
 constructEventHandler				KEYWORD2
@@ -23,11 +27,18 @@ turnOnLED					KEYWORD2
 turnOffLED					KEYWORD2
 constructDigitalButton				KEYWORD2
 deconstructDigitalButton			KEYWORD2
-addPushHandlerToDigitalButton			KEYWORD2
-removePushHandlerToDigitalButton		KEYWORD2
-addReleaseHandlerToDigitalButton		KEYWORD2
-removeReleaseHandlerToDigitalButton		KEYWORD2
+addClickHandlerToDigitalButton			KEYWORD2
+removeClickHandlerFromDigitalButton		KEYWORD2
 scanDigitalButton				KEYWORD2
+constructAnalogButton				KEYWORD2
+deconstructAnalogButton				KEYWORD2
+addClickHandlerToAnalogButton			KEYWORD2
+removeClickHandlerFromAnalogButtn		KEYWORD2
+constructAnalogButtonGroup			KEYWORD2
+deconstructAnalogButtonGroup			KEYWORD2
+addButtonToAnalogButtonGroup			KEYWORD2
+removeButtonAnalogButtonGroup			KEYWORD2
+scanAnalogButtonGroup				KEYWORD2
 # Port
 constructArduinoFactory				KEYWORD2
 deconstructArduinoFactory			KEYWORD2

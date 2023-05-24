@@ -13,7 +13,6 @@ extern "C" {
 
 #include "core/common/inc/Keywords.h"
 #include "core/event/inc/EventHandler.h"
-#include "core/list/inc/LinkedList.h"
 
 #define BaseButton2AnalogButton(instance)       \
     BASE_TO_SUB_CAST(instance, AnalogButton, baseButton)
@@ -27,9 +26,6 @@ typedef struct {
 
     unsigned int _startValue;
     unsigned int _endValue;
-
-    LinkedList _pushHandlers;
-    LinkedList _releaseHandlers;
 } AnalogButton;
 
 // (De)constructors
@@ -39,22 +35,14 @@ PUBLIC void constructAnalogButton(
 PUBLIC void deconstructAnalogButton(AnalogButton *instance);
 
 // Public method(s)
-PUBLIC void addPushHandlerToAnalogButton(
+PUBLIC void addClickHandlerToAnalogButton(
     AnalogButton *pThis, EventHandler *handler);
 
-PUBLIC void removePushHandlerFromAnalogButton(
-    AnalogButton *pThis, EventHandler *handler);
-
-PUBLIC void addReleaseHandlerToAnalogButton(
-    AnalogButton *pThis, EventHandler *handler);
-
-PUBLIC void removeReleaseHandlerFromAnalogButton(
+PUBLIC void removeClickHandlerFromAnalogButton(
     AnalogButton *pThis, EventHandler *handler);
 
 PUBLIC void notifyValueChangeToAnalogButton(
     AnalogButton *pThis, unsigned int value);
-
-PUBLIC void scanAnalogButton(AnalogButton *pThis);
 
 #ifdef __cplusplus
 }

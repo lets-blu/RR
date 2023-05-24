@@ -8,19 +8,11 @@ PROTECTED void constructBaseScannable(BaseScannable *instance);
 PROTECTED void deconstructBaseScannable(BaseScannable *instance);
 
 // Override method(s)
-PUBLIC OVERRIDE void notifyPushByDigitalButtonBaseButton(BaseButton *button);
-PUBLIC OVERRIDE void notifyReleaseByDigitalButtonBaseButton(BaseButton *button);
-
 PUBLIC OVERRIDE void scanDigitalButtonBaseScannable(BaseScannable *scannable);
 
 // Virtual methods table
-static const BaseButtonVtbl buttonVtbl = {
-    .notifyPush     = notifyPushByDigitalButtonBaseButton,
-    .notifyRelease  = notifyReleaseByDigitalButtonBaseButton
-};
-
 static const BaseScannableVtbl scannableVtbl = {
-    .scan           = scanDigitalButtonBaseScannable
+    .scan = scanDigitalButtonBaseScannable
 };
 
 // Method implement(s)
@@ -35,7 +27,6 @@ PUBLIC void constructDigitalButton(
 
     // 1. construct base
     constructBaseButton(&instance->baseButton);
-    instance->baseButton.vtbl = &buttonVtbl;
 
     constructBaseScannable(&instance->baseScannable);
     instance->baseScannable.vtbl = &scannableVtbl;
@@ -43,9 +34,6 @@ PUBLIC void constructDigitalButton(
     // 2. construct member(s)
     instance->_basePin = createBasePinByDeviceManager(manager, port, pin);
     instance->_pushState = pushState;
-
-    constructLinkedList(&instance->_pushHandlers);
-    constructLinkedList(&instance->_releaseHandlers);
 
     // 3. setup pin
     if (pushState == PIN_STATE_LOW) {
@@ -69,42 +57,22 @@ PUBLIC void deconstructDigitalButton(DigitalButton *instance)
 
     // 2. deconstruct member(s)
     destoryBasePinByDeviceManager(manager, instance->_basePin);
-
-    deconstructLinkedList(&instance->_pushHandlers);
-    deconstructLinkedList(&instance->_releaseHandlers);
-
     memset(instance, 0, sizeof(DigitalButton));
 }
 
-PUBLIC void addPushHandlerToDigitalButton(
+PUBLIC void addClickHandlerToDigitalButton(
     DigitalButton *pThis, EventHandler *handler)
 {
     if (pThis != NULL && handler != NULL) {
-        addItemToLinkedList(&pThis->_pushHandlers, &handler->base);
+        addClickHandlerToBaseButton(&pThis->baseButton, handler);
     }
 }
 
-PUBLIC void removePushHandlerFromDigitalButton(
+PUBLIC void removeClickHandlerFromDigitalButton(
     DigitalButton *pThis, EventHandler *handler)
 {
     if (pThis != NULL && handler != NULL) {
-        removeItemFromLinkedList(&pThis->_pushHandlers, &handler->base);
-    }
-}
-
-PUBLIC void addReleaseHandlerToDigitalButton(
-    DigitalButton *pThis, EventHandler *handler)
-{
-    if (pThis != NULL && handler != NULL) {
-        addItemToLinkedList(&pThis->_releaseHandlers, &handler->base);
-    }
-}
-
-PUBLIC void removeReleaseHandlerFromDigitalButton(
-    DigitalButton *pThis, EventHandler *handler)
-{
-    if (pThis != NULL && handler != NULL) {
-        removeItemFromLinkedList(&pThis->_releaseHandlers, &handler->base);
+        removeClickHandlerFromBaseButton(&pThis->baseButton, handler);
     }
 }
 
@@ -113,46 +81,6 @@ PUBLIC void scanDigitalButton(DigitalButton *pThis)
     if (pThis != NULL) {
         scanDigitalButtonBaseScannable(&pThis->baseScannable);
     }
-}
-
-PUBLIC OVERRIDE void notifyPushByDigitalButtonBaseButton(BaseButton *button)
-{
-    LinkedListIterator iterator;
-    EventHandler *handler = NULL;
-    DigitalButton *pThis = BaseButton2DigitalButton(button);
-
-    if (pThis == NULL) {
-        return;
-    }
-
-    constructLinkedListIterator(&iterator, &pThis->_pushHandlers);
-
-    while (hasNextOfLinkedListIterator(&iterator)) {
-        handler = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
-        handler->callback(handler, pThis, NULL);
-    }
-
-    deconstructLinkedListIterator(&iterator);
-}
-
-PUBLIC OVERRIDE void notifyReleaseByDigitalButtonBaseButton(BaseButton *button)
-{
-    LinkedListIterator iterator;
-    EventHandler *handler = NULL;
-    DigitalButton *pThis = BaseButton2DigitalButton(button);
-
-    if (pThis == NULL) {
-        return;
-    }
-
-    constructLinkedListIterator(&iterator, &pThis->_releaseHandlers);
-
-    while (hasNextOfLinkedListIterator(&iterator)) {
-        handler = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
-        handler->callback(handler, pThis, NULL);
-    }
-
-    deconstructLinkedListIterator(&iterator);
 }
 
 PUBLIC OVERRIDE void scanDigitalButtonBaseScannable(BaseScannable *scannable)

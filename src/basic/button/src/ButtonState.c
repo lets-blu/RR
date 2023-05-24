@@ -121,7 +121,6 @@ PUBLIC OVERRIDE void onPushOnButtonStateConfirmPushButtonState(
 {
     if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_PUSHED);
-        button->vtbl->notifyPush(button);
     }
 }
 
@@ -175,7 +174,7 @@ PUBLIC OVERRIDE void onReleaseOnButtonStateConfirmReleaseButtonState(
 {
     if (state != NULL && button != NULL) {
         setStateToBaseButton(button, BUTTON_STATE_RELEASED);
-        button->vtbl->notifyRelease(button);
+        notifyClickToBaseButton(button);
     }
 }
 

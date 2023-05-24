@@ -15,7 +15,6 @@ extern "C" {
 #include "core/device/inc/BaseScannable.h"
 #include "core/device/inc/DeviceManager.h"
 #include "core/event/inc/EventHandler.h"
-#include "core/list/inc/LinkedList.h"
 
 #include "port/common/inc/BasePin.h"
 
@@ -31,9 +30,6 @@ typedef struct {
 
     BasePin *_basePin;
     PinState _pushState;
-
-    LinkedList _pushHandlers;
-    LinkedList _releaseHandlers;
 } DigitalButton;
 
 // (De)constructors
@@ -43,16 +39,10 @@ PUBLIC void constructDigitalButton(
 PUBLIC void deconstructDigitalButton(DigitalButton *instance);
 
 // Public method(s)
-PUBLIC void addPushHandlerToDigitalButton(
+PUBLIC void addClickHandlerToDigitalButton(
     DigitalButton *pThis, EventHandler *handler);
 
-PUBLIC void removePushHandlerFromDigitalButton(
-    DigitalButton *pThis, EventHandler *handler);
-
-PUBLIC void addReleaseHandlerToDigitalButton(
-    DigitalButton *pThis, EventHandler *handler);
-
-PUBLIC void removeReleaseHandlerFromDigitalButton(
+PUBLIC void removeClickHandlerFromDigitalButton(
     DigitalButton *pThis, EventHandler *handler);
 
 PUBLIC void scanDigitalButton(DigitalButton *pThis);

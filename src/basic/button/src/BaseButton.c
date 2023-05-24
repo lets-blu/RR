@@ -14,14 +14,31 @@ PROTECTED void constructBaseButton(BaseButton *instance)
 {
     if (instance != NULL) {
         instance->_currentState = BUTTON_STATE_RELEASED;
-        instance->vtbl = NULL;
+        constructLinkedList(&instance->_clickHandlers);
     }
 }
 
 PROTECTED void deconstructBaseButton(BaseButton *instance)
 {
     if (instance != NULL) {
+        deconstructLinkedList(&instance->_clickHandlers);
         memset(instance, 0, sizeof(BaseButton));
+    }
+}
+
+PUBLIC void addClickHandlerToBaseButton(
+    BaseButton *pThis, EventHandler *handler)
+{
+    if (pThis != NULL && handler != NULL) {
+        addItemToLinkedList(&pThis->_clickHandlers, &handler->base);
+    }
+}
+
+PUBLIC void removeClickHandlerFromBaseButton(
+    BaseButton *pThis, EventHandler *handler)
+{
+    if (pThis != NULL && handler != NULL) {
+        removeItemFromLinkedList(&pThis->_clickHandlers, &handler->base);
     }
 }
 
@@ -46,5 +63,24 @@ PUBLIC void setStateToBaseButton(
 PUBLIC const struct IButtonState *getStateFromBaseButton(BaseButton *pThis)
 {
     return (pThis == NULL) ? NULL : pThis->_currentState;
+}
+
+PUBLIC void notifyClickToBaseButton(BaseButton *pThis)
+{
+    LinkedListIterator iterator;
+    EventHandler *handler = NULL;
+
+    if (pThis == NULL) {
+        return;
+    }
+
+    constructLinkedListIterator(&iterator, &pThis->_clickHandlers);
+
+    while (hasNextOfLinkedListIterator(&iterator)) {
+        handler = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
+        handler->callback(handler, pThis, NULL);
+    }
+
+    deconstructLinkedListIterator(&iterator);
 }
 
