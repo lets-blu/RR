@@ -16,6 +16,10 @@ extern "C" {
 #include "basic/button/inc/DigitalButton.h"
 #include "basic/led/inc/LED.h"
 
+// Digital
+#include "digital/sequential/inc/RegisterGroup.h"
+#include "digital/sequential/inc/ShiftRegister.h"
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus
