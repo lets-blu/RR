@@ -9,7 +9,7 @@ PROTECTED void constructBaseScannable(BaseScannable *instance);
 PROTECTED void deconstructBaseScannable(BaseScannable *instance);
 
 // Private method(s)
-PRIVATE void prepareSerByRegisterGroup(RegisterGroup *pThis, uint8_t data);
+PRIVATE void prepareSerByRegisterGroup(RegisterGroup *pThis, unsigned int data);
 PRIVATE void generateSckByRegisterGroup(RegisterGroup *pThis);
 PRIVATE void generateRckByRegisterGroup(RegisterGroup *pThis);
 
@@ -113,9 +113,9 @@ PUBLIC void outputRegisterGroup(RegisterGroup *pThis)
     }
 }
 
-PRIVATE void prepareSerByRegisterGroup(RegisterGroup *pThis, uint8_t data)
+PRIVATE void prepareSerByRegisterGroup(RegisterGroup *pThis, unsigned int data)
 {
-    if ((data & 0x80) == 0) {
+    if (data == 0) {
         writeStateToBasePin(pThis->_serPin, PIN_STATE_LOW);
     } else {
         writeStateToBasePin(pThis->_serPin, PIN_STATE_HIGH);
@@ -149,13 +149,14 @@ PUBLIC OVERRIDE void outputRegisterGroupBase(BaseScannable *scannable)
         ShiftRegister *shiftRegister = LinkedListItem2ShiftRegister(
             nextOfLinkedListIterator(&iterator));
 
-        uint8_t data = getDataFromShiftRegister(shiftRegister);
+        unsigned int data = getDataFromShiftRegister(shiftRegister);
+        unsigned int dataSize = getDataSizeFromShiftRegister(shiftRegister);
 
         LOG_I(&filter, "output, data of register 0x%x is 0x%02x",
             shiftRegister, data);
 
-        for (unsigned int i = 0; i < 8; i++) {
-            prepareSerByRegisterGroup(pThis, data);
+        for (unsigned int i = 0; i < dataSize; i++) {
+            prepareSerByRegisterGroup(pThis, data & (1 << (dataSize - 1)));
             generateSckByRegisterGroup(pThis);
             data <<= 1;
         }

@@ -6,7 +6,6 @@ extern "C" {
 #endif // __cplusplus
 
 #include <stddef.h>
-#include <stdint.h>
 #include <string.h>
 
 #include "core/common/inc/Keywords.h"
@@ -17,17 +16,22 @@ extern "C" {
 
 typedef struct {
     LinkedListItem base;
-    uint8_t _data;
+    unsigned int _data;
+    unsigned int _dataSize;
 } ShiftRegister;
 
 // (De)constructors
-PUBLIC void constructShiftRegister(ShiftRegister *instance);
+PUBLIC void constructShiftRegister(
+    ShiftRegister *instance, unsigned int dataSize);
+
 PUBLIC void deconstructShiftRegister(ShiftRegister *instance);
 
 // Public method(s)
 PUBLIC void setBitToShiftRegister(ShiftRegister *pThis, unsigned int bit);
 PUBLIC void resetBitFromShiftRegister(ShiftRegister *pThis, unsigned int bit);
-PUBLIC uint8_t getDataFromShiftRegister(ShiftRegister *pThis);
+
+PUBLIC unsigned int getDataFromShiftRegister(ShiftRegister *pThis);
+PUBLIC unsigned int getDataSizeFromShiftRegister(ShiftRegister *pThis);
 
 #ifdef __cplusplus
 }

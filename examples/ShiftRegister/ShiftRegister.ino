@@ -47,7 +47,7 @@ void setup() {
   constructRegisterGroup(&group, &parameter);
 
   for (unsigned int i = 0; i < REGISTERS_NUM; i++) {
-    constructShiftRegister(&shiftRegisters[i]);
+    constructShiftRegister(&shiftRegisters[i], 8);
     addRegisterToRegisterGroup(&group, &shiftRegisters[i]);
   }
 
