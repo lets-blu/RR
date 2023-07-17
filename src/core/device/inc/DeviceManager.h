@@ -15,14 +15,17 @@ extern "C" {
 #include "port/common/inc/BaseFactory.h"
 #include "port/common/inc/BasePin.h"
 
-#define IS_DEVICE_MANAGER_CONSTRUCTED(instance) \
-    (((DeviceManager *)(instance))->_isConstructed)
+#define DEVICE_MANAGER_DIGITAL_PIN  BASE_FACTORY_DIGITAL_PIN
+#define DEVICE_MANAGER_ANALOG_PIN   BASE_FACTORY_ANALOG_PIN
+#define DEVICE_MANAGER_ADDRESS_PIN  BASE_FACTORY_ADDRESS_PIN
 
 typedef struct {
     bool _isConstructed;
     BaseFactory *_factory;
-    DevicePool _basePinPool;
+    DevicePool *_pinPool;
 } DeviceManager;
+
+typedef BaseFactoryPinType DeviceManagerPinType;
 
 // (De)constructors
 PUBLIC void deconstructDeviceManager(DeviceManager *instance);
@@ -31,16 +34,26 @@ PUBLIC void deconstructDeviceManager(DeviceManager *instance);
 PUBLIC void setFactoryToDeviceManager(
     DeviceManager *pThis, BaseFactory *factory);
 
-PUBLIC void setBasePinToDeviceManager(
-    DeviceManager *pThis, unsigned int number, unsigned int size);
+PUBLIC void setPinPoolToDeviceManager(
+    DeviceManager *pThis, DevicePool *pool);
 
+PUBLIC BasePin *createPinByDeviceManager(
+    DeviceManager *pThis,
+    DeviceManagerPinType type,
+    BasePinParameter *parameter);
+
+PUBLIC void destoryPinByDeviceManager(
+    DeviceManager *pThis, DeviceManagerPinType type, BasePin *instance);
+
+PUBLIC STATIC DeviceManager *instanceOfDeviceManager(void);
+
+// TODO: need to remove
 PUBLIC BasePin *createBasePinByDeviceManager(
     DeviceManager *pThis, void *port, unsigned int pin);
 
+// TODO: need to remove
 PUBLIC void destoryBasePinByDeviceManager(
     DeviceManager *pThis, BasePin *instance);
-
-PUBLIC STATIC DeviceManager *instanceOfDeviceManager(void);
 
 #ifdef __cplusplus
 }

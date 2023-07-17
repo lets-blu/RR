@@ -1,20 +1,32 @@
 #include "port/arduino/inc/ArduinoFactory.h"
 
-// Protected method(s)
-PROTECTED void constructBaseFactory(BaseFactory *instance);
-PROTECTED void deconstructBaseFactory(BaseFactory *instance);
-
 // Override method(s)
+PROTECTED OVERRIDE void doCreatePinByArduinoFactoryBase(
+    BaseFactory *factory,
+    BaseFactoryPinType type,
+    BasePin *instance,
+    BasePinParameter *parameter);
+
+PROTECTED OVERRIDE void doDestoryPinByArduinoFactoryBase(
+    BaseFactory *factory, BaseFactoryPinType type, BasePin *instance);
+
+// TODO: need to remove
 PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
     BaseFactory *factory, BasePin *instance, void *port, unsigned int pin);
 
+// TODO: need to remove
 PROTECTED OVERRIDE void doDestoryBasePinByArduinoFactoryBase(
     BaseFactory *factory, BasePin *instance);
 
 // Virtual methods table
 static const BaseFactoryVtbl factoryVtbl = {
+    ._doCreatePin       = doCreatePinByArduinoFactoryBase,
+    ._doDestoryPin      = doDestoryPinByArduinoFactoryBase,
+
+    // TODO: need to remove
     ._doCreateBasePin   = doCreateBasePinByArduinoFactoryBase,
-    ._doDestoryBasePin  = doDestoryBasePinByArduinoFactoryBase
+    ._doDestoryBasePin  = doDestoryBasePinByArduinoFactoryBase,
+
 };
 
 // Method implement(s)
@@ -34,6 +46,62 @@ PUBLIC void deconstructAduinoFactory(ArduinoFactory *instance)
     }
 }
 
+PROTECTED OVERRIDE void doCreatePinByArduinoFactoryBase(
+    BaseFactory *factory,
+    BaseFactoryPinType type,
+    BasePin *instance,
+    BasePinParameter *parameter)
+{
+    (void)factory;
+
+    switch (type) {
+        case BASE_FACTORY_DIGITAL_PIN: {
+            constructArduinoDigitalPin(
+                BasePin2ArduinoDigitalPin(instance), parameter);
+
+            break;
+        }
+
+        case BASE_FACTORY_ANALOG_PIN: {
+            break;
+        }
+
+        case BASE_FACTORY_ADDRESS_PIN: {
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+}
+
+PROTECTED OVERRIDE void doDestoryPinByArduinoFactoryBase(
+    BaseFactory *factory, BaseFactoryPinType type, BasePin *instance)
+{
+    (void)factory;
+
+    switch (type) {
+        case BASE_FACTORY_DIGITAL_PIN: {
+            deconstructArduinoDigitalPin(BasePin2ArduinoDigitalPin(instance));
+            break;
+        }
+
+        case BASE_FACTORY_ANALOG_PIN: {
+            break;
+        }
+
+        case BASE_FACTORY_ADDRESS_PIN: {
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+}
+
+// TODO: need to remove
 PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
     BaseFactory *factory, BasePin *instance, void *port, unsigned int pin)
 {
@@ -44,6 +112,7 @@ PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
     }
 }
 
+// TODO: need to remove
 PROTECTED OVERRIDE void doDestoryBasePinByArduinoFactoryBase(
     BaseFactory *factory, BasePin *instance)
 {

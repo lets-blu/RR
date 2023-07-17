@@ -4,16 +4,10 @@
 PROTECTED void constructBaseDevice(BaseDevice *instance);
 PROTECTED void deconstructBaseDevice(BaseDevice *instance);
 
-PROTECTED void constructBasePin(
-    BasePin *instance, void *port, unsigned int pin);
-
-PROTECTED void deconstructBasePin(BasePin *instance);
-
 // Method implement(s)
-PROTECTED void constructBasePin(
-    BasePin *instance, void *port, unsigned int pin)
+PROTECTED void constructBasePin(BasePin *instance, BasePinParameter *parameter)
 {
-    if (instance == NULL) {
+    if (instance == NULL || parameter == NULL) {
         return;
     }
 
@@ -21,8 +15,8 @@ PROTECTED void constructBasePin(
     constructBaseDevice(&instance->base);
 
     // 2. Initialize member(s)
-    instance->_port = port;
-    instance->_pin = pin;
+    instance->_port = parameter->port;
+    instance->_pin = parameter->pin;
     instance->vtbl = NULL;
 }
 
@@ -34,29 +28,48 @@ PROTECTED void deconstructBasePin(BasePin *instance)
     }
 }
 
-PUBLIC void setupBasePin(BasePin *pThis, PinMode mode)
+PUBLIC void setupBasePin(BasePin *pThis, BasePinMode mode)
 {
     if (pThis != NULL) {
         pThis->vtbl->_doSetup(pThis, mode);
     }
 }
 
-PUBLIC PinState readStateFromBasePin(BasePin *pThis)
+PUBLIC unsigned int readFromBasePin(BasePin *pThis)
 {
     if (pThis == NULL) {
-        return PIN_STATE_LOW;
+        return 0;
+    }
+
+    return pThis->vtbl->_doRead(pThis);
+}
+
+PUBLIC void writeToBasePin(BasePin *pThis, unsigned int value)
+{
+    if (pThis != NULL) {
+        pThis->vtbl->_doWrite(pThis, value);
+    }
+}
+
+// TODO: need to remove
+PUBLIC BasePinState readStateFromBasePin(BasePin *pThis)
+{
+    if (pThis == NULL) {
+        return BASE_PIN_STATE_LOW;
     }
 
     return pThis->vtbl->_doReadState(pThis);
 }
 
-PUBLIC void writeStateToBasePin(BasePin *pThis, PinState state)
+// TODO: need to remove
+PUBLIC void writeStateToBasePin(BasePin *pThis, BasePinState state)
 {
     if (pThis != NULL) {
         pThis->vtbl->_doWriteState(pThis, state);
     }
 }
 
+// TODO: need to remove
 PUBLIC unsigned int readValueFromBasePin(BasePin *pThis)
 {
     if (pThis == NULL) {
@@ -66,6 +79,7 @@ PUBLIC unsigned int readValueFromBasePin(BasePin *pThis)
     return pThis->vtbl->_doReadValue(pThis);
 }
 
+// TODO: need to remove
 PUBLIC void writeValueToBasePin(BasePin *pThis, unsigned int value)
 {
     if (pThis != NULL) {
