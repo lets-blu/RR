@@ -13,12 +13,16 @@ extern "C" {
 #include "core/list/inc/LinkedList.h"
 #include "core/log/inc/LogFilter.h"
 
-struct IButtonState;
+struct ButtonState;
 
 typedef struct BaseButton {
-    const struct IButtonState *_currentState;
+    const struct ButtonState *_currentState;
     LinkedList _clickHandlers;
 } BaseButton;
+
+// (De)constructors
+PROTECTED void constructBaseButton(BaseButton *instance);
+PROTECTED void deconstructBaseButton(BaseButton *instance);
 
 // Public method(s)
 PUBLIC void addClickHandlerToBaseButton(
@@ -28,9 +32,9 @@ PUBLIC void removeClickHandlerFromBaseButton(
     BaseButton *pThis, EventHandler *handler);
 
 PUBLIC void setStateToBaseButton(
-    BaseButton *pThis, const struct IButtonState *state);
+    BaseButton *pThis, const struct ButtonState *state);
 
-PUBLIC const struct IButtonState *getStateFromBaseButton(BaseButton *pThis);
+PUBLIC const struct ButtonState *getStateFromBaseButton(BaseButton *pThis);
 
 PUBLIC void notifyClickToBaseButton(BaseButton *pThis);
 

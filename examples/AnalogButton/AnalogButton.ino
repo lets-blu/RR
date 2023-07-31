@@ -4,6 +4,8 @@
 #define BUTTON_NUM 5
 
 ArduinoFactory factory;
+DevicePool pool;
+
 AnalogButtonGroup group;
 AnalogButton button[BUTTON_NUM];
 EventHandler handler[BUTTON_NUM];
@@ -25,6 +27,11 @@ int fputc(char c, FILE *file) {
 #endif
 
 void setup() {
+  BasePinParameter parameter = {
+    .port = NULL,
+    .pin  = A0
+  };
+
   DeviceManager *manager = instanceOfDeviceManager();
 
   Serial.begin(115200);
@@ -34,14 +41,16 @@ void setup() {
 
   constructArduinoFactory(&factory);
   setFactoryToDeviceManager(manager, &factory.base);
-  setBasePinToDeviceManager(manager, 1, sizeof(ArduinoPin));
+
+  constructDevicePool(&pool, 1, getPinSizeFromBaseFactory(&factory.base));
+  setPinPoolToDeviceManager(manager, &pool);
 
   constructAnalogButton(&button[0], 0, 100);
   constructAnalogButton(&button[1], 101, 300);
   constructAnalogButton(&button[2], 301, 500);
   constructAnalogButton(&button[3], 501, 700);
   constructAnalogButton(&button[4], 701, 900);
-  constructAnalogButtonGroup(&group, NULL, A0);
+  constructAnalogButtonGroup(&group, &parameter);
 
   for (unsigned int i = 0; i < BUTTON_NUM; i++) {
       constructEventHandler(&handler[i], onClick);
@@ -57,7 +66,7 @@ void loop() {
 
 void onClick(EventHandler *handler, void *sender, void *argument) {
   (void)handler;
-  (void)sender;
+  (void)argument;
 
   if (sender == &button[0]) {
     LOG_I(&filter, "Button 0 clicked!");

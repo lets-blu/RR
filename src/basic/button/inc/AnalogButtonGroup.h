@@ -29,7 +29,7 @@ typedef struct {
 
 // (De)constructors
 PUBLIC void constructAnalogButtonGroup(
-    AnalogButtonGroup *instance, void *port, unsigned int pin);
+    AnalogButtonGroup *instance, BasePinParameter *parameter);
 
 PUBLIC void deconstructAnalogButtonGroup(AnalogButtonGroup *instance);
 

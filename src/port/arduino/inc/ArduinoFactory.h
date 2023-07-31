@@ -11,6 +11,7 @@ extern "C" {
 #include "core/common/inc/Keywords.h"
 
 #include "port/arduino/inc/ArduinoPin.h"
+#include "port/arduino/inc/ArduinoAnalogPin.h"
 #include "port/arduino/inc/ArduinoDigitalPin.h"
 #include "port/common/inc/BasePin.h"
 #include "port/common/inc/BaseFactory.h"

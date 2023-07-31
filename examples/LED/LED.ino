@@ -2,6 +2,7 @@
 #include <port/arduino/inc/ArduinoFactory.h>
 
 ArduinoFactory factory;
+DevicePool pool;
 LED led;
 
 #if defined(ARDUINO_ARCH_AVR)
@@ -19,6 +20,11 @@ int fputc(int c, FILE *file) {
 #endif
 
 void setup() {
+  BasePinParameter parameter = {
+    .port = NULL,
+    .pin  = LED_BUILTIN
+  };
+
   DeviceManager *manager = instanceOfDeviceManager();
 
   Serial.begin(115200);
@@ -28,9 +34,11 @@ void setup() {
 
   constructArduinoFactory(&factory);
   setFactoryToDeviceManager(manager, &factory.base);
-  setBasePinToDeviceManager(manager, 1, sizeof(ArduinoPin));
 
-  constructLED(&led, NULL, LED_BUILTIN, PIN_STATE_HIGH);
+  constructDevicePool(&pool, 1, getPinSizeFromBaseFactory(&factory.base));
+  setPinPoolToDeviceManager(manager, &pool);
+
+  constructLED(&led, &parameter, BASE_PIN_STATE_HIGH);
 }
 
 void loop() {

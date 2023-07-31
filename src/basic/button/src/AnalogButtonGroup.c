@@ -1,20 +1,16 @@
 #include "basic/button/inc/AnalogButtonGroup.h"
 
-// Protected method(s)
-PROTECTED void constructBaseScannable(BaseScannable *instance);
-PROTECTED void deconstructBaseScannable(BaseScannable *instance);
-
 // Override method(s)
-PUBLIC OVERRIDE void scanAnalogButtonGroupBaseScannable(BaseScannable *scannable);
+PUBLIC OVERRIDE void scanAnalogButtonGroupBase(BaseScannable *scannable);
 
 // Virtual methods table
-static const BaseScannableVtbl scannableVtbl = {
-    .scan = scanAnalogButtonGroupBaseScannable
+static const BaseScannableVtbl baseVtbl = {
+    .scan = scanAnalogButtonGroupBase
 };
 
 // Method implement(s)
 PUBLIC void constructAnalogButtonGroup(
-    AnalogButtonGroup *instance, void *port, unsigned int pin)
+    AnalogButtonGroup *instance, BasePinParameter *parameter)
 {
     DeviceManager *manager = instanceOfDeviceManager();
 
@@ -24,14 +20,16 @@ PUBLIC void constructAnalogButtonGroup(
 
     // 1. construct base
     constructBaseScannable(&instance->base);
-    instance->base.vtbl = &scannableVtbl;
+    instance->base.vtbl = &baseVtbl;
 
     // 2. construct member(s)
-    instance->_pin = createBasePinByDeviceManager(manager, port, pin);
+    instance->_pin = createPinByDeviceManager(
+        manager, DEVICE_MANAGER_ANALOG_PIN, parameter);
+
     constructLinkedList(&instance->_analogButtons);
 
     // 3. setup pin
-    setupBasePin(instance->_pin, PIN_MODE_INPUT);
+    setupBasePin(instance->_pin, BASE_PIN_MODE_INPUT);
 }
 
 PUBLIC void deconstructAnalogButtonGroup(AnalogButtonGroup *instance)
@@ -46,7 +44,9 @@ PUBLIC void deconstructAnalogButtonGroup(AnalogButtonGroup *instance)
     deconstructBaseScannable(&instance->base);
 
     // 2. deconstruct member(s)
-    destoryBasePinByDeviceManager(manager, instance->_pin);
+    destoryPinByDeviceManager(
+        manager, DEVICE_MANAGER_ANALOG_PIN, instance->_pin);
+
     deconstructLinkedList(&instance->_analogButtons);
 
     memset(instance, 0, sizeof(AnalogButtonGroup));
@@ -71,26 +71,28 @@ PUBLIC void removeButtonFromAnalogButtonGroup(
 PUBLIC void scanAnalogButtonGroup(AnalogButtonGroup *pThis)
 {
     if (pThis != NULL) {
-        scanAnalogButtonGroupBaseScannable(&pThis->base);
+        scanAnalogButtonGroupBase(&pThis->base);
     }
 }
 
-PUBLIC OVERRIDE void scanAnalogButtonGroupBaseScannable(BaseScannable *scannable)
+PUBLIC OVERRIDE void scanAnalogButtonGroupBase(BaseScannable *scannable)
 {
     unsigned int value = 0;
     LinkedListIterator iterator;
-    AnalogButton *button = NULL;
-    AnalogButtonGroup *pThis = BaseScannable2AnalogButtonGroup(scannable);
+    AnalogButtonGroup *pThis = NULL;
 
-    if (pThis == NULL) {
+    if (scannable == NULL) {
         return;
     }
 
-    value = readValueFromBasePin(pThis->_pin);
+    pThis = BaseScannable2AnalogButtonGroup(scannable);
+    value = readFromBasePin(pThis->_pin);
     constructLinkedListIterator(&iterator, &pThis->_analogButtons);
 
     while (hasNextOfLinkedListIterator(&iterator)) {
-        button = LinkedListItem2AnalogButton(nextOfLinkedListIterator(&iterator));
+        AnalogButton *button
+            = LinkedListItem2AnalogButton(nextOfLinkedListIterator(&iterator));
+
         notifyValueChangeToAnalogButton(button, value);
     }
 

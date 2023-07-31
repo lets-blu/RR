@@ -10,6 +10,9 @@ PROTECTED OVERRIDE void doCreatePinByArduinoFactoryBase(
 PROTECTED OVERRIDE void doDestoryPinByArduinoFactoryBase(
     BaseFactory *factory, BaseFactoryPinType type, BasePin *instance);
 
+PROTECTED OVERRIDE unsigned int doGetPinSizeFromArduinoFactoryBase(
+    BaseFactory *factory);
+
 // TODO: need to remove
 PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
     BaseFactory *factory, BasePin *instance, void *port, unsigned int pin);
@@ -19,9 +22,10 @@ PROTECTED OVERRIDE void doDestoryBasePinByArduinoFactoryBase(
     BaseFactory *factory, BasePin *instance);
 
 // Virtual methods table
-static const BaseFactoryVtbl factoryVtbl = {
+static const BaseFactoryVtbl baseVtbl = {
     ._doCreatePin       = doCreatePinByArduinoFactoryBase,
     ._doDestoryPin      = doDestoryPinByArduinoFactoryBase,
+    ._doGetPinSize      = doGetPinSizeFromArduinoFactoryBase,
 
     // TODO: need to remove
     ._doCreateBasePin   = doCreateBasePinByArduinoFactoryBase,
@@ -34,7 +38,7 @@ PUBLIC void constructArduinoFactory(ArduinoFactory *instance)
 {
     if (instance != NULL) {
         constructBaseFactory(&instance->base);
-        instance->base.vtbl = &factoryVtbl;
+        instance->base.vtbl = &baseVtbl;
     }
 }
 
@@ -63,6 +67,9 @@ PROTECTED OVERRIDE void doCreatePinByArduinoFactoryBase(
         }
 
         case BASE_FACTORY_ANALOG_PIN: {
+            constructArduinoAnalogPin(
+                BasePin2ArduinoAnalogPin(instance), parameter);
+
             break;
         }
 
@@ -88,6 +95,7 @@ PROTECTED OVERRIDE void doDestoryPinByArduinoFactoryBase(
         }
 
         case BASE_FACTORY_ANALOG_PIN: {
+            deconstructArduinoAnalogPin(BasePin2ArduinoAnalogPin(instance));
             break;
         }
 
@@ -99,6 +107,13 @@ PROTECTED OVERRIDE void doDestoryPinByArduinoFactoryBase(
             break;
         }
     }
+}
+
+PROTECTED OVERRIDE unsigned int doGetPinSizeFromArduinoFactoryBase(
+    BaseFactory *factory)
+{
+    (void)factory;
+    return sizeof(union {ArduinoDigitalPin d;});
 }
 
 // TODO: need to remove

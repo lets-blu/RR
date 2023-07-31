@@ -5,10 +5,6 @@
 PRIVATE STATIC LogFilter filter
     = STATIC_LOG_FILTER("BaseButton", LOG_LEVEL_INFO);
 
-// Protected method(s)
-PROTECTED void constructBaseButton(BaseButton *instance);
-PROTECTED void deconstructBaseButton(BaseButton *instance);
-
 // Method implement(s)
 PROTECTED void constructBaseButton(BaseButton *instance)
 {
@@ -43,9 +39,9 @@ PUBLIC void removeClickHandlerFromBaseButton(
 }
 
 PUBLIC void setStateToBaseButton(
-    BaseButton *pThis, const struct IButtonState *state)
+    BaseButton *pThis, const struct ButtonState *state)
 {
-    const IButtonState *previousState = NULL;
+    const ButtonState *previousState = NULL;
 
     if (pThis == NULL || state == NULL) {
         return;
@@ -54,13 +50,12 @@ PUBLIC void setStateToBaseButton(
     previousState = pThis->_currentState;
     pThis->_currentState = state;
 
-    LOG_I(&filter, "0x%x setState, %s -> %s",
-        pThis,
-        previousState->vtbl->toString((IButtonState *)previousState),
-        state->vtbl->toString((IButtonState *)state));
+    LOG_I(&filter, "0x%x setState, %s -> %s", pThis,
+        toStringOnButtonState((ButtonState *)previousState),
+        toStringOnButtonState((ButtonState *)state));
 }
 
-PUBLIC const struct IButtonState *getStateFromBaseButton(BaseButton *pThis)
+PUBLIC const struct ButtonState *getStateFromBaseButton(BaseButton *pThis)
 {
     return (pThis == NULL) ? NULL : pThis->_currentState;
 }
@@ -68,7 +63,6 @@ PUBLIC const struct IButtonState *getStateFromBaseButton(BaseButton *pThis)
 PUBLIC void notifyClickToBaseButton(BaseButton *pThis)
 {
     LinkedListIterator iterator;
-    EventHandler *handler = NULL;
 
     if (pThis == NULL) {
         return;
@@ -77,7 +71,9 @@ PUBLIC void notifyClickToBaseButton(BaseButton *pThis)
     constructLinkedListIterator(&iterator, &pThis->_clickHandlers);
 
     while (hasNextOfLinkedListIterator(&iterator)) {
-        handler = LinkedListItem2EventHandler(nextOfLinkedListIterator(&iterator));
+        EventHandler *handler = LinkedListItem2EventHandler(
+            nextOfLinkedListIterator(&iterator));
+
         handler->callback(handler, pThis, NULL);
     }
 

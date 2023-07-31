@@ -1,14 +1,10 @@
 #include "basic/button/inc/AnalogButton.h"
 
-// Protected method(s)
-PROTECTED void constructBaseButton(BaseButton *instance);
-PROTECTED void deconstructBaseButton(BaseButton *instance);
-
 // Method implement(s)
 PUBLIC void constructAnalogButton(
     AnalogButton *instance, unsigned int startValue, unsigned int endValue)
 {
-    if (instance == NULL) {
+    if (instance == NULL || startValue > endValue) {
         return;
     }
 
@@ -38,7 +34,7 @@ PUBLIC void deconstructAnalogButton(AnalogButton *instance)
 PUBLIC void addClickHandlerToAnalogButton(
     AnalogButton *pThis, EventHandler *handler)
 {
-    if (pThis != NULL && handler != NULL) {
+    if (pThis != NULL) {
         addClickHandlerToBaseButton(&pThis->baseButton, handler);
     }
 }
@@ -46,7 +42,7 @@ PUBLIC void addClickHandlerToAnalogButton(
 PUBLIC void removeClickHandlerFromAnalogButton(
     AnalogButton *pThis, EventHandler *handler)
 {
-    if (pThis != NULL && handler != NULL) {
+    if (pThis != NULL) {
         removeClickHandlerFromBaseButton(&pThis->baseButton, handler);
     }
 }
@@ -54,7 +50,7 @@ PUBLIC void removeClickHandlerFromAnalogButton(
 PUBLIC void notifyValueChangeToAnalogButton(
     AnalogButton *pThis, unsigned int value)
 {
-    const IButtonState *currentState = NULL;
+    const ButtonState *currentState = NULL;
 
     if (pThis == NULL) {
         return;
@@ -63,11 +59,9 @@ PUBLIC void notifyValueChangeToAnalogButton(
     currentState = getStateFromBaseButton(&pThis->baseButton);
 
     if (pThis->_startValue <= value && value <= pThis->_endValue) {
-        currentState->vtbl->onPush(
-            (IButtonState *)currentState, &pThis->baseButton);
+        onPushOnButtonState((ButtonState *)currentState, &pThis->baseButton);
     } else {
-        currentState->vtbl->onRelease(
-            (IButtonState *)currentState, &pThis->baseButton);
+        onReleaseOnButtonState((ButtonState *)currentState, &pThis->baseButton);
     }
 }
 

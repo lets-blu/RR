@@ -1,23 +1,18 @@
 #include "basic/button/inc/DigitalButton.h"
 
-// Protected method(s)
-PROTECTED void constructBaseButton(BaseButton *instance);
-PROTECTED void deconstructBaseButton(BaseButton *instance);
-
-PROTECTED void constructBaseScannable(BaseScannable *instance);
-PROTECTED void deconstructBaseScannable(BaseScannable *instance);
-
 // Override method(s)
 PUBLIC OVERRIDE void scanDigitalButtonBaseScannable(BaseScannable *scannable);
 
 // Virtual methods table
-static const BaseScannableVtbl scannableVtbl = {
+static const BaseScannableVtbl baseScannableVtbl = {
     .scan = scanDigitalButtonBaseScannable
 };
 
 // Method implement(s)
 PUBLIC void constructDigitalButton(
-    DigitalButton *instance, void *port, unsigned int pin, PinState pushState)
+    DigitalButton *instance,
+    BasePinParameter *parameter,
+    unsigned int pushState)
 {
     DeviceManager *manager = instanceOfDeviceManager();
 
@@ -29,17 +24,19 @@ PUBLIC void constructDigitalButton(
     constructBaseButton(&instance->baseButton);
 
     constructBaseScannable(&instance->baseScannable);
-    instance->baseScannable.vtbl = &scannableVtbl;
+    instance->baseScannable.vtbl = &baseScannableVtbl;
 
     // 2. construct member(s)
-    instance->_basePin = createBasePinByDeviceManager(manager, port, pin);
+    instance->_pin = createPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, parameter);
+
     instance->_pushState = pushState;
 
     // 3. setup pin
-    if (pushState == PIN_STATE_LOW) {
-        setupBasePin(instance->_basePin, PIN_MODE_INPUT_PULLUP);
+    if (pushState == BASE_PIN_STATE_LOW) {
+        setupBasePin(instance->_pin, BASE_PIN_MODE_INPUT_PULLUP);
     } else {
-        setupBasePin(instance->_basePin, PIN_MODE_INPUT);
+        setupBasePin(instance->_pin, BASE_PIN_MODE_INPUT);
     }
 }
 
@@ -56,14 +53,16 @@ PUBLIC void deconstructDigitalButton(DigitalButton *instance)
     deconstructBaseScannable(&instance->baseScannable);
 
     // 2. deconstruct member(s)
-    destoryBasePinByDeviceManager(manager, instance->_basePin);
+    destoryPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, instance->_pin);
+
     memset(instance, 0, sizeof(DigitalButton));
 }
 
 PUBLIC void addClickHandlerToDigitalButton(
     DigitalButton *pThis, EventHandler *handler)
 {
-    if (pThis != NULL && handler != NULL) {
+    if (pThis != NULL) {
         addClickHandlerToBaseButton(&pThis->baseButton, handler);
     }
 }
@@ -71,7 +70,7 @@ PUBLIC void addClickHandlerToDigitalButton(
 PUBLIC void removeClickHandlerFromDigitalButton(
     DigitalButton *pThis, EventHandler *handler)
 {
-    if (pThis != NULL && handler != NULL) {
+    if (pThis != NULL) {
         removeClickHandlerFromBaseButton(&pThis->baseButton, handler);
     }
 }
@@ -85,21 +84,20 @@ PUBLIC void scanDigitalButton(DigitalButton *pThis)
 
 PUBLIC OVERRIDE void scanDigitalButtonBaseScannable(BaseScannable *scannable)
 {
-    const IButtonState *currentState = NULL;
-    DigitalButton *pThis = BaseScannable2DigitalButton(scannable);
+    const ButtonState *currentState = NULL;
+    DigitalButton *pThis = NULL;
 
-    if (pThis == NULL) {
+    if (scannable == NULL) {
         return;
     }
 
+    pThis = BaseScannable2DigitalButton(scannable);
     currentState = getStateFromBaseButton(&pThis->baseButton);
 
-    if (readStateFromBasePin(pThis->_basePin) == pThis->_pushState) {
-        currentState->vtbl->onPush(
-            (IButtonState *)currentState, &pThis->baseButton);
+    if (readFromBasePin(pThis->_pin) == pThis->_pushState) {
+        onPushOnButtonState((ButtonState *)currentState, &pThis->baseButton);
     } else {
-        currentState->vtbl->onRelease(
-            (IButtonState *)currentState, &pThis->baseButton);
+        onReleaseOnButtonState((ButtonState *)currentState, &pThis->baseButton);
     }
 }
 

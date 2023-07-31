@@ -28,13 +28,15 @@ typedef struct {
     BaseButton baseButton;
     BaseScannable baseScannable;
 
-    BasePin *_basePin;
-    PinState _pushState;
+    BasePin *_pin;
+    BasePinState _pushState;
 } DigitalButton;
 
 // (De)constructors
 PUBLIC void constructDigitalButton(
-    DigitalButton *instance, void *port, unsigned int pin, PinState pushState);
+    DigitalButton *instance,
+    BasePinParameter *parameter,
+    unsigned int pushState);
 
 PUBLIC void deconstructDigitalButton(DigitalButton *instance);
 

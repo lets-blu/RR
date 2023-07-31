@@ -33,6 +33,8 @@ typedef struct BaseFactoryVtbl {
     void (*_doDestoryPin)(
         BaseFactory *pThis, BaseFactoryPinType type, BasePin *instance);
 
+    unsigned int (*_doGetPinSize)(BaseFactory *pThis);
+
     // TODO: need to remove
     void (*_doCreateBasePin)(
         BaseFactory *pThis, BasePin *instance, void *port, unsigned int pin);
@@ -54,6 +56,8 @@ PUBLIC void createPinByBaseFactory(
 
 PUBLIC void destoryPinByBaseFactory(
     BaseFactory *pThis, BaseFactoryPinType type, BasePin *instance);
+
+PUBLIC unsigned int getPinSizeFromBaseFactory(BaseFactory *pThis);
 
 // TODO: need to remove
 PUBLIC void createBasePinByBaseFactory(

@@ -2,6 +2,7 @@
 #include <port/arduino/inc/ArduinoFactory.h>
 
 ArduinoFactory factory;
+DevicePool pool;
 DigitalButton button;
 EventHandler handler;
 
@@ -22,6 +23,11 @@ int fputc(char c, FILE *file) {
 #endif
 
 void setup() {
+  BasePinParameter parameter = {
+    .port = NULL,
+    .pin  = A5
+  };
+
   DeviceManager *manager = instanceOfDeviceManager();
 
   Serial.begin(115200);
@@ -31,9 +37,11 @@ void setup() {
 
   constructArduinoFactory(&factory);
   setFactoryToDeviceManager(manager, &factory.base);
-  setBasePinToDeviceManager(manager, 1, sizeof(ArduinoPin));
 
-  constructDigitalButton(&button, NULL, A5, PIN_STATE_LOW);
+  constructDevicePool(&pool, 1, getPinSizeFromBaseFactory(&factory.base));
+  setPinPoolToDeviceManager(manager, &pool);
+
+  constructDigitalButton(&button, &parameter, BASE_PIN_STATE_LOW);
   constructEventHandler(&handler, onClick);
   addClickHandlerToDigitalButton(&button, &handler);
 }

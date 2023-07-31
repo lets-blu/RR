@@ -34,6 +34,11 @@ PUBLIC void destoryPinByBaseFactory(
     }
 }
 
+PUBLIC unsigned int getPinSizeFromBaseFactory(BaseFactory *pThis)
+{
+    return (pThis == NULL) ? 0 : pThis->vtbl->_doGetPinSize(pThis);
+}
+
 // TODO: need to remove
 PUBLIC void createBasePinByBaseFactory(
     BaseFactory *pThis, BasePin *instance, void *port, unsigned int pin)
@@ -43,6 +48,7 @@ PUBLIC void createBasePinByBaseFactory(
     }
 }
 
+// TODO: need to remove
 PUBLIC void destoryBasePinByBaseFactory(BaseFactory *pThis, BasePin *instance)
 {
     if (pThis != NULL) {

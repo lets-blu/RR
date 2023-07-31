@@ -5,14 +5,16 @@ PRIVATE STATIC LogFilter filter = STATIC_LOG_FILTER("LED", LOG_LEVEL_INFO);
 
 // Method implement(s)
 PUBLIC void constructLED(
-    LED *instance, void *port, unsigned int pin, PinState lightState)
+    LED *instance, BasePinParameter *parameter, unsigned int lightState)
 {
     DeviceManager *manager = instanceOfDeviceManager();
 
     if (instance != NULL) {
-        instance->_basePin = createBasePinByDeviceManager(manager, port, pin);
+        instance->_pin = createPinByDeviceManager(
+            manager, DEVICE_MANAGER_DIGITAL_PIN, parameter);
+
         instance->_lightState = lightState;
-        setupBasePin(instance->_basePin, PIN_MODE_OUTPUT);
+        setupBasePin(instance->_pin, BASE_PIN_MODE_OUTPUT);
     }
 }
 
@@ -21,7 +23,9 @@ PUBLIC void deconstructLED(LED *instance)
     DeviceManager *manager = instanceOfDeviceManager();
 
     if (instance != NULL) {
-        destoryBasePinByDeviceManager(manager, instance->_basePin);
+        destoryPinByDeviceManager(
+            manager, DEVICE_MANAGER_DIGITAL_PIN, instance->_pin);
+
         memset(instance, 0, sizeof(LED));
     }
 }
@@ -32,10 +36,10 @@ PUBLIC void turnOnLED(LED *pThis)
         return;
     }
 
-    if (pThis->_lightState == PIN_STATE_LOW) {
-        writeStateToBasePin(pThis->_basePin, PIN_STATE_LOW);
+    if (pThis->_lightState == BASE_PIN_STATE_LOW) {
+        writeToBasePin(pThis->_pin, BASE_PIN_STATE_LOW);
     } else {
-        writeStateToBasePin(pThis->_basePin, PIN_STATE_HIGH);
+        writeToBasePin(pThis->_pin, BASE_PIN_STATE_HIGH);
     }
 
     LOG_I(&filter, "0x%x turned on", pThis);
@@ -47,10 +51,10 @@ PUBLIC void turnOffLED(LED *pThis)
         return;
     }
 
-    if (pThis->_lightState == PIN_STATE_LOW) {
-        writeStateToBasePin(pThis->_basePin, PIN_STATE_HIGH);
+    if (pThis->_lightState == BASE_PIN_STATE_LOW) {
+        writeToBasePin(pThis->_pin, BASE_PIN_STATE_HIGH);
     } else {
-        writeStateToBasePin(pThis->_basePin, PIN_STATE_LOW);
+        writeToBasePin(pThis->_pin, BASE_PIN_STATE_LOW);
     }
 
     LOG_I(&filter, "0x%x turned off", pThis);

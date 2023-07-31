@@ -15,13 +15,13 @@ extern "C" {
 #include "port/common/inc/BasePin.h"
 
 typedef struct {
-    BasePin *_basePin;
-    PinState _lightState;
+    BasePin *_pin;
+    unsigned int _lightState;
 } LED;
 
 // (De)constructors
 PUBLIC void constructLED(
-    LED *instance, void *port, unsigned int pin, PinState lightState);
+    LED *instance, BasePinParameter *paramater, unsigned int lightState);
 
 PUBLIC void deconstructLED(LED *instance);
 

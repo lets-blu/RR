@@ -10,52 +10,33 @@ extern "C" {
 
 #include "core/common/inc/Keywords.h"
 
-#define IButtonState2ButtonStateReleased(instance)          \
-    BASE_TO_SUB_CAST(instance, ButtonStateReleased, buttonState)
-
-#define IButtonState2ButtonStateConfirmPush(instance)       \
-    BASE_TO_SUB_CAST(instance, ButtonStateConfirmPush, buttonState)
-
-#define IButtonState2ButtonStatePushed(instance)            \
-    BASE_TO_SUB_CAST(instance, ButtonStatePushed, buttonState)
-
-#define IButtonState2ButtonStateConfirmRelease(instance)    \
-    BASE_TO_SUB_CAST(instance, ButtonStateConfirmRelease, buttonState)
-
 struct BaseButton;
-struct IButtonStateVtbl;
+struct ButtonStateVtbl;
 
-typedef struct IButtonState {
-    const struct IButtonStateVtbl *vtbl;
-} IButtonState;
+typedef struct ButtonState {
+    const struct ButtonStateVtbl *vtbl;
+} ButtonState;
 
-typedef struct {
-    IButtonState buttonState;
-} ButtonStateReleased;
-
-typedef struct {
-    IButtonState buttonState;
-} ButtonStateConfirmPush;
-
-typedef struct {
-    IButtonState buttonState;
-} ButtonStatePushed;
-
-typedef struct {
-    IButtonState buttonState;
-} ButtonStateConfirmRelease;
-
-typedef struct IButtonStateVtbl {
-    void (*onPush)(IButtonState *pThis, struct BaseButton *button);
-    void (*onRelease)(IButtonState *pThis, struct BaseButton *button);
-    const char *(*toString)(IButtonState *pThis);
-} IButtonStateVtbl;
+typedef struct ButtonStateVtbl {
+    void (*onPush)(ButtonState *pThis, struct BaseButton *button);
+    void (*onRelease)(ButtonState *pThis, struct BaseButton *button);
+    const char *(*toString)(ButtonState *pThis);
+} ButtonStateVtbl;
 
 // Public member(s)
-extern PUBLIC STATIC const IButtonState *BUTTON_STATE_RELEASED;
-extern PUBLIC STATIC const IButtonState *BUTTON_STATE_CONFIRM_PUSH;
-extern PUBLIC STATIC const IButtonState *BUTTON_STATE_PUSHED;
-extern PUBLIC STATIC const IButtonState *BUTTON_STATE_CONFIRM_RELEASE;
+extern PUBLIC STATIC const ButtonState *BUTTON_STATE_RELEASED;
+extern PUBLIC STATIC const ButtonState *BUTTON_STATE_CONFIRM_PUSH;
+extern PUBLIC STATIC const ButtonState *BUTTON_STATE_PUSHED;
+extern PUBLIC STATIC const ButtonState *BUTTON_STATE_CONFIRM_RELEASE;
+
+// Public method(s)
+PUBLIC void onPushOnButtonState(
+    ButtonState *pThis, struct BaseButton *button);
+
+PUBLIC void onReleaseOnButtonState(
+    ButtonState *pThis, struct BaseButton *button);
+
+PUBLIC const char *toStringOnButtonState(ButtonState *pThis);
 
 #ifdef __cplusplus
 }
