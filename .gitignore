@@ -72,5 +72,4 @@ Thumbs.db
 *.exe
 
 # Build directory
-out/
-.clang
+.vscode/

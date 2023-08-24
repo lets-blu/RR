@@ -39,20 +39,3 @@ PUBLIC unsigned int getPinSizeFromBaseFactory(BaseFactory *pThis)
     return (pThis == NULL) ? 0 : pThis->vtbl->_doGetPinSize(pThis);
 }
 
-// TODO: need to remove
-PUBLIC void createBasePinByBaseFactory(
-    BaseFactory *pThis, BasePin *instance, void *port, unsigned int pin)
-{
-    if (pThis != NULL) {
-        pThis->vtbl->_doCreateBasePin(pThis, instance, port, pin);
-    }
-}
-
-// TODO: need to remove
-PUBLIC void destoryBasePinByBaseFactory(BaseFactory *pThis, BasePin *instance)
-{
-    if (pThis != NULL) {
-        pThis->vtbl->_doDestoryBasePin(pThis, instance);
-    }
-}
-

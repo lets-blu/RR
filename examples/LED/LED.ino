@@ -38,7 +38,7 @@ void setup() {
   constructDevicePool(&pool, 1, getPinSizeFromBaseFactory(&factory.base));
   setPinPoolToDeviceManager(manager, &pool);
 
-  constructLED(&led, &parameter, BASE_PIN_STATE_HIGH);
+  constructLED(&led, &parameter, BASE_PIN_VALUE_HIGH);
 }
 
 void loop() {

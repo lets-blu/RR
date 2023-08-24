@@ -51,39 +51,3 @@ PUBLIC void writeToBasePin(BasePin *pThis, unsigned int value)
     }
 }
 
-// TODO: need to remove
-PUBLIC BasePinState readStateFromBasePin(BasePin *pThis)
-{
-    if (pThis == NULL) {
-        return BASE_PIN_STATE_LOW;
-    }
-
-    return pThis->vtbl->_doReadState(pThis);
-}
-
-// TODO: need to remove
-PUBLIC void writeStateToBasePin(BasePin *pThis, BasePinState state)
-{
-    if (pThis != NULL) {
-        pThis->vtbl->_doWriteState(pThis, state);
-    }
-}
-
-// TODO: need to remove
-PUBLIC unsigned int readValueFromBasePin(BasePin *pThis)
-{
-    if (pThis == NULL) {
-        return 0;
-    }
-
-    return pThis->vtbl->_doReadValue(pThis);
-}
-
-// TODO: need to remove
-PUBLIC void writeValueToBasePin(BasePin *pThis, unsigned int value)
-{
-    if (pThis != NULL) {
-        pThis->vtbl->_doWriteValue(pThis, value);
-    }
-}
-

@@ -29,7 +29,7 @@ typedef struct {
     BaseScannable baseScannable;
 
     BasePin *_pin;
-    BasePinState _pushState;
+    unsigned int _pushState;
 } DigitalButton;
 
 // (De)constructors

@@ -22,6 +22,10 @@ typedef struct BaseScannableVtbl {
     void (*scan)(BaseScannable *pThis);
 } BaseScannableVtbl;
 
+// (De)constructors
+PROTECTED void constructBaseScannable(BaseScannable *instance);
+PROTECTED void deconstructBaseScannable(BaseScannable *instance);
+
 #ifdef __cplusplus
 }
 #endif // __cplusplus

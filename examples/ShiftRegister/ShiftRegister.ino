@@ -4,6 +4,7 @@
 #define REGISTERS_NUM 2
 
 ArduinoFactory factory;
+DevicePool pool;
 ShiftRegister shiftRegisters[REGISTERS_NUM];
 RegisterGroup group;
 
@@ -23,14 +24,10 @@ int fputc(int c, FILE *file) {
 
 void setup() {
   RegisterGroupParameter parameter = {
-    .oePort   = NULL,
-    .oePin    = 2,
-    .serPort  = NULL,
-    .serPin   = 3,
-    .sckPort  = NULL,
-    .sckPin   = 4,
-    .rckPort  = NULL,
-    .rckPin   = 5
+    .oePin  = {.port = NULL, .pin = 2},
+    .serPin = {.port = NULL, .pin = 3},
+    .sckPin = {.port = NULL, .pin = 4},
+    .rckPin = {.port = NULL, .pin = 5}
   };
 
   DeviceManager *manager = instanceOfDeviceManager();
@@ -42,7 +39,9 @@ void setup() {
 
   constructArduinoFactory(&factory);
   setFactoryToDeviceManager(manager, &factory.base);
-  setBasePinToDeviceManager(manager, 4, sizeof(ArduinoPin));
+
+  constructDevicePool(&pool, 4, getPinSizeFromBaseFactory(&factory.base));
+  setPinPoolToDeviceManager(manager, &pool);
 
   constructRegisterGroup(&group, &parameter);
 

@@ -19,6 +19,8 @@ extern "C" {
 // Digital
 #include "digital/sequential/inc/RegisterGroup.h"
 #include "digital/sequential/inc/ShiftRegister.h"
+#include "digital/combinatorial/inc/DataSelector.h"
+#include "digital/combinatorial/inc/DataSelectorGroup.h"
 
 #ifdef __cplusplus
 }

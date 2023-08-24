@@ -36,10 +36,10 @@ PUBLIC void turnOnLED(LED *pThis)
         return;
     }
 
-    if (pThis->_lightState == BASE_PIN_STATE_LOW) {
-        writeToBasePin(pThis->_pin, BASE_PIN_STATE_LOW);
+    if (pThis->_lightState == BASE_PIN_VALUE_LOW) {
+        writeToBasePin(pThis->_pin, BASE_PIN_VALUE_LOW);
     } else {
-        writeToBasePin(pThis->_pin, BASE_PIN_STATE_HIGH);
+        writeToBasePin(pThis->_pin, BASE_PIN_VALUE_HIGH);
     }
 
     LOG_I(&filter, "0x%x turned on", pThis);
@@ -51,10 +51,10 @@ PUBLIC void turnOffLED(LED *pThis)
         return;
     }
 
-    if (pThis->_lightState == BASE_PIN_STATE_LOW) {
-        writeToBasePin(pThis->_pin, BASE_PIN_STATE_HIGH);
+    if (pThis->_lightState == BASE_PIN_VALUE_LOW) {
+        writeToBasePin(pThis->_pin, BASE_PIN_VALUE_HIGH);
     } else {
-        writeToBasePin(pThis->_pin, BASE_PIN_STATE_LOW);
+        writeToBasePin(pThis->_pin, BASE_PIN_VALUE_LOW);
     }
 
     LOG_I(&filter, "0x%x turned off", pThis);

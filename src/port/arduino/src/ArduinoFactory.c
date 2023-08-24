@@ -13,24 +13,11 @@ PROTECTED OVERRIDE void doDestoryPinByArduinoFactoryBase(
 PROTECTED OVERRIDE unsigned int doGetPinSizeFromArduinoFactoryBase(
     BaseFactory *factory);
 
-// TODO: need to remove
-PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
-    BaseFactory *factory, BasePin *instance, void *port, unsigned int pin);
-
-// TODO: need to remove
-PROTECTED OVERRIDE void doDestoryBasePinByArduinoFactoryBase(
-    BaseFactory *factory, BasePin *instance);
-
 // Virtual methods table
 static const BaseFactoryVtbl baseVtbl = {
     ._doCreatePin       = doCreatePinByArduinoFactoryBase,
     ._doDestoryPin      = doDestoryPinByArduinoFactoryBase,
-    ._doGetPinSize      = doGetPinSizeFromArduinoFactoryBase,
-
-    // TODO: need to remove
-    ._doCreateBasePin   = doCreateBasePinByArduinoFactoryBase,
-    ._doDestoryBasePin  = doDestoryBasePinByArduinoFactoryBase,
-
+    ._doGetPinSize      = doGetPinSizeFromArduinoFactoryBase
 };
 
 // Method implement(s)
@@ -74,6 +61,9 @@ PROTECTED OVERRIDE void doCreatePinByArduinoFactoryBase(
         }
 
         case BASE_FACTORY_ADDRESS_PIN: {
+            constructArduinoAddressPin(
+                BasePin2ArduinoAddressPin(instance), parameter);
+
             break;
         }
 
@@ -100,6 +90,7 @@ PROTECTED OVERRIDE void doDestoryPinByArduinoFactoryBase(
         }
 
         case BASE_FACTORY_ADDRESS_PIN: {
+            deconstructArduinoAddressPin(BasePin2ArduinoAddressPin(instance));
             break;
         }
 
@@ -113,26 +104,6 @@ PROTECTED OVERRIDE unsigned int doGetPinSizeFromArduinoFactoryBase(
     BaseFactory *factory)
 {
     (void)factory;
-    return sizeof(union {ArduinoDigitalPin d;});
-}
-
-// TODO: need to remove
-PROTECTED OVERRIDE void doCreateBasePinByArduinoFactoryBase(
-    BaseFactory *factory, BasePin *instance, void *port, unsigned int pin)
-{
-    (void)port;
-
-    if (factory != NULL && instance != NULL) {
-        constructArduinoPin(BasePin2ArduinoPin(instance), (uint8_t)pin);
-    }
-}
-
-// TODO: need to remove
-PROTECTED OVERRIDE void doDestoryBasePinByArduinoFactoryBase(
-    BaseFactory *factory, BasePin *instance)
-{
-    if (factory != NULL && instance != NULL) {
-        deconstructArduinoPin(BasePin2ArduinoPin(instance));
-    }
+    return sizeof(union {ArduinoAddressPin a1; ArduinoAnalogPin a2; ArduinoDigitalPin d;});
 }
 

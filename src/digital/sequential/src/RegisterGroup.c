@@ -4,10 +4,6 @@
 PRIVATE STATIC LogFilter filter
     = STATIC_LOG_FILTER("RegisterGroup", LOG_LEVEL_INFO);
 
-// Protected method(s)
-PROTECTED void constructBaseScannable(BaseScannable *instance);
-PROTECTED void deconstructBaseScannable(BaseScannable *instance);
-
 // Private method(s)
 PRIVATE void prepareSerByRegisterGroup(RegisterGroup *pThis, unsigned int data);
 PRIVATE void generateSckByRegisterGroup(RegisterGroup *pThis);
@@ -17,7 +13,7 @@ PRIVATE void generateRckByRegisterGroup(RegisterGroup *pThis);
 PUBLIC OVERRIDE void outputRegisterGroupBase(BaseScannable *scannable);
 
 // Virtual methods table
-static const BaseScannableVtbl scannableVtbl = {
+static const BaseScannableVtbl baseVtbl = {
     .scan = outputRegisterGroupBase
 };
 
@@ -33,27 +29,28 @@ PUBLIC void constructRegisterGroup(
 
     // 1. construct base
     constructBaseScannable(&instance->base);
-    instance->base.vtbl = &scannableVtbl;
+    instance->base.vtbl = &baseVtbl;
 
     // 2. construct member(s)
-    instance->_oePin = createBasePinByDeviceManager(
-        manager, parameter->oePort, parameter->oePin);
+    instance->_oePin = createPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, &parameter->oePin);
 
-    instance->_serPin = createBasePinByDeviceManager(
-        manager, parameter->serPort, parameter->serPin);
+    instance->_serPin = createPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, &parameter->serPin);
 
-    instance->_sckPin = createBasePinByDeviceManager(
-        manager, parameter->sckPort, parameter->sckPin);
+    instance->_sckPin = createPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, &parameter->sckPin);
 
-    instance->_rckPin = createBasePinByDeviceManager(
-        manager, parameter->rckPort, parameter->rckPin);
-
-    setupBasePin(instance->_oePin, PIN_MODE_OUTPUT);
-    setupBasePin(instance->_serPin, PIN_MODE_OUTPUT);
-    setupBasePin(instance->_sckPin, PIN_MODE_OUTPUT);
-    setupBasePin(instance->_rckPin, PIN_MODE_OUTPUT);
+    instance->_rckPin = createPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, &parameter->rckPin);
 
     constructLinkedList(&instance->_shiftRegisters);
+
+    // 3. setup pin(s)
+    setupBasePin(instance->_oePin, BASE_PIN_MODE_OUTPUT);
+    setupBasePin(instance->_serPin, BASE_PIN_MODE_OUTPUT);
+    setupBasePin(instance->_sckPin, BASE_PIN_MODE_OUTPUT);
+    setupBasePin(instance->_rckPin, BASE_PIN_MODE_OUTPUT);
 }
 
 PUBLIC void deconstructRegisterGroup(RegisterGroup *instance)
@@ -68,10 +65,17 @@ PUBLIC void deconstructRegisterGroup(RegisterGroup *instance)
     deconstructBaseScannable(&instance->base);
 
     // 2. deconstruct member(s)
-    destoryBasePinByDeviceManager(manager, instance->_oePin);
-    destoryBasePinByDeviceManager(manager, instance->_serPin);
-    destoryBasePinByDeviceManager(manager, instance->_sckPin);
-    destoryBasePinByDeviceManager(manager, instance->_rckPin);
+    destoryPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, instance->_oePin);
+
+    destoryPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, instance->_serPin);
+
+    destoryPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, instance->_sckPin);
+
+    destoryPinByDeviceManager(
+        manager, DEVICE_MANAGER_DIGITAL_PIN, instance->_rckPin);
 
     deconstructLinkedList(&instance->_shiftRegisters);
 }
@@ -100,9 +104,9 @@ PUBLIC void setOutputEnableToRegisterGroup(
     }
 
     if (enable) {
-        writeStateToBasePin(pThis->_oePin, PIN_STATE_LOW);
+        writeToBasePin(pThis->_oePin, BASE_PIN_VALUE_LOW);
     } else {
-        writeStateToBasePin(pThis->_oePin, PIN_STATE_HIGH);
+        writeToBasePin(pThis->_oePin, BASE_PIN_VALUE_HIGH);
     }
 }
 
@@ -116,22 +120,22 @@ PUBLIC void outputRegisterGroup(RegisterGroup *pThis)
 PRIVATE void prepareSerByRegisterGroup(RegisterGroup *pThis, unsigned int data)
 {
     if (data == 0) {
-        writeStateToBasePin(pThis->_serPin, PIN_STATE_LOW);
+        writeToBasePin(pThis->_serPin, BASE_PIN_VALUE_LOW);
     } else {
-        writeStateToBasePin(pThis->_serPin, PIN_STATE_HIGH);
+        writeToBasePin(pThis->_serPin, BASE_PIN_VALUE_HIGH);
     }
 }
 
 PRIVATE void generateSckByRegisterGroup(RegisterGroup *pThis)
 {
-    writeStateToBasePin(pThis->_sckPin, PIN_STATE_LOW);
-    writeStateToBasePin(pThis->_sckPin, PIN_STATE_HIGH);
+    writeToBasePin(pThis->_sckPin, BASE_PIN_VALUE_LOW);
+    writeToBasePin(pThis->_sckPin, BASE_PIN_VALUE_HIGH);
 }
 
 PRIVATE void generateRckByRegisterGroup(RegisterGroup *pThis)
 {
-    writeStateToBasePin(pThis->_rckPin, PIN_STATE_LOW);
-    writeStateToBasePin(pThis->_rckPin, PIN_STATE_HIGH);
+    writeToBasePin(pThis->_rckPin, BASE_PIN_VALUE_LOW);
+    writeToBasePin(pThis->_rckPin, BASE_PIN_VALUE_HIGH);
 }
 
 PUBLIC OVERRIDE void outputRegisterGroupBase(BaseScannable *scannable)
@@ -139,7 +143,7 @@ PUBLIC OVERRIDE void outputRegisterGroupBase(BaseScannable *scannable)
     LinkedListIterator iterator;
     RegisterGroup *pThis = BaseScannable2RegisterGroup(scannable);
 
-    if (pThis == NULL) {
+    if (scannable == NULL) {
         return;
     }
 

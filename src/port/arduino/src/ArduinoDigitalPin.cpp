@@ -21,13 +21,7 @@ PROTECTED OVERRIDE void doWriteToArduinoDigitalPinBase(
 static const BasePinVtbl baseVtbl = {
     ._doSetup       = doSetupArduinoDigitalPinBase,
     ._doRead        = doReadFromArduinoDigitalPinBase,
-    ._doWrite       = doWriteToArduinoDigitalPinBase,
-
-    // TODO: need to remove
-    ._doReadState   = NULL,
-    ._doWriteState  = NULL,
-    ._doReadValue   = NULL,
-    ._doWriteValue  = NULL
+    ._doWrite       = doWriteToArduinoDigitalPinBase
 };
 
 // Method implement(s)

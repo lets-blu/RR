@@ -88,39 +88,3 @@ PUBLIC STATIC DeviceManager *instanceOfDeviceManager(void)
     return &instance;
 }
 
-// TODO: need to remove
-PUBLIC BasePin *createBasePinByDeviceManager(
-    DeviceManager *pThis, void *port, unsigned int pin)
-{
-    BasePin *instance = NULL;
-
-    if (pThis == NULL || pThis->_factory == NULL) {
-        return NULL;
-    }
-
-    instance = BaseDevice2BasePin(allocateFromDevicePool(pThis->_pinPool));
-
-    if (instance == NULL) {
-        return NULL;
-    }
-
-    createBasePinByBaseFactory(pThis->_factory, instance, port, pin);
-
-    return instance;
-}
-
-// TODO: need to remove
-PUBLIC void destoryBasePinByDeviceManager(
-    DeviceManager *pThis, BasePin *instance)
-{
-    if (pThis == NULL || instance == NULL) {
-        return;
-    }
-
-    if (pThis->_factory != NULL) {
-        destoryBasePinByBaseFactory(pThis->_factory, instance);
-    }
-
-    freeToDevicePool(pThis->_pinPool, &instance->base);
-}
-

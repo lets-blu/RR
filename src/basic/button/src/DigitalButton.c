@@ -33,7 +33,7 @@ PUBLIC void constructDigitalButton(
     instance->_pushState = pushState;
 
     // 3. setup pin
-    if (pushState == BASE_PIN_STATE_LOW) {
+    if (pushState == BASE_PIN_VALUE_LOW) {
         setupBasePin(instance->_pin, BASE_PIN_MODE_INPUT_PULLUP);
     } else {
         setupBasePin(instance->_pin, BASE_PIN_MODE_INPUT);

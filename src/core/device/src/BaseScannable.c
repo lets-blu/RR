@@ -1,9 +1,5 @@
 #include "core/device/inc/BaseScannable.h"
 
-// Protected method(s)
-PROTECTED void constructBaseScannable(BaseScannable *instance);
-PROTECTED void deconstructBaseScannable(BaseScannable *instance);
-
 // Method implement(s)
 PROTECTED void constructBaseScannable(BaseScannable *instance)
 {

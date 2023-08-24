@@ -47,14 +47,6 @@ PUBLIC void destoryPinByDeviceManager(
 
 PUBLIC STATIC DeviceManager *instanceOfDeviceManager(void);
 
-// TODO: need to remove
-PUBLIC BasePin *createBasePinByDeviceManager(
-    DeviceManager *pThis, void *port, unsigned int pin);
-
-// TODO: need to remove
-PUBLIC void destoryBasePinByDeviceManager(
-    DeviceManager *pThis, BasePin *instance);
-
 #ifdef __cplusplus
 }
 #endif // __cplusplus

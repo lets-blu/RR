@@ -34,14 +34,10 @@ typedef struct {
 } RegisterGroup;
 
 typedef struct {
-    void *oePort;
-    unsigned int oePin;
-    void *serPort;
-    unsigned int serPin;
-    void *sckPort;
-    unsigned int sckPin;
-    void *rckPort;
-    unsigned int rckPin;
+    BasePinParameter oePin;
+    BasePinParameter serPin;
+    BasePinParameter sckPin;
+    BasePinParameter rckPin;
 } RegisterGroupParameter;
 
 // (De)constructors
